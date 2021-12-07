@@ -7,7 +7,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.lakderana.hms.entity.Role;
 import lk.lakderana.hms.entity.User;
 import lk.lakderana.hms.service.UserService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,42 +16,46 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static lk.lakderana.hms.security.JwtTokenUtil.*;
+
 @RestController
 @RequestMapping("/api/token")
-@RequiredArgsConstructor
 public class TokenController {
 
     private final UserService userService;
 
+    public TokenController(UserService userService) {
+        this.userService = userService;
+    }
+
     @GetMapping("/refresh")
-    public void assignRoleToUser(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void createRefreshToken(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+        if(authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX_BEARER)) {
             try {
-                final String refresh_token = authorizationHeader.substring("Bearer ".length());
-                final DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256("secret".getBytes())).build().verify(refresh_token);
+                final String refresh_token = authorizationHeader.substring(TOKEN_PREFIX_BEARER.length());
+                final DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SECRET_KEY.getBytes())).build().verify(refresh_token);
                 final String username = decodedJWT.getSubject();
 
                 User user = userService.getAUser(username);
 
                 final String access_token = JWT.create()
                         .withSubject(user.getUsername())
-                        .withExpiresAt(new Date(System.currentTimeMillis() + (10 * 60 * 1000)))
+                        .withExpiresAt(ACCESS_TOKEN_EXPIRE_10_MIN)
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim("roles", user.getRoles().stream().map(Role::getName).collect(Collectors.joining()))
-                        .sign(Algorithm.HMAC256("secret".getBytes()));
+                        .withClaim(ROLES, user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+                        .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
                 Map<String, String> tokens = new HashMap<>();
 
                 tokens.put("access_token", access_token);
                 tokens.put("refresh_token", refresh_token);
-                tokens.put("token_type", "bearer");
+                tokens.put("token_type", TOKEN_PREFIX_BEARER.trim());
 
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                 new ObjectMapper().writeValue(response.getOutputStream(), tokens);

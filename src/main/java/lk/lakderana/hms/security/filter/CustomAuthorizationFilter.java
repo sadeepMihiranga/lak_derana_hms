@@ -19,6 +19,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.*;
 
+import static lk.lakderana.hms.security.JwtTokenUtil.*;
+
 @Slf4j
 public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
@@ -30,17 +32,21 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         } else {
             String authorizationHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-            if(authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            if(authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX_BEARER)) {
                 try {
-                    final String token = authorizationHeader.substring("Bearer ".length());
-                    final DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256("secret".getBytes())).build().verify(token);
+                    final String token = authorizationHeader.substring(TOKEN_PREFIX_BEARER.length());
+                    final DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SECRET_KEY.getBytes())).build().verify(token);
                     final String username = decodedJWT.getSubject();
-                    String[] roles = decodedJWT.getClaim("roles").asArray(String.class);
+
+                    String[] roles = decodedJWT.getClaim(ROLES).asArray(String.class);
 
                     Collection<SimpleGrantedAuthority> grantedAuthorities = new ArrayList<>();
                     Arrays.stream(roles).forEach(role -> grantedAuthorities.add(new SimpleGrantedAuthority(role)));
 
-                    var authenticationToken = new UsernamePasswordAuthenticationToken(username, null, grantedAuthorities);
+                    var authenticationToken = new UsernamePasswordAuthenticationToken(
+                            username,
+                            null,
+                            grantedAuthorities);
                     SecurityContextHolder.getContext().setAuthentication(authenticationToken);
 
                     filterChain.doFilter(request, response);
@@ -49,10 +55,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                     response.setHeader("Error", e.getMessage());
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-                    //response.sendError(HttpServletResponse.SC_FORBIDDEN);
 
                     Map<String, String> error = new HashMap<>();
-
                     error.put("error_message", e.getMessage());
 
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
