@@ -1,18 +1,28 @@
-server:
-  port: 8080
-
+# Dev Configs
+# Spring Boot Configs
 spring:
+  profiles: dev
+  application:
+    name: LakDerana HMS Back End
+  main:
+    # This configuration is needed since spring boot 2.1.X if JPAAuditing is enabled. This is false on default so no accidental
+    # overrides will occur and if beans are to be overridden, this has to be enabled. - https://stackoverflow.com/questions/53723303/springboot-beandefinitionoverrideexception-invalid-bean-definition
+    allow-bean-definition-overriding: true
+
+  # Datasource Settings
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_URL:jdbc:postgresql://localhost:5432/LakDerana}
-    data-username: ${DB_USER:postgres}
-    data-password: ${DB_PASSWORD:password}
+    url: ${DB_URL:jdbc:postgresql://localhost:6543/LakDeranaHMS}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:password}
+    #maxActive: 5 (This can be removed I guess. It has no effect or is deprecated)
 
     # Connection Pool Settings
     hikari:
       pool-name: lakderana-hikari
-      maximum-pool-size: 5
-      minimum-idle: 3
+      maximum-pool-size: 8
+      minimum-idle: 5
+      keepalive-time: 120000
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 300000
@@ -24,6 +34,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
+        physical_naming_strategy: lk.lakderana.hms.util.PhysicalNamingStrategyImpl
         default_schema: "LAKDERANA_BASE"
         temp:
           use_jdbc_metadata_defaults: false
@@ -34,19 +45,9 @@ spring:
           envers:
             default_schema: "AUDIT"
             store_data_at_delete: true
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    database-platform: org.hibernate.spatial.dialect.postgis.PostgisDialect
 
-  security:
-    signing-key: 8x/A?D(G+KbPeSgVkYp3s6v9y$B&E)H@McQfTjWmZq4t7w!z%C*F-JaNdRgUkXp2
-    encoding-strength: 256
-    security-realm: LakDerana-Web
-    jwt:
-      client-id: lakderanaweb
-      client-secret: 8x/A?D(G+KbPeSgVkYp3s6v9y$B&E)H@McQfTjWmZq4t7w!z%C*F-JaNdRgUkXp2
-      grant-type: password
-      scope-read: read
-      scope-write: write
-      resource-ids: LakDerana-WebResource
+# Server Configs
+server:
+  port: 7000
 
-auth:
-  provider: ${AUTH_PROVIDER:surecore}
