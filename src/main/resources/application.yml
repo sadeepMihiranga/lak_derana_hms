@@ -12,7 +12,7 @@ spring:
   # Datasource Settings
   datasource:
     driver-class-name: org.postgresql.Driver
-    url: ${DB_URL:jdbc:postgresql://localhost:6543/LakDeranaHMS}
+    url: ${DB_URL:jdbc:postgresql://localhost:5432/LakDeranaHMS}
     username: ${DB_USER:postgres}
     password: ${DB_PASSWORD:password}
     #maxActive: 5 (This can be removed I guess. It has no effect or is deprecated)

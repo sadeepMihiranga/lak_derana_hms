@@ -1,5 +1,6 @@
 package lk.lakderana.hms.service;
 
+import lk.lakderana.hms.dto.UserDTO;
 import lk.lakderana.hms.entity.Role;
 import lk.lakderana.hms.entity.User;
 
@@ -13,9 +14,9 @@ public interface UserService {
 
     void addRoleToUser(String username, String roleName);
 
-    User getAUser(String username);
+    UserDTO getAUser(String username);
 
-    User getAUserById(Long userId);
+    UserDTO getAUserById(Long userId);
 
-    List<User> getAllUsers();
+    List<UserDTO> getAllUsers();
 }

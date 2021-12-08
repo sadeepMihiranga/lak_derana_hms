@@ -12,14 +12,20 @@ import java.util.Collection;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name="\"T_MS_USER\"")
 public class User {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long Id;
+    private Long id;
     private String name;
     private String username;
     private String password;
-    @ManyToMany(fetch = FetchType.EAGER)
-    private Collection<Role> roles = new ArrayList<>();
+    /*private String email;
+    private Short status;*/
+    /*@ManyToMany(fetch = FetchType.EAGER)
+    private Collection<Role> roles = new ArrayList<>();*/
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    private Collection<RoleToUser> roleToUsers = new ArrayList<>();
 }

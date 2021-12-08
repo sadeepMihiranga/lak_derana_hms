@@ -4,8 +4,7 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lk.lakderana.hms.entity.Role;
-import lk.lakderana.hms.entity.User;
+import lk.lakderana.hms.dto.UserDTO;
 import lk.lakderana.hms.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -42,13 +41,13 @@ public class TokenController {
                 final DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SECRET_KEY.getBytes())).build().verify(refresh_token);
                 final String username = decodedJWT.getSubject();
 
-                User user = userService.getAUser(username);
+                UserDTO user = userService.getAUser(username);
 
                 final String access_token = JWT.create()
                         .withSubject(user.getUsername())
                         .withExpiresAt(ACCESS_TOKEN_EXPIRE_10_MIN)
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim(ROLES, user.getRoles().stream().map(Role::getName).collect(Collectors.toList()))
+                        .withClaim(ROLES, user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toList()))
                         .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
                 Map<String, String> tokens = new HashMap<>();

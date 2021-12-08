@@ -8,14 +8,19 @@
         <version>2.6.1</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
+
     <groupId>com.example</groupId>
     <artifactId>lak_derana_hms</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>lak_derana_hms</name>
     <description>Rest API project for Lak Derana HMS</description>
+
     <properties>
         <java.version>11</java.version>
+        <spring.version>2.2.6.RELEASE</spring.version>
+        <mapstruct.version>1.4.1.Final</mapstruct.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -67,11 +72,21 @@
             <artifactId>hibernate-spatial</artifactId>
         </dependency>
 
-        <!-- https://mvnrepository.com/artifact/com.auth0/java-jwt -->
         <dependency>
             <groupId>com.auth0</groupId>
             <artifactId>java-jwt</artifactId>
             <version>3.18.2</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>1.4.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>1.4.1.Final</version>
         </dependency>
 
     </dependencies>
@@ -88,7 +103,6 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
-                    <mainClass>clk.lakderana.hms.LakDeranaHmsApplication</mainClass>
                 </configuration>
             </plugin>
         </plugins>
