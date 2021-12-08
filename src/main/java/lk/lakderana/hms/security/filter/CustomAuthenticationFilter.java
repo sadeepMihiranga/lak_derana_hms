@@ -3,7 +3,10 @@ package lk.lakderana.hms.security.filter;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lk.lakderana.hms.dto.TokenRequestDTO;
+import lk.lakderana.hms.exception.OperationException;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -28,6 +31,7 @@ import static lk.lakderana.hms.security.JwtTokenUtil.*;
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
+    private ObjectMapper mapper = new ObjectMapper();
 
     public CustomAuthenticationFilter(AuthenticationManager authenticationManager) {
         this.authenticationManager = authenticationManager;
@@ -36,10 +40,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
 
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
+        TokenRequestDTO tokenRequestDTO = null;
 
-        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(username, password);
+        try {
+            final String tokenRequestJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+            tokenRequestDTO = mapper.readValue(tokenRequestJson, TokenRequestDTO.class);
+            log.info("Received authentication request {} ", StringUtils.normalizeSpace(tokenRequestJson));
+        } catch (IOException e) {
+            throw new OperationException("Error while parsing the authentication request");
+        }
+
+        UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
+                tokenRequestDTO.getUsername(),
+                tokenRequestDTO.getPassword());
         return authenticationManager.authenticate(usernamePasswordAuthenticationToken);
     }
 
