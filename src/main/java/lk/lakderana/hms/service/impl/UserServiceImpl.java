@@ -91,7 +91,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public UserDTO getAUser(String username) {
+    public UserDTO getUserByUsername(String username) {
         final TMsUser tMsUser = userRepository.findByUserUsername(username);
 
         if(tMsUser == null)
@@ -147,6 +147,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return tMsRoleFunctionList;
     }
 
+    @Override
+    public User getUserDetailsByUsername(String username) {
+        return (User) loadUserByUsername(username);
+    }
+
     private RoleDTO mapRoleToRoleDTO(TMsRole role) {
         RoleDTO roleDTO = new RoleDTO();
         roleDTO.setId(role.getRoleId());
@@ -159,7 +164,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        final UserDTO userInDb = getAUser(username);
+        final UserDTO userInDb = getUserByUsername(username);
 
         if(userInDb == null)
             throw new UsernameNotFoundException("User not found");

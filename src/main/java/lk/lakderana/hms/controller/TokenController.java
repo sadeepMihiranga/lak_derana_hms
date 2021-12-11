@@ -4,10 +4,12 @@ import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lk.lakderana.hms.dto.UserDTO;
+import lk.lakderana.hms.dto.FunctionDTO;
+import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,13 +43,14 @@ public class TokenController {
                 final DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256(SECRET_KEY.getBytes())).build().verify(refresh_token);
                 final String username = decodedJWT.getSubject();
 
-                UserDTO user = userService.getAUser(username);
+                final User user = userService.getUserDetailsByUsername(username);
 
                 final String access_token = JWT.create()
                         .withSubject(user.getUsername())
                         .withExpiresAt(ACCESS_TOKEN_EXPIRE_10_MIN)
                         .withIssuer(request.getRequestURL().toString())
-                        .withClaim(ROLES, user.getRoles().stream().map(role -> role.getName()).collect(Collectors.toList()))
+                        .withClaim(ROLES, user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
+                        .withClaim(FUNCTIONS, user.getPermittedFunctions().stream().map(FunctionDTO::getFunctionId).collect(Collectors.toList()))
                         .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
                 Map<String, String> tokens = new HashMap<>();
