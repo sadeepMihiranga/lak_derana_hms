@@ -1,9 +1,9 @@
 package lk.lakderana.hms.repository;
 
-import lk.lakderana.hms.entity.Role;
+import lk.lakderana.hms.entity.TMsRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface RoleRepository extends JpaRepository<Role, Long> {
+public interface RoleRepository extends JpaRepository<TMsRole, Long> {
 
-    Role findByName(String name);
+    TMsRole findByRoleName(String roleName);
 }

@@ -1,16 +1,16 @@
 package lk.lakderana.hms.service;
 
 import lk.lakderana.hms.dto.UserDTO;
-import lk.lakderana.hms.entity.Role;
-import lk.lakderana.hms.entity.User;
+import lk.lakderana.hms.entity.TMsRole;
+import lk.lakderana.hms.entity.TMsRoleFunction;
 
 import java.util.List;
 
 public interface UserService {
 
-    User createUser(User user);
+    UserDTO createUser(UserDTO userDTO);
 
-    Role createRole(Role role);
+    TMsRole createRole(TMsRole role);
 
     void addRoleToUser(String username, String roleName);
 
@@ -19,4 +19,6 @@ public interface UserService {
     UserDTO getAUserById(Long userId);
 
     List<UserDTO> getAllUsers();
+
+    List<TMsRoleFunction> getPermissionsByRole(Long roleId);
 }

@@ -1,6 +1,6 @@
 package lk.lakderana.hms.exception;
 
-import lk.lakderana.hms.exception.code.CustomErrorCode;
+import lk.lakderana.hms.response.ResponseCode;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,8 +10,7 @@ public class DataNotFoundException extends BaseException {
 
     private static String message = "Some required data not found in the request";
     private static HttpStatus status = HttpStatus.BAD_REQUEST;
-    private static Integer code = CustomErrorCode.MISSING_DATA;
-
+    private static Integer code = ResponseCode.MISSING_DATA;
 
     public DataNotFoundException(String message, String description) {
         super(message, code, status, description);

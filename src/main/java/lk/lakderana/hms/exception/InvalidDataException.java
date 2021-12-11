@@ -1,6 +1,6 @@
 package lk.lakderana.hms.exception;
 
-import lk.lakderana.hms.exception.code.CustomErrorCode;
+import lk.lakderana.hms.response.ResponseCode;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,7 +10,7 @@ public class InvalidDataException extends BaseException{
 
     private static String message = "Invalid data found in the request.";
     private static HttpStatus status = HttpStatus.BAD_REQUEST;
-    private static Integer code = CustomErrorCode.INVALID_INPUT;
+    private static Integer code = ResponseCode.INVALID_INPUT;
 
     public InvalidDataException(String description) {
         super(message, code, status, description);

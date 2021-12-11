@@ -9,6 +9,7 @@ public class JwtTokenUtil {
 
     public static final String SECRET_KEY = "secret";
     public static final String ROLES = "roles";
+    public static final String FUNCTIONS = "functions";
     public static final String TOKEN_PREFIX_BEARER = "Bearer ";
 
     public static final Date ACCESS_TOKEN_EXPIRE_10_MIN = new Date(System.currentTimeMillis() + (10 * 60 * 1000));

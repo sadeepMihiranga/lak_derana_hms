@@ -1,15 +1,20 @@
 package lk.lakderana.hms.service.impl;
 
+import lk.lakderana.hms.dto.FunctionDTO;
 import lk.lakderana.hms.dto.RoleDTO;
 import lk.lakderana.hms.dto.UserDTO;
-import lk.lakderana.hms.entity.Role;
-import lk.lakderana.hms.entity.RoleToUser;
-import lk.lakderana.hms.entity.User;
+import lk.lakderana.hms.entity.TMsRole;
+import lk.lakderana.hms.entity.TMsRoleFunction;
+import lk.lakderana.hms.entity.TMsUserRole;
+import lk.lakderana.hms.entity.TMsUser;
 import lk.lakderana.hms.exception.DataNotFoundException;
+import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.mapper.UserMapper;
+import lk.lakderana.hms.repository.RoleFunctionRepository;
 import lk.lakderana.hms.repository.RoleRepository;
 import lk.lakderana.hms.repository.UserRepository;
 import lk.lakderana.hms.repository.UserRoleRepository;
+import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -20,9 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -32,68 +35,84 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final RoleFunctionRepository roleFunctionRepository;
+
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
                            RoleRepository roleRepository,
                            UserRoleRepository userRoleRepository,
+                           RoleFunctionRepository roleFunctionRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
+        this.roleFunctionRepository = roleFunctionRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
     @Transactional
     @Override
-    public User createUser(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
+    public UserDTO createUser(UserDTO userDTO) {
+
+        final TMsUser userExists = userRepository.findByUserUsername(userDTO.getUsername());
+
+        if(userExists != null)
+            throw new InvalidDataException("An User already exists with " + userDTO.getUsername());
+
+        final TMsUser tMsUser = UserMapper.INSTANCE.dtoToEntity(userDTO);
+        tMsUser.setUserPassword(passwordEncoder.encode(tMsUser.getUserPassword()));
+
+        final TMsUser createdUser = userRepository.save(tMsUser);
+
+        final UserDTO insertedUserDTO = UserMapper.INSTANCE.entityToDTO(createdUser);
+
+        return insertedUserDTO;
     }
 
     @Transactional
     @Override
-    public Role createRole(Role role) {
-        return roleRepository.save(role);
+    public TMsRole createRole(TMsRole tMsRole) {
+        return roleRepository.save(tMsRole);
     }
 
     @Transactional
     @Override
     public void addRoleToUser(String username, String roleName) {
-        final User user = userRepository.findByUsername(username);
-        final Role role = roleRepository.findByName(roleName);
+        final TMsUser tMsUser = userRepository.findByUserUsername(username);
+        final TMsRole tMsRole = roleRepository.findByRoleName(roleName);
 
-        RoleToUser roleToUser = new RoleToUser();
-        roleToUser.setRole(role);
-        roleToUser.setUser(user);
-        roleToUser.setStatus(Short.valueOf("1"));
+        TMsUserRole tRfUserRole = new TMsUserRole();
+        tRfUserRole.setRole(tMsRole);
+        tRfUserRole.setUser(tMsUser);
+        tRfUserRole.setUsrlStatus(Short.valueOf("1"));
 
-        userRoleRepository.save(roleToUser);
+        userRoleRepository.save(tRfUserRole);
     }
 
     @Override
     public UserDTO getAUser(String username) {
-        final User user = userRepository.findByUsername(username);
+        final TMsUser tMsUser = userRepository.findByUserUsername(username);
 
-        if(user == null)
+        if(tMsUser == null)
             throw new DataNotFoundException("User " + username + " not found");
 
-        final List<RoleToUser> roleToUsers = userRoleRepository.findAllById(user.getId());
+        final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(tMsUser.getUserId());
 
-        final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(user);
-        userDTO.setRoles(roleToUsers.stream().map(roleToUser -> mapRoleToRoleDTO(roleToUser.getRole())).collect(Collectors.toList()));
+        final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
+        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
         return userDTO;
     }
 
     @Override
     public UserDTO getAUserById(Long userId) {
-        final User user = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
+        final TMsUser tMsUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
 
-        final List<RoleToUser> roleToUsers = userRoleRepository.findAllById(user.getId());
+        final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(tMsUser.getUserId());
 
-        final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(user);
-        userDTO.setRoles(roleToUsers.stream().map(roleToUser -> mapRoleToRoleDTO(roleToUser.getRole())).collect(Collectors.toList()));
+        final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
+        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
         return userDTO;
     }
@@ -103,18 +122,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         List<UserDTO> userDTOList = new ArrayList<>();
 
-        final List<User> userList = userRepository.findAll();
+        final List<TMsUser> userList = userRepository.findAll();
 
         userList.forEach(user -> {
 
             UserDTO userDTO = new UserDTO();
 
-            final List<RoleToUser> roleToUsers = userRoleRepository.findAllById(user.getId());
+            final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(user.getUserId());
 
-            userDTO.setId(user.getId());
-            userDTO.setName(user.getName());
-            userDTO.setUsername(user.getUsername());
-            userDTO.setRoles(roleToUsers.stream().map(roleToUser -> mapRoleToRoleDTO(roleToUser.getRole())).collect(Collectors.toList()));
+            userDTO.setId(user.getUserId());
+            userDTO.setName(user.getUserFullName());
+            userDTO.setUsername(user.getUserUsername());
+            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
             userDTOList.add(userDTO);
         });
@@ -122,10 +141,16 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         return userDTOList;
     }
 
-    private RoleDTO mapRoleToRoleDTO(Role role) {
+    @Override
+    public List<TMsRoleFunction> getPermissionsByRole(Long roleId) {
+        final List<TMsRoleFunction> tMsRoleFunctionList = roleFunctionRepository.findAllByRoleRoleId(roleId);
+        return tMsRoleFunctionList;
+    }
+
+    private RoleDTO mapRoleToRoleDTO(TMsRole role) {
         RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(role.getId());
-        roleDTO.setName(role.getName());
+        roleDTO.setId(role.getRoleId());
+        roleDTO.setName(role.getRoleName());
 
         return roleDTO;
     }
@@ -134,19 +159,41 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        final UserDTO user = getAUser(username);
+        final UserDTO userInDb = getAUser(username);
 
-        if(user == null)
+        if(userInDb == null)
             throw new UsernameNotFoundException("User not found");
         else
             log.info("User {} found in the Database", username);
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        final List<RoleToUser> roleToUsers = userRoleRepository.findAllById(user.getId());
+        final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(userInDb.getId());
 
-        roleToUsers.forEach(role -> authorities.add(new SimpleGrantedAuthority(role.getRole().getName())));
+        Collection<FunctionDTO> permittedFunctions = new ArrayList<>();
 
-        return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), authorities);
+        tRfUserRoleList.forEach(tRfUserRole -> {
+            authorities.add(new SimpleGrantedAuthority(tRfUserRole.getRole().getRoleName()));
+
+            final List<TMsRoleFunction> functionList = getPermissionsByRole(tRfUserRole.getRole().getRoleId());
+
+            functionList.forEach(tMsRoleFunction -> {
+                permittedFunctions.add(
+                        new FunctionDTO(
+                                tMsRoleFunction.getFunction().getFuncId(),
+                                tMsRoleFunction.getFunction().getDunsDescription(),
+                                tMsRoleFunction.getRofuStatus()
+                        )
+                );
+            });
+        });
+
+        User user = new User();
+        user.setUsername(userInDb.getUsername());
+        user.setPassword(userInDb.getPassword());
+        user.setAuthorities(authorities);
+        user.setPermittedFunctions(permittedFunctions);
+
+        return user;
     }
 }

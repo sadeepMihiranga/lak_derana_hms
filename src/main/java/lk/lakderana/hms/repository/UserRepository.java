@@ -1,9 +1,9 @@
 package lk.lakderana.hms.repository;
 
-import lk.lakderana.hms.entity.User;
+import lk.lakderana.hms.entity.TMsUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+public interface UserRepository extends JpaRepository<TMsUser, Long> {
 
-    User findByUsername(String username);
+    TMsUser findByUserUsername(String userUsername);
 }

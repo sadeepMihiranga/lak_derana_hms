@@ -5,21 +5,22 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collection;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="\"T_MS_ROLE\"")
-public class Role {
+@Table(name="\"T_MS_FUNCTION\"")
+public class TMsFunction {
 
     @javax.persistence.Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
-    private String name;
+    @Column(name = "FUNC_ID")
+    private String funcId;
 
-    @OneToMany(mappedBy = "role", fetch = FetchType.LAZY)
-    private Collection<RoleToUser> roleToUser = new ArrayList<>();
+    @Column(name = "FUNC_STATUS")
+    private Short funcStatus;
+
+    @Column(name = "FUNC_DESCRIPTION")
+    private String dunsDescription;
 }

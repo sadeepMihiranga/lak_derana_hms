@@ -1,6 +1,6 @@
 package lk.lakderana.hms.exception;
 
-import lk.lakderana.hms.exception.code.CustomErrorCode;
+import lk.lakderana.hms.response.ResponseCode;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,7 +10,7 @@ public class OperationException extends BaseException{
 
     private static String message = "Error Processing the Operation";
     private static HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;
-    private static Integer code = CustomErrorCode.ERROR_OPERATION;
+    private static Integer code = ResponseCode.ERROR_OPERATION;
 
     public OperationException(String description) {
         super(message, code, status, description);

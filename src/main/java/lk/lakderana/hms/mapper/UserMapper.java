@@ -1,7 +1,7 @@
 package lk.lakderana.hms.mapper;
 
 import lk.lakderana.hms.dto.UserDTO;
-import lk.lakderana.hms.entity.User;
+import lk.lakderana.hms.entity.TMsUser;
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
@@ -14,13 +14,13 @@ public interface UserMapper {
     UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
     @Mappings({
-            @Mapping(source = "id", target = "id"),
-            @Mapping(source = "name", target = "name"),
-            @Mapping(source = "username", target = "username"),
-            @Mapping(source = "password", target = "password")
+            @Mapping(source = "userId", target = "id"),
+            @Mapping(source = "userFullName", target = "name"),
+            @Mapping(source = "userUsername", target = "username"),
+            @Mapping(source = "userPassword", target = "password")
     })
-    UserDTO entityToDTO(User entity);
+    UserDTO entityToDTO(TMsUser entity);
 
     @InheritInverseConfiguration
-    User dtoToEntity(UserDTO dto);
+    TMsUser dtoToEntity(UserDTO dto);
 }
