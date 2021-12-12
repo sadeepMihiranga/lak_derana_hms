@@ -51,10 +51,12 @@ public class TokenController {
                 final String access_token = JWT.create()
                         .withSubject(user.getUsername())
                         .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                        .withExpiresAt(ACCESS_TOKEN_EXPIRE_1_YEAR)
+                        .withExpiresAt(ACCESS_TOKEN_EXPIRE_1_MIN)
                         .withIssuer(request.getRequestURL().toString())
                         .withClaim(ROLES, user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                         .withClaim(FUNCTIONS, user.getPermittedFunctions().stream().map(FunctionDTO::getFunctionId).collect(Collectors.toList()))
+                        .withClaim(DISPLAY_NAME, user.getName())
+                        .withClaim(USER_ID, user.getId())
                         .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
                 Map<String, String> tokens = new HashMap<>();

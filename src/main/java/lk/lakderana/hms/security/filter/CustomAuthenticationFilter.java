@@ -48,9 +48,9 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         try {
             final String tokenRequestJson = request.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-            tokenRequestDTO = mapper.readValue(tokenRequestJson, TokenRequestDTO.class);
             log.info("Received authentication request {} ", StringUtils.normalizeSpace(tokenRequestJson));
-        } catch (IOException e) {
+            tokenRequestDTO = mapper.readValue(tokenRequestJson, TokenRequestDTO.class);
+        } catch (Exception e) {
             throw new OperationException("Error while parsing the authentication request");
         }
 
@@ -69,10 +69,12 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         final String access_token = JWT.create()
                 .withSubject(user.getUsername())
                 .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .withExpiresAt(ACCESS_TOKEN_EXPIRE_1_YEAR)
+                .withExpiresAt(ACCESS_TOKEN_EXPIRE_1_MIN)
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim(ROLES, user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withClaim(FUNCTIONS, user.getPermittedFunctions().stream().map(FunctionDTO::getFunctionId).collect(Collectors.toList()))
+                .withClaim(DISPLAY_NAME, user.getName())
+                .withClaim(USER_ID, user.getId())
                 .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
         final String refresh_token = JWT.create()

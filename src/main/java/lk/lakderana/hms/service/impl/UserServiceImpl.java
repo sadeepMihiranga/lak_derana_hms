@@ -194,6 +194,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         });
 
         User user = new User();
+        user.setId(userInDb.getId());
+        user.setName(userInDb.getName());
         user.setUsername(userInDb.getUsername());
         user.setPassword(userInDb.getPassword());
         user.setAuthorities(authorities);
