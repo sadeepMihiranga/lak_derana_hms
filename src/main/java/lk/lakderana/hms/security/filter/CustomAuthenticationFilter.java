@@ -22,6 +22,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -65,7 +68,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         final String access_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(ACCESS_TOKEN_EXPIRE_10_MIN)
+                .withIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
+                .withExpiresAt(ACCESS_TOKEN_EXPIRE_1_YEAR)
                 .withIssuer(request.getRequestURL().toString())
                 .withClaim(ROLES, user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withClaim(FUNCTIONS, user.getPermittedFunctions().stream().map(FunctionDTO::getFunctionId).collect(Collectors.toList()))
@@ -73,7 +77,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
 
         final String refresh_token = JWT.create()
                 .withSubject(user.getUsername())
-                .withExpiresAt(REFRESH_TOKEN_EXPIRE_30_MIN)
+                .withExpiresAt(ACCESS_TOKEN_EXPIRE_1_YEAR)
                 .withIssuer(request.getRequestURL().toString())
                 .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
