@@ -27,7 +27,19 @@ public class SuccessResponseHandler {
      *
      * @return Response for success operation
      */
-    public static ResponseEntity<SuccessResponse> generateResponse(Object data,String message) {
+    public static ResponseEntity<SuccessResponse> generateResponse(Object data, String message) {
         return new ResponseEntity<>(new SuccessResponse(data,message), HttpStatus.OK);
+    }
+
+    /**
+     * Generate response with data and message
+     *
+     * @param data response data
+     * @param message response message
+     *
+     * @return Response for success operation
+     */
+    public static SuccessResponse generateResponse(Object data, String message, Boolean success, Integer code) {
+        return new SuccessResponse(data, message, success, code);
     }
 }

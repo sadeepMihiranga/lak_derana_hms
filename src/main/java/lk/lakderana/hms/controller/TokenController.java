@@ -5,9 +5,12 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.lakderana.hms.dto.FunctionDTO;
+import lk.lakderana.hms.dto.TokenResponseDTO;
+import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -21,8 +24,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static lk.lakderana.hms.security.JwtTokenUtil.*;
@@ -61,24 +62,23 @@ public class TokenController {
                         .withClaim(USER_ID, user.getId())
                         .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
-                Map<String, String> tokens = new HashMap<>();
-
-                tokens.put("access_token", access_token);
-                tokens.put("refresh_token", refresh_token);
-                tokens.put("token_type", TOKEN_PREFIX_BEARER.trim());
-
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+                new ObjectMapper().writeValue(
+                                response.getOutputStream(),
+                                SuccessResponseHandler.generateResponse(
+                                        new TokenResponseDTO(access_token, refresh_token, TOKEN_PREFIX_BEARER.trim()),
+                                        "Token generated successfully", true, HttpStatus.OK.value())
+                        );
 
             } catch (Exception e) {
                 response.setHeader("Error", e.getMessage());
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-
-                Map<String, String> error = new HashMap<>();
-                error.put("error_message", e.getMessage());
-
                 response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                new ObjectMapper().writeValue(response.getOutputStream(), error);
+
+                new ObjectMapper().writeValue(
+                        response.getOutputStream(),
+                        SuccessResponseHandler.generateResponse(null, e.getMessage(), true, HttpServletResponse.SC_FORBIDDEN)
+                );
             }
         } else {
             throw new RuntimeException("Refresh Token is missing.");

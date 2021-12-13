@@ -5,10 +5,13 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.lakderana.hms.dto.FunctionDTO;
 import lk.lakderana.hms.dto.TokenRequestDTO;
+import lk.lakderana.hms.dto.TokenResponseDTO;
 import lk.lakderana.hms.exception.OperationException;
+import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.security.User;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,9 +28,6 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static lk.lakderana.hms.security.JwtTokenUtil.*;
@@ -84,20 +84,13 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withIssuer(request.getRequestURL().toString())
                 .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 
-        Map<String, String> tokens = new HashMap<>();
-
-        tokens.put("access_token", access_token);
-        tokens.put("refresh_token", refresh_token);
-        tokens.put("token_type", TOKEN_PREFIX_BEARER.trim());
-
-        Map<String ,Object> errorAttributes = new LinkedHashMap<>();
-
-        errorAttributes.put("data", tokens);
-        errorAttributes.put("message", "Token generated successfully");
-        errorAttributes.put("success", true);
-        errorAttributes.put("code", 200);
-
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), errorAttributes);
+        new ObjectMapper().
+                writeValue(
+                        response.getOutputStream(),
+                        SuccessResponseHandler.generateResponse(
+                                new TokenResponseDTO(access_token, refresh_token, TOKEN_PREFIX_BEARER.trim()),
+                                "Token generated successfully", true, HttpStatus.OK.value())
+                );
     }
 }
