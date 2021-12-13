@@ -17,6 +17,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.LinkedHashMap;
@@ -42,13 +43,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationFilter.setFilterProcessesUrl("/api/token");
 
         http.csrf().disable();
-        http.cors().disable();
+        http.cors();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
         //http.authorizeHttpRequests().antMatchers("/api/token/**").permitAll();
         http.authorizeHttpRequests().antMatchers("/api/**").permitAll();
         http.authorizeHttpRequests().anyRequest().authenticated();
         http.addFilter(customAuthenticationFilter);
         http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http
+                .headers()
+                    .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "*"))
+                    .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Methods", "POST, GET"))
+                    .addHeaderWriter(new StaticHeadersWriter("Access-Control-Max-Age", "3600"))
+                    .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Credentials", "true"))
+                    .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Headers", "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization"));
+
     }
 
     @Bean
@@ -82,12 +91,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 Map<String ,Object> defaultMap = super.getErrorAttributes(webRequest, options);
 
                 Map<String ,Object> errorAttributes = new LinkedHashMap<>();
-                Map<String ,Object> errorAttributesInner = new LinkedHashMap<>();
 
-                errorAttributes.put(KEY_ERROR, errorAttributesInner);
-                errorAttributesInner.put(KEY_MESSAGE, defaultMap.get(KEY_MESSAGE));
-                errorAttributesInner.put(KEY_CODE, defaultMap.get(KEY_STATUS));
-                errorAttributesInner.put(KEY_DESCRIPTION, defaultMap.get(KEY_ERROR));
+                errorAttributes.put("data", "");
+                errorAttributes.put(KEY_MESSAGE, defaultMap.get(KEY_MESSAGE));
+                errorAttributes.put("success", false);
+                errorAttributes.put(KEY_CODE, defaultMap.get(KEY_STATUS));
 
                 return errorAttributes;
             }

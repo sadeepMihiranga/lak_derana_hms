@@ -25,4 +25,14 @@ public class SuccessResponse {
         this.message = message;
         this.success = true;
     }
+
+    @Override
+    public String toString() {
+        return "{" +
+                "data=" + data +
+                ", message='" + message + '\'' +
+                ", success=" + success +
+                ", code=" + code +
+                '}';
+    }
 }

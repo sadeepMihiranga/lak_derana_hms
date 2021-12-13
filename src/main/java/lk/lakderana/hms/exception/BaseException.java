@@ -1,18 +1,15 @@
 package lk.lakderana.hms.exception;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lk.lakderana.hms.response.SuccessResponse;
 import org.springframework.http.HttpStatus;
 
 import java.util.Objects;
 
 /**
  * Base class for Exceptions
- *
- * @author BuddhimaN
- * @since 11/19
  */
-public class BaseException extends RuntimeException{
-
+public class BaseException extends RuntimeException {
 
     private String message;
     private Integer code;
@@ -81,12 +78,7 @@ public class BaseException extends RuntimeException{
 
     @Override
     public String toString() {
-        return "{" +
-                    "\"error\":{" +
-                        "\"message\":\"" + message  +"\""+
-                        ",\"code\":" + code +
-                        ",\"description\":\"" + description + "\""+
-                    "}" +
-                "}";
+        SuccessResponse response = new SuccessResponse("", message, false, code);
+        return response.toString();
     }
 }

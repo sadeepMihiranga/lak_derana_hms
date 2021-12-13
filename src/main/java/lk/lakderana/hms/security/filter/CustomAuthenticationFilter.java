@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -89,7 +90,14 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         tokens.put("refresh_token", refresh_token);
         tokens.put("token_type", TOKEN_PREFIX_BEARER.trim());
 
+        Map<String ,Object> errorAttributes = new LinkedHashMap<>();
+
+        errorAttributes.put("data", tokens);
+        errorAttributes.put("message", "Token generated successfully");
+        errorAttributes.put("success", true);
+        errorAttributes.put("code", 200);
+
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
+        new ObjectMapper().writeValue(response.getOutputStream(), errorAttributes);
     }
 }
