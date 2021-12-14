@@ -18,6 +18,11 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static lk.lakderana.hms.util.ResponseMessageKeys.*;
+import static lk.lakderana.hms.util.ResponseMessageKeys.KEY_CODE;
 
 /**
  * Class to generate corresponding HTTP responses based on exception.
@@ -27,36 +32,44 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
 
     private Logger logger = LoggerFactory.getLogger(RestResponseEntityExceptionHandler.class);
 
-    ObjectMapper mapper=new ObjectMapper();
+    ObjectMapper mapper = new ObjectMapper();
     HttpHeaders httpHeaders =  new HttpHeaders();
     {
         httpHeaders.set("Content-Type","application/json");
     }
 
-    private ResponseEntity handleException(BaseException ex) throws IOException {
-        return handleExceptionInternal(ex,mapper.readTree(ex.toString()).toString(),httpHeaders, ex.getStatus(),null);
+    private ResponseEntity handleException(BaseException ex, HttpStatus httpStatus) throws IOException {
+        //return handleExceptionInternal(ex, mapper.readTree(ex.toString()).toString(), httpHeaders, ex.getStatus(),null);
+        Map<String ,Object> errorAttributes = new LinkedHashMap<>();
+
+        errorAttributes.put(KEY_DATA, null);
+        errorAttributes.put(KEY_MESSAGE, ex.getDescription());
+        errorAttributes.put(KEY_SUCCESS, false);
+        errorAttributes.put(KEY_CODE, ex.getCode());
+
+        return new ResponseEntity<Object>(errorAttributes, httpStatus);
     }
     
     @ExceptionHandler(InvalidDataException.class)
     public final ResponseEntity handleInvalidDataException(InvalidDataException ex) throws IOException {
-        return handleException(ex);
+        return handleException(ex, HttpStatus.BAD_REQUEST);
     }
     
     @ExceptionHandler(DataNotFoundException.class)
     public final ResponseEntity handleDataNotFoundException(DataNotFoundException ex) throws IOException {
-        return handleException(ex);
+        return handleException(ex, HttpStatus.NOT_FOUND);
     }
     
     @ExceptionHandler(OperationException.class)
     public final ResponseEntity handleOperationException(OperationException ex) throws IOException {
-        return handleException(ex);
+        return handleException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @Override
     protected ResponseEntity handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
         DataNotFoundException notFoundException = new DataNotFoundException(ex.getMessage());
         try {
-            return handleException(notFoundException);
+            return handleException(notFoundException, HttpStatus.NOT_FOUND);
         } catch (IOException e) {
             logger.debug("Auth -> handleMissingServletRequestParameter -> RestResponseEntityExceptionHandler : " + e.getMessage());
         }

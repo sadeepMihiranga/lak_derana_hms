@@ -1,0 +1,27 @@
+package lk.lakderana.hms.controller;
+
+import lk.lakderana.hms.response.SuccessResponse;
+import lk.lakderana.hms.response.SuccessResponseHandler;
+import lk.lakderana.hms.service.PartyService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@CrossOrigin
+@RestController
+@RequestMapping("/api/parties")
+public class PartyController {
+
+    private final PartyService partyService;
+
+    public PartyController(PartyService partyService) {
+        this.partyService = partyService;
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<SuccessResponse> getCustomersByNamePaginated(@RequestParam(name = "name", required = false) String name,
+                                                                       @RequestParam(name = "partyType", required = false) String partyType,
+                                                                       @RequestParam(name = "page", required = true) Integer page,
+                                                                       @RequestParam(name = "size", required = true) Integer size) {
+        return SuccessResponseHandler.generateResponse(partyService.partyPaginatedSearch(name, partyType, page, size));
+    }
+}

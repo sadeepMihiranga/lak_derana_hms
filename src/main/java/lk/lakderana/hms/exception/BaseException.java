@@ -78,7 +78,7 @@ public class BaseException extends RuntimeException {
 
     @Override
     public String toString() {
-        SuccessResponse response = new SuccessResponse("", message, false, code);
+        SuccessResponse response = new SuccessResponse("", description, false, code);
         return response.toString();
     }
 }

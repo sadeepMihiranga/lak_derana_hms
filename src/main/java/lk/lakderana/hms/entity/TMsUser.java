@@ -10,13 +10,17 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="\"T_MS_USER\"")
+@Table(name="T_MS_USER")
 public class TMsUser {
 
-    @javax.persistence.Id
+    @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column(name = "USER_ID")
     private Long userId;
+
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USER_PARTY_ID", nullable = false)
+    private TMsParty party;
 
     @Column(name = "USER_FULL_NAME")
     private String userFullName;

@@ -1,15 +1,40 @@
 package lk.lakderana.hms.util;
 
-public class Constants {
+public enum Constants {
 
-    private static final String DEFAULT_KEY_PATH = "path";
-    public static final String KEY_STATUS = "status";
-    public static final String KEY_CODE = "code";
-    public static final String KEY_DESCRIPTION = "description";
-    public static final String KEY_ERROR = "error";
-    public static final String KEY_MESSAGE = "message";
-    public static final String KEY_TIMESTAMP = "timestamp";
-    public static final String KEY_ERRORS = "errors";
-    public static final String KEY_SUCCESS = "success";
-    public static final String KEY_DATA = "data";
+    /** status */
+    STATUS_ACTIVE((short) 1),
+    STATUS_INACTIVE((short) 0),
+
+    /** party types */
+    PARTY_TYPE_CUSTOMER(""),
+    PARTY_TYPE_EMPLOYEE("");
+
+    private String value;
+    private short shortValue;
+    private int intValue;
+
+    Constants(String value) {
+        this.value = value;
+    }
+
+    Constants(short shortValue) {
+        this.shortValue = shortValue;
+    }
+
+    Constants(int intValue) {
+        this.intValue = intValue;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public short getShortValue() {
+        return shortValue;
+    }
+
+    public int getIntValue() {
+        return intValue;
+    }
 }
