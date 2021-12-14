@@ -8,6 +8,7 @@ import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
 import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -80,7 +81,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 errorAttributes.put(KEY_DATA, null);
                 errorAttributes.put(KEY_MESSAGE, defaultMap.get(KEY_MESSAGE));
                 errorAttributes.put(KEY_SUCCESS, false);
-                errorAttributes.put(KEY_CODE, defaultMap.get(KEY_STATUS));
+                //errorAttributes.put(KEY_CODE, defaultMap.get(KEY_STATUS));
+                errorAttributes.put(KEY_CODE, HttpStatus.OK.value());
 
                 return errorAttributes;
             }
