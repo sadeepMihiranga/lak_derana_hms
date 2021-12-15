@@ -1,24 +1,23 @@
 package lk.lakderana.hms.util;
 
-public enum Constants {
+public enum CommonReferenceTypeCodes {
 
-    /** status */
-    STATUS_ACTIVE((short) 1),
-    STATUS_INACTIVE((short) 0);
+    PARTY_TYPES("PTYPE"),
+    PARTY_CONTACT_TYPES("CONTC");
 
     private String value;
     private short shortValue;
     private int intValue;
 
-    Constants(String value) {
+    CommonReferenceTypeCodes(String value) {
         this.value = value;
     }
 
-    Constants(short shortValue) {
+    CommonReferenceTypeCodes(short shortValue) {
         this.shortValue = shortValue;
     }
 
-    Constants(int intValue) {
+    CommonReferenceTypeCodes(int intValue) {
         this.intValue = intValue;
     }
 

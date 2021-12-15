@@ -16,8 +16,8 @@ public interface PartyMapper {
     @Mappings({
             @Mapping(source = "prtyId", target = "partyId"),
             @Mapping(source = "prtyName", target = "name"),
-            //@Mapping(source = "prtyFirstName", target = "firstName"),
-            //@Mapping(source = "prtyLastName", target = "lastName"),
+            @Mapping(source = "prtyFirstName", target = "firstName"),
+            @Mapping(source = "prtyLastName", target = "lastName"),
             @Mapping(source = "prtyDob", target = "dob"),
             @Mapping(source = "prtyAddress1", target = "address1"),
             @Mapping(source = "prtyAddress2", target = "address2"),

@@ -13,6 +13,7 @@ public interface PartyRepository extends JpaRepository<TMsParty, Long> {
             "WHERE t.prtyStatus = :prtyStatus " +
             "AND (:prtyType IS NULL OR (:prtyType IS NOT NULL AND t.prtyType = :prtyType)) " +
             "AND UPPER(t.prtyName) LIKE CONCAT('%', UPPER(:prtyName), '%') " +
+            //"AND (CONCAT(UPPER(t.prtyFirstName), ' ', UPPER(t.prtyFirstName)) LIKE CONCAT('%', UPPER(:prtyFirstName), '%'))" +
             "ORDER BY t.prtyName")
     Page<TMsParty> getActiveParties(@Param("prtyName") String name,
                                     @Param("prtyStatus") Short status,

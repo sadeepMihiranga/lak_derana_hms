@@ -22,11 +22,11 @@ public class TMsParty {
     @Column(name = "PRTY_NAME")
     private String prtyName;
 
-    /*@Column(name = "PRTY_FIRST_NAME")
+    @Column(name = "PRTY_FIRST_NAME")
     private String prtyFirstName;
 
     @Column(name = "PRTY_LAST_NAME")
-    private String prtyLastName;*/
+    private String prtyLastName;
 
     @Column(name = "PRTY_DOB")
     private Date prtyDob;

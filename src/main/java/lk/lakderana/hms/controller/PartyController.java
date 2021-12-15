@@ -1,10 +1,13 @@
 package lk.lakderana.hms.controller;
 
+import lk.lakderana.hms.dto.PartyDTO;
 import lk.lakderana.hms.response.SuccessResponse;
 import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.service.PartyService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @CrossOrigin
 @RestController
@@ -23,5 +26,10 @@ public class PartyController {
                                                                        @RequestParam(name = "page", required = true) Integer page,
                                                                        @RequestParam(name = "size", required = true) Integer size) {
         return SuccessResponseHandler.generateResponse(partyService.partyPaginatedSearch(name, partyType, page, size));
+    }
+
+    @PostMapping
+    public ResponseEntity<SuccessResponse> insertParty(@RequestBody PartyDTO partyDTO) throws IOException {
+        return SuccessResponseHandler.generateResponse(partyService.createParty(partyDTO));
     }
 }

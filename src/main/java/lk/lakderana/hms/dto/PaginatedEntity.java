@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PaginatedEntity {
 
-    private List<Object> entities;
+    private List<? extends Paginated> entities;
     private Integer totalNoOfPages;
     private Long totalNoOfRecords;
 }

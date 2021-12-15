@@ -1,24 +1,28 @@
 package lk.lakderana.hms.util;
 
-public enum Constants {
+public enum CommonReferenceCodes {
 
-    /** status */
-    STATUS_ACTIVE((short) 1),
-    STATUS_INACTIVE((short) 0);
+    /** party types */
+    PARTY_TYPE_CUSTOMER("CUSTM"),
+    PARTY_TYPE_EMPLOYEE("EMPLY"),
+
+    /** party contact types */
+    PARTY_CONTACT_TYPE_MOBILE("CNMBL"),
+    PARTY_CONTACT_EMAIL("CNEML");
 
     private String value;
     private short shortValue;
     private int intValue;
 
-    Constants(String value) {
+    CommonReferenceCodes(String value) {
         this.value = value;
     }
 
-    Constants(short shortValue) {
+    CommonReferenceCodes(short shortValue) {
         this.shortValue = shortValue;
     }
 
-    Constants(int intValue) {
+    CommonReferenceCodes(int intValue) {
         this.intValue = intValue;
     }
 
