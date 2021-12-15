@@ -1,10 +1,12 @@
 package lk.lakderana.hms.service.impl;
 
 import lk.lakderana.hms.dto.PaginatedEntity;
+import lk.lakderana.hms.dto.PartyContactDTO;
 import lk.lakderana.hms.dto.PartyDTO;
 import lk.lakderana.hms.entity.TMsDepartment;
 import lk.lakderana.hms.entity.TMsParty;
 import lk.lakderana.hms.entity.TRfBranch;
+import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.PartyMapper;
@@ -16,6 +18,7 @@ import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.PartyService;
 import lk.lakderana.hms.util.CommonReferenceTypeCodes;
 import lk.lakderana.hms.util.Constants;
+import lk.lakderana.hms.util.DateConversion;
 import lk.lakderana.hms.util.EntityValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
@@ -26,6 +29,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Slf4j
@@ -97,7 +101,21 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
     @Override
     public PartyDTO getPartyByPartyId(Long partyId) {
-        return null;
+
+        if (partyId == null)
+            throw new InvalidDataException("Party Id is required");
+
+        final TMsParty tMsParty = partyRepository.findByPrtyIdAndPrtyStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Party not found for the Id : " + partyId);
+
+        PartyDTO partyDTO = PartyMapper.INSTANCE.entityToDTO(tMsParty);
+
+        final List<PartyContactDTO> contactDTOList = partyContactService.getContactsByPartyId(partyDTO.getPartyId(), true);
+        partyDTO.setContactList(contactDTOList);
+
+        return partyDTO;
     }
 
     @Transactional

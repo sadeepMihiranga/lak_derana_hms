@@ -15,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Slf4j
 @Service
 public class PartyContactServiceImpl extends EntityValidator implements PartyContactService {
@@ -34,8 +37,11 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         if(Strings.isNullOrEmpty(partyContactDTO.getContactNumber()))
             throw new NoRequiredInfoException("Contact Number is required");
 
-        final TMsParty tMsParty = partyRepository.findById(partyContactDTO.getPartyId())
-                .orElseThrow(() -> new DataNotFoundException("Party not found Id : " + partyContactDTO.getPartyId()));
+        final TMsParty tMsParty = partyRepository
+                .findByPrtyIdAndPrtyStatus(partyContactDTO.getPartyId(), Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Party not found for the ID : " + partyContactDTO.getPartyId());
 
         final TMsPartyContact tMsPartyContact = PartyContactMapper.INSTANCE.dtoToEntity(partyContactDTO);
 
@@ -53,7 +59,27 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
     }
 
     @Override
-    public PartyContactDTO getContactByPartyId(Long partyId) {
-        return null;
+    public List<PartyContactDTO> getContactsByPartyId(Long partyId, Boolean isPartyValidated) {
+
+        if(!isPartyValidated) {
+            if(partyId == null)
+                throw new NoRequiredInfoException("Party Id is required");
+
+            final TMsParty tMsParty = partyRepository.findByPrtyIdAndPrtyStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+
+            if(tMsParty == null)
+                throw new DataNotFoundException("Party not found for the Id : " + partyId);
+        }
+
+        final List<TMsPartyContact> tMsPartyContactList = partyContactRepository
+                .findAllByParty_PrtyIdAndPtcnStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+
+        List<PartyContactDTO> contactDTOList = new ArrayList<>();
+
+        tMsPartyContactList.forEach(tMsPartyContact -> {
+            contactDTOList.add(PartyContactMapper.INSTANCE.entityToDTO(tMsPartyContact));
+        });
+
+        return contactDTOList;
     }
 }

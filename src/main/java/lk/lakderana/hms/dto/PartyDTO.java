@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -19,8 +20,8 @@ public class PartyDTO implements Paginated {
     private String firstName;
     private String lastName;
     @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private Date dob;
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    private LocalDate dob;
     private String address1;
     private String address2;
     private String address3;

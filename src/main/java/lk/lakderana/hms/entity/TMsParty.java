@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.Date;
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -29,7 +29,7 @@ public class TMsParty {
     private String prtyLastName;
 
     @Column(name = "PRTY_DOB")
-    private Date prtyDob;
+    private LocalDate prtyDob;
 
     @Column(name = "PRTY_ADDRESS_1")
     private String prtyAddress1;

@@ -19,4 +19,6 @@ public interface PartyRepository extends JpaRepository<TMsParty, Long> {
                                     @Param("prtyStatus") Short status,
                                     @Param("prtyType") String partyType,
                                     Pageable pageable);
+
+    TMsParty findByPrtyIdAndPrtyStatus(Long PrtyId, Short PrtyStatus);
 }
