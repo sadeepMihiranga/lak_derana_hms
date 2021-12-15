@@ -7,10 +7,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class BranchDTO {
+public class DropDownDTO {
 
-    private Integer branchId;
-    private String mame;
-    private String description;
+    private String key;
+    private String value;
     private Short status;
 }

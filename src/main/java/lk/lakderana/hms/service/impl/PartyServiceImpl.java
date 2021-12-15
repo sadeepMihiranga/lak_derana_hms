@@ -18,7 +18,6 @@ import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.PartyService;
 import lk.lakderana.hms.util.CommonReferenceTypeCodes;
 import lk.lakderana.hms.util.Constants;
-import lk.lakderana.hms.util.DateConversion;
 import lk.lakderana.hms.util.EntityValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
@@ -29,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Slf4j
