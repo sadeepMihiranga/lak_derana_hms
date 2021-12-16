@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -16,6 +16,7 @@ import java.util.List;
 public class PartyDTO implements Paginated {
 
     private Long partyId;
+    private String partyCode;
     private String name;
     private String firstName;
     private String lastName;
@@ -33,5 +34,9 @@ public class PartyDTO implements Paginated {
     private Long branchId;
     private Long managedBy;
     private Short status;
+    private LocalDateTime createdDate;
+    private String createdUserCode;
+    private LocalDateTime lastUpdatedDate;
+    private String lastUpdatedUserCode;
     private List<PartyContactDTO> contactList;
 }

@@ -1,4 +1,4 @@
-package lk.lakderana.hms.util;
+package lk.lakderana.hms.config;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;

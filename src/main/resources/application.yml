@@ -34,7 +34,7 @@ spring:
       ddl-auto: none
     properties:
       hibernate:
-        physical_naming_strategy: lk.lakderana.hms.util.PhysicalNamingStrategyImpl
+        physical_naming_strategy: lk.lakderana.hms.config.PhysicalNamingStrategyImpl
         default_schema: "LAKDERANA_BASE"
         temp:
           use_jdbc_metadata_defaults: false

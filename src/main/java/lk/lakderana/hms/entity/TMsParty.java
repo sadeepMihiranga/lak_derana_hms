@@ -12,7 +12,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="T_MS_PARTY")
-public class TMsParty {
+public class TMsParty extends AuditModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -21,6 +21,9 @@ public class TMsParty {
 
     @Column(name = "PRTY_NAME")
     private String prtyName;
+
+    @Column(name = "PRTY_CODE")
+    private String prtyCode;
 
     @Column(name = "PRTY_FIRST_NAME")
     private String prtyFirstName;
@@ -53,11 +56,11 @@ public class TMsParty {
     private String prtyType;
 
     @JoinColumn(name = "PRTY_DEPARTMENT_CODE")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TMsDepartment department;
 
     @JoinColumn(name = "PRTY_BRANCH_ID")
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TRfBranch branch;
 
     @Column(name = "PRTY_MANAGED_BY")

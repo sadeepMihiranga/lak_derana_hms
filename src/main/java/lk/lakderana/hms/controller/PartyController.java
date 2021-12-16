@@ -37,4 +37,10 @@ public class PartyController {
     public ResponseEntity<SuccessResponse> getPartyByPartyId(@PathVariable("partyId") Long partyId) throws IOException {
         return SuccessResponseHandler.generateResponse(partyService.getPartyByPartyId(partyId));
     }
+
+    @PutMapping("/{partyId}")
+    public ResponseEntity<SuccessResponse> updateParty(@PathVariable("partyId") Long partyId,
+                                                       @RequestBody PartyDTO partyDTO) throws IOException {
+        return SuccessResponseHandler.generateResponse(partyService.updateParty(partyId, partyDTO));
+    }
 }

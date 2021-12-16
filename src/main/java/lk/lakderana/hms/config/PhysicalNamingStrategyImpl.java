@@ -1,4 +1,4 @@
-package lk.lakderana.hms.util;
+package lk.lakderana.hms.config;
 
 import org.hibernate.boot.model.naming.Identifier;
 import org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl;

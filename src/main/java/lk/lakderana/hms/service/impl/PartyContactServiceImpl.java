@@ -10,7 +10,7 @@ import lk.lakderana.hms.repository.PartyContactRepository;
 import lk.lakderana.hms.repository.PartyRepository;
 import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.util.Constants;
-import lk.lakderana.hms.util.EntityValidator;
+import lk.lakderana.hms.config.EntityValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.stereotype.Service;

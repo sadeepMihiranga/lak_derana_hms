@@ -1,4 +1,4 @@
-package lk.lakderana.hms.util;
+package lk.lakderana.hms.config;
 
 import lk.lakderana.hms.exception.DataNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,7 @@ public class EntityValidator {
     @Autowired
     LocalValidatorFactoryBean localValidatorFactoryBean;
 
-    protected void validateDTO(Object dto) {
+    protected void validateEntity(Object dto) {
         Set<ConstraintViolation<Object>> violations = localValidatorFactoryBean.validate(dto);
         if (violations.stream().findFirst().isPresent()) {
             throw new DataNotFoundException(violations.stream().findFirst().get().getMessage());

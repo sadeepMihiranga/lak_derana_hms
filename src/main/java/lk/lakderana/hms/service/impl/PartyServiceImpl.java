@@ -12,13 +12,14 @@ import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.PartyMapper;
 import lk.lakderana.hms.repository.BranchRepository;
 import lk.lakderana.hms.repository.DepartmentRepository;
+import lk.lakderana.hms.repository.NumberGeneratorRepository;
 import lk.lakderana.hms.repository.PartyRepository;
 import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.PartyService;
 import lk.lakderana.hms.util.CommonReferenceTypeCodes;
 import lk.lakderana.hms.util.Constants;
-import lk.lakderana.hms.util.EntityValidator;
+import lk.lakderana.hms.config.EntityValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.data.domain.Page;
@@ -40,46 +41,36 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
     private final PartyRepository partyRepository;
     private final DepartmentRepository departmentRepository;
     private final BranchRepository branchRepository;
+    private final NumberGeneratorRepository numberGeneratorRepository;
 
     public PartyServiceImpl(PartyRepository partyRepository,
                             CommonReferenceService commonReferenceService,
                             PartyContactService partyContactService, DepartmentRepository departmentRepository,
-                            BranchRepository branchRepository) {
+                            BranchRepository branchRepository,
+                            NumberGeneratorRepository numberGeneratorRepository) {
         this.partyRepository = partyRepository;
         this.commonReferenceService = commonReferenceService;
         this.partyContactService = partyContactService;
         this.departmentRepository = departmentRepository;
         this.branchRepository = branchRepository;
+        this.numberGeneratorRepository = numberGeneratorRepository;
     }
 
     @Transactional
     @Override
     public PartyDTO createParty(PartyDTO partyDTO) {
 
-        validateDTO(partyDTO);
-
-        commonReferenceService
-                .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.PARTY_TYPES.getValue(), partyDTO.getType());
+        validateEntity(partyDTO);
 
         final TMsParty tMsParty = PartyMapper.INSTANCE.dtoToEntity(partyDTO);
 
-        tMsParty.setDepartment(null);
-        if(!Strings.isNullOrEmpty(partyDTO.getDepartmentCode())) {
-            final TMsDepartment tMsDepartment = departmentRepository
-                    .findByDpmtCodeAndDpmtStatus(partyDTO.getDepartmentCode(), Constants.STATUS_ACTIVE.getShortValue());
+        populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
 
-            tMsParty.setDepartment(tMsDepartment);
-        }
-
-        tMsParty.setBranch(null);
-        if(partyDTO.getBranchId() != null) {
-            final TRfBranch tRfBranch = branchRepository
-                    .findByBrnhIdAndBrnhStatus(partyDTO.getBranchId(), Constants.STATUS_ACTIVE.getShortValue());
-
-            tMsParty.setBranch(tRfBranch);
-        }
+        final String partyNumber = numberGeneratorRepository.generateNumber("CU", "Y", "#", "#",
+                "#", "#", "#", "#");
 
         tMsParty.setPrtyStatus(Constants.STATUS_ACTIVE.getShortValue());
+        tMsParty.setPrtyCode(partyNumber);
 
         final TMsParty createdParty = persistEntity(tMsParty);
 
@@ -119,7 +110,54 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
     @Transactional
     @Override
     public PartyDTO updateParty(Long partyId, PartyDTO partyDTO) {
-        return null;
+
+        validateEntity(partyDTO);
+
+        if (partyId == null)
+            throw new InvalidDataException("Party Id is required");
+
+        final TMsParty tMsParty = partyRepository.findByPrtyIdAndPrtyStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Party not found for the Id : " + partyId);
+
+        populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
+
+        tMsParty.setPrtyAddress1(partyDTO.getAddress1());
+        tMsParty.setPrtyAddress2(partyDTO.getAddress2());
+        tMsParty.setPrtyAddress3(partyDTO.getAddress3());
+        tMsParty.setPrtyDob(partyDTO.getDob());
+        tMsParty.setPrtyFirstName(partyDTO.getFirstName());
+        tMsParty.setPrtyLastName(partyDTO.getLastName());
+        tMsParty.setPrtyName(partyDTO.getName());
+        tMsParty.setPrtyNic(partyDTO.getNic());
+        tMsParty.setPrtyPassport(partyDTO.getPassport());
+
+        tMsParty.setPrtyStatus(Constants.STATUS_ACTIVE.getShortValue());
+
+        return PartyMapper.INSTANCE.entityToDTO(persistEntity(tMsParty));
+    }
+
+    private void populateAndValidatePartyReferenceDetails(TMsParty tMsParty, PartyDTO partyDTO) {
+
+        commonReferenceService
+                .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.PARTY_TYPES.getValue(), partyDTO.getType());
+
+        tMsParty.setDepartment(null);
+        if(!Strings.isNullOrEmpty(partyDTO.getDepartmentCode())) {
+            final TMsDepartment tMsDepartment = departmentRepository
+                    .findByDpmtCodeAndDpmtStatus(partyDTO.getDepartmentCode(), Constants.STATUS_ACTIVE.getShortValue());
+
+            tMsParty.setDepartment(tMsDepartment);
+        }
+
+        tMsParty.setBranch(null);
+        if(partyDTO.getBranchId() != null) {
+            final TRfBranch tRfBranch = branchRepository
+                    .findByBrnhIdAndBrnhStatus(partyDTO.getBranchId(), Constants.STATUS_ACTIVE.getShortValue());
+
+            tMsParty.setBranch(tRfBranch);
+        }
     }
 
     @Transactional
@@ -164,7 +202,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
     private TMsParty persistEntity(TMsParty tMsParty) {
         try {
-            validateDTO(tMsParty);
+            validateEntity(tMsParty);
             return partyRepository.save(tMsParty);
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new TransactionConflictException("Transaction Updated by Another User.");

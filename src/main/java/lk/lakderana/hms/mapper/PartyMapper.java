@@ -15,6 +15,7 @@ public interface PartyMapper {
 
     @Mappings({
             @Mapping(source = "prtyId", target = "partyId"),
+            @Mapping(source = "prtyCode", target = "partyCode"),
             @Mapping(source = "prtyName", target = "name"),
             @Mapping(source = "prtyFirstName", target = "firstName"),
             @Mapping(source = "prtyLastName", target = "lastName"),
@@ -29,7 +30,11 @@ public interface PartyMapper {
             @Mapping(source = "department.dpmtCode", target = "departmentCode"),
             @Mapping(source = "branch.brnhId", target = "branchId"),
             @Mapping(source = "prtyManagedBy", target = "managedBy"),
-            @Mapping(source = "prtyStatus", target = "status")
+            @Mapping(source = "prtyStatus", target = "status"),
+            @Mapping(source = "createdDate", target = "createdDate"),
+            @Mapping(source = "lastModDate", target = "lastUpdatedDate"),
+            @Mapping(source = "createdUserCode", target = "createdUserCode"),
+            @Mapping(source = "lastModUserCode", target = "lastUpdatedUserCode")
     })
     PartyDTO entityToDTO(TMsParty entity);
 
