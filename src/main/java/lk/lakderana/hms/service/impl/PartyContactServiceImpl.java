@@ -38,10 +38,10 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
             throw new NoRequiredInfoException("Contact Number is required");
 
         final TMsParty tMsParty = partyRepository
-                .findByPrtyIdAndPrtyStatus(partyContactDTO.getPartyId(), Constants.STATUS_ACTIVE.getShortValue());
+                .findByPrtyCodeAndPrtyStatus(partyContactDTO.getPartyCode(), Constants.STATUS_ACTIVE.getShortValue());
 
         if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the ID : " + partyContactDTO.getPartyId());
+            throw new DataNotFoundException("Party not found for the Code : " + partyContactDTO.getPartyCode());
 
         final TMsPartyContact tMsPartyContact = PartyContactMapper.INSTANCE.dtoToEntity(partyContactDTO);
 
@@ -54,25 +54,25 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
     }
 
     @Override
-    public PartyContactDTO updatePartyContact(PartyContactDTO partyContactDTO, Long partyId, Long contactId) {
+    public PartyContactDTO updatePartyContact(PartyContactDTO partyContactDTO, String partyCode, Long contactId) {
         return null;
     }
 
     @Override
-    public List<PartyContactDTO> getContactsByPartyId(Long partyId, Boolean isPartyValidated) {
+    public List<PartyContactDTO> getContactsByPartyCode(String partyCode, Boolean isPartyValidated) {
 
         if(!isPartyValidated) {
-            if(partyId == null)
-                throw new NoRequiredInfoException("Party Id is required");
+            if(Strings.isNullOrEmpty(partyCode))
+                throw new NoRequiredInfoException("Party Code is required");
 
-            final TMsParty tMsParty = partyRepository.findByPrtyIdAndPrtyStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+            final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
 
             if(tMsParty == null)
-                throw new DataNotFoundException("Party not found for the Id : " + partyId);
+                throw new DataNotFoundException("Party not found for the Code : " + partyCode);
         }
 
         final List<TMsPartyContact> tMsPartyContactList = partyContactRepository
-                .findAllByParty_PrtyIdAndPtcnStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+                .findAllByParty_PrtyCodeAndPtcnStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
 
         List<PartyContactDTO> contactDTOList = new ArrayList<>();
 

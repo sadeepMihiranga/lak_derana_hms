@@ -33,14 +33,14 @@ public class PartyController {
         return SuccessResponseHandler.generateResponse(partyService.createParty(partyDTO));
     }
 
-    @GetMapping("/{partyId}")
-    public ResponseEntity<SuccessResponse> getPartyByPartyId(@PathVariable("partyId") Long partyId) throws IOException {
-        return SuccessResponseHandler.generateResponse(partyService.getPartyByPartyId(partyId));
+    @GetMapping("/{partyCode}")
+    public ResponseEntity<SuccessResponse> getPartyByPartyId(@PathVariable("partyCode") String partyCode) throws IOException {
+        return SuccessResponseHandler.generateResponse(partyService.getPartyByPartyCode(partyCode));
     }
 
-    @PutMapping("/{partyId}")
-    public ResponseEntity<SuccessResponse> updateParty(@PathVariable("partyId") Long partyId,
+    @PutMapping("/{partyCode}")
+    public ResponseEntity<SuccessResponse> updateParty(@PathVariable("partyCode") String partyCode,
                                                        @RequestBody PartyDTO partyDTO) throws IOException {
-        return SuccessResponseHandler.generateResponse(partyService.updateParty(partyId, partyDTO));
+        return SuccessResponseHandler.generateResponse(partyService.updateParty(partyCode, partyDTO));
     }
 }

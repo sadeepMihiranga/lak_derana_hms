@@ -15,7 +15,7 @@ public interface PartyContactMapper {
 
     @Mappings({
             @Mapping(source = "ptcnId", target = "contactId"),
-            @Mapping(source = "party.prtyId", target = "partyId"),
+            @Mapping(source = "party.prtyCode", target = "partyCode"),
             @Mapping(source = "ptcnContactType", target = "contactType"),
             @Mapping(source = "ptcnContactNumber", target = "contactNumber"),
             @Mapping(source = "ptcnStatus", target = "status")

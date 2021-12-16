@@ -15,7 +15,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PartyDTO implements Paginated {
 
-    private Long partyId;
     private String partyCode;
     private String name;
     private String firstName;

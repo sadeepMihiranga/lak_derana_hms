@@ -13,7 +13,9 @@ import java.util.List;
 public class UserDTO {
 
     private Long id;
-    private String name;
+    @NotBlank(message = "Party Code is required")
+    private String partyCode;
+    private String displayName;
     @NotBlank(message = "Username is required")
     private String username;
     @NotBlank(message = "Password is required")

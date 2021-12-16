@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface PartyContactRepository extends JpaRepository<TMsPartyContact, Long> {
 
-    List<TMsPartyContact> findAllByParty_PrtyIdAndPtcnStatus(Long prtyId, Short ptcnStatus);
+    List<TMsPartyContact> findAllByParty_PrtyCodeAndPtcnStatus(String prtyCode, Short ptcnStatus);
 }

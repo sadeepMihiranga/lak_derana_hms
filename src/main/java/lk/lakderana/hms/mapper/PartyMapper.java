@@ -14,7 +14,6 @@ public interface PartyMapper {
     PartyMapper INSTANCE = Mappers.getMapper(PartyMapper.class);
 
     @Mappings({
-            @Mapping(source = "prtyId", target = "partyId"),
             @Mapping(source = "prtyCode", target = "partyCode"),
             @Mapping(source = "prtyName", target = "name"),
             @Mapping(source = "prtyFirstName", target = "firstName"),

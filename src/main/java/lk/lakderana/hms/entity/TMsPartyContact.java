@@ -19,7 +19,7 @@ public class TMsPartyContact {
     private Long ptcnId;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="PTCN_PRTY_ID", nullable = false)
+    @JoinColumn(name="PTCN_PRTY_CODE", nullable = false)
     private TMsParty party;
 
     @Column(name = "PTCN_CONTACT_TYPE")

@@ -10,13 +10,13 @@ public interface PartyService {
     @Transactional
     PartyDTO createParty(PartyDTO partyDTO);
 
-    PartyDTO getPartyByPartyId(Long partyId);
+    PartyDTO getPartyByPartyCode(String partyCode);
 
     @Transactional
-    PartyDTO updateParty(Long partyId, PartyDTO partyDTO);
+    PartyDTO updateParty(String partyCode, PartyDTO partyDTO);
 
     @Transactional
-    Long removeParty(Long partyId);
+    Long removeParty(String partyCode);
 
     PaginatedEntity partyPaginatedSearch(String name, String partyType, Integer page, Integer size);
 }

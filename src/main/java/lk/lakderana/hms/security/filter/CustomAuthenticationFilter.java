@@ -75,6 +75,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
                 .withClaim(ROLES, user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
                 .withClaim(FUNCTIONS, user.getPermittedFunctions().stream().map(FunctionDTO::getFunctionId).collect(Collectors.toList()))
                 .withClaim(DISPLAY_NAME, user.getName())
+                .withClaim(PARTY_CODE, user.getPartyCode())
+                .withClaim(BRANCH_CODE, user.getBranchCode())
                 .withClaim(USER_ID, user.getId())
                 .sign(Algorithm.HMAC256(SECRET_KEY.getBytes()));
 

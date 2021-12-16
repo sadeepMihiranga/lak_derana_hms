@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
 
 @Entity
@@ -15,15 +16,12 @@ import java.time.LocalDate;
 public class TMsParty extends AuditModel {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "PRTY_ID")
-    private Long prtyId;
+    @NotEmpty(message = "Party Code is Required.")
+    @Column(name = "PRTY_CODE")
+    private String prtyCode;
 
     @Column(name = "PRTY_NAME")
     private String prtyName;
-
-    @Column(name = "PRTY_CODE")
-    private String prtyCode;
 
     @Column(name = "PRTY_FIRST_NAME")
     private String prtyFirstName;

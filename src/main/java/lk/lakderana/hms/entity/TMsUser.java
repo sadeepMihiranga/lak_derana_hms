@@ -18,12 +18,9 @@ public class TMsUser {
     @Column(name = "USER_ID")
     private Long userId;
 
-    @OneToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "USER_PARTY_ID", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "USER_PARTY_CODE", nullable = false)
     private TMsParty party;
-
-    @Column(name = "USER_FULL_NAME")
-    private String userFullName;
 
     @Column(name = "USER_PASSWORD")
     private String userPassword;

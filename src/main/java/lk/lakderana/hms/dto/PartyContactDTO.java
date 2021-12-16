@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
 public class PartyContactDTO {
 
     private Long contactId;
-    private Long partyId;
+    private String partyCode;
     @NotBlank(message = "Contact Type is mandatory")
     private String contactType;
     @NotBlank(message = "Contact Number is mandatory")

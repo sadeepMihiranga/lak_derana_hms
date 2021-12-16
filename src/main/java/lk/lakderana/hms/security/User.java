@@ -12,6 +12,8 @@ public class User implements UserDetails {
 
     private Long id;
     private String name;
+    private String partyCode;
+    private String branchCode;
     private String username;
     private String password;
     private Collection<SimpleGrantedAuthority> authorities;
@@ -90,5 +92,21 @@ public class User implements UserDetails {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPartyCode() {
+        return partyCode;
+    }
+
+    public void setPartyCode(String partyCode) {
+        this.partyCode = partyCode;
+    }
+
+    public String getBranchCode() {
+        return branchCode;
+    }
+
+    public void setBranchCode(String branchCode) {
+        this.branchCode = branchCode;
     }
 }

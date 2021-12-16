@@ -79,7 +79,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
                 commonReferenceService
                         .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.PARTY_CONTACT_TYPES.getValue(), partyContactDTO.getContactType());
 
-                partyContactDTO.setPartyId(createdParty.getPrtyId());
+                partyContactDTO.setPartyCode(createdParty.getPrtyCode());
 
                 partyContactService.insertPartyContact(partyContactDTO);
             });
@@ -89,19 +89,19 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
     }
 
     @Override
-    public PartyDTO getPartyByPartyId(Long partyId) {
+    public PartyDTO getPartyByPartyCode(String partyCode) {
 
-        if (partyId == null)
-            throw new InvalidDataException("Party Id is required");
+        if (Strings.isNullOrEmpty(partyCode))
+            throw new InvalidDataException("Party Code is required");
 
-        final TMsParty tMsParty = partyRepository.findByPrtyIdAndPrtyStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
 
         if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the Id : " + partyId);
+            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
 
         PartyDTO partyDTO = PartyMapper.INSTANCE.entityToDTO(tMsParty);
 
-        final List<PartyContactDTO> contactDTOList = partyContactService.getContactsByPartyId(partyDTO.getPartyId(), true);
+        final List<PartyContactDTO> contactDTOList = partyContactService.getContactsByPartyCode(partyDTO.getPartyCode(), true);
         partyDTO.setContactList(contactDTOList);
 
         return partyDTO;
@@ -109,17 +109,17 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
     @Transactional
     @Override
-    public PartyDTO updateParty(Long partyId, PartyDTO partyDTO) {
+    public PartyDTO updateParty(String partyCode, PartyDTO partyDTO) {
 
         validateEntity(partyDTO);
 
-        if (partyId == null)
-            throw new InvalidDataException("Party Id is required");
+        if (partyCode == null)
+            throw new InvalidDataException("Party Code is required");
 
-        final TMsParty tMsParty = partyRepository.findByPrtyIdAndPrtyStatus(partyId, Constants.STATUS_ACTIVE.getShortValue());
+        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
 
         if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the Id : " + partyId);
+            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
 
         populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
 
@@ -162,7 +162,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
     @Transactional
     @Override
-    public Long removeParty(Long partyId) {
+    public Long removeParty(String partyCode) {
         return null;
     }
 

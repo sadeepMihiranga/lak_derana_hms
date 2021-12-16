@@ -10,10 +10,7 @@ import lk.lakderana.hms.entity.TMsUser;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.mapper.UserMapper;
-import lk.lakderana.hms.repository.RoleFunctionRepository;
-import lk.lakderana.hms.repository.RoleRepository;
-import lk.lakderana.hms.repository.UserRepository;
-import lk.lakderana.hms.repository.UserRoleRepository;
+import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
 import lombok.extern.slf4j.Slf4j;
@@ -36,6 +33,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
     private final RoleFunctionRepository roleFunctionRepository;
+    private final PartyRepository partyRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -43,11 +41,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                            RoleRepository roleRepository,
                            UserRoleRepository userRoleRepository,
                            RoleFunctionRepository roleFunctionRepository,
+                           PartyRepository partyRepository,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.userRoleRepository = userRoleRepository;
         this.roleFunctionRepository = roleFunctionRepository;
+        this.partyRepository = partyRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -112,6 +112,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(tMsUser.getUserId());
 
         final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
+
+        userDTO.setPassword(null);
         userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
         return userDTO;
@@ -131,7 +133,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
             final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(user.getUserId());
 
             userDTO.setId(user.getUserId());
-            userDTO.setName(user.getUserFullName());
+            userDTO.setPartyCode(user.getParty().getPrtyCode());
+            userDTO.setDisplayName(user.getParty().getPrtyFirstName());
             userDTO.setUsername(user.getUserUsername());
             userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
@@ -195,7 +198,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         User user = new User();
         user.setId(userInDb.getId());
-        user.setName(userInDb.getName());
+        user.setName(userInDb.getDisplayName());
+        user.setPartyCode(userInDb.getPartyCode());
+        user.setBranchCode("");
         user.setUsername(userInDb.getUsername());
         user.setPassword(userInDb.getPassword());
         user.setAuthorities(authorities);
