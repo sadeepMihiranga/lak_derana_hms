@@ -3,16 +3,14 @@ package lk.lakderana.hms.service.impl;
 import lk.lakderana.hms.dto.FunctionDTO;
 import lk.lakderana.hms.dto.RoleDTO;
 import lk.lakderana.hms.dto.UserDTO;
-import lk.lakderana.hms.entity.TMsRole;
-import lk.lakderana.hms.entity.TMsRoleFunction;
-import lk.lakderana.hms.entity.TMsUserRole;
-import lk.lakderana.hms.entity.TMsUser;
+import lk.lakderana.hms.entity.*;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.mapper.UserMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
+import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -55,6 +53,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public UserDTO createUser(UserDTO userDTO) {
 
+        final TMsParty tMsParty = partyRepository
+                .findByPrtyCodeAndPrtyStatus(userDTO.getPartyCode(), Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Invalid Party Code " + userDTO.getPartyCode());
+
         final TMsUser userExists = userRepository.findByUserUsername(userDTO.getUsername());
 
         if(userExists != null)
@@ -62,6 +66,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         final TMsUser tMsUser = UserMapper.INSTANCE.dtoToEntity(userDTO);
         tMsUser.setUserPassword(passwordEncoder.encode(tMsUser.getUserPassword()));
+        tMsUser.setParty(tMsParty);
 
         final TMsUser createdUser = userRepository.save(tMsUser);
 
