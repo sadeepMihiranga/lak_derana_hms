@@ -1,17 +1,19 @@
 package lk.lakderana.hms.service.impl;
 
-import lk.lakderana.hms.dto.FunctionDTO;
-import lk.lakderana.hms.dto.RoleDTO;
-import lk.lakderana.hms.dto.UserDTO;
+import lk.lakderana.hms.dto.*;
 import lk.lakderana.hms.entity.*;
 import lk.lakderana.hms.exception.DataNotFoundException;
+import lk.lakderana.hms.exception.DuplicateRecordException;
 import lk.lakderana.hms.exception.InvalidDataException;
+import lk.lakderana.hms.mapper.PartyMapper;
 import lk.lakderana.hms.mapper.UserMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -70,9 +72,30 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         final TMsUser createdUser = userRepository.save(tMsUser);
 
-        final UserDTO insertedUserDTO = UserMapper.INSTANCE.entityToDTO(createdUser);
+        if(userDTO.getRoles() != null) {
+            userDTO.getRoles().forEach(roleDTO -> {
+                final TMsRole tMsRole = roleRepository
+                        .findByRoleNameAndRoleStatus(roleDTO.getName(), Constants.STATUS_ACTIVE.getShortValue());
 
-        return insertedUserDTO;
+                if(tMsRole == null)
+                    throw new InvalidDataException("Received Role " + roleDTO.getName() + " is invalid");
+
+                TMsUserRole tMsUserRole = userRoleRepository
+                        .findByUser_UserIdAndRole_RoleIdAndUsrlStatus(createdUser.getUserId(), tMsRole.getRoleId(), Constants.STATUS_ACTIVE.getShortValue());
+
+                if(tMsUserRole != null)
+                    throw new DuplicateRecordException("Requested User and Role combination is already there");
+
+                tMsUserRole = new TMsUserRole();
+                tMsUserRole.setUser(createdUser);
+                tMsUserRole.setRole(tMsRole);
+                tMsUserRole.setUsrlStatus(Constants.STATUS_ACTIVE.getShortValue());
+
+                userRoleRepository.save(tMsUserRole);
+            });
+        }
+
+        return getAUserById(createdUser.getUserId());
     }
 
     @Transactional
@@ -85,7 +108,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     @Override
     public void addRoleToUser(String username, String roleName) {
         final TMsUser tMsUser = userRepository.findByUserUsername(username);
-        final TMsRole tMsRole = roleRepository.findByRoleName(roleName);
+        final TMsRole tMsRole = roleRepository.findByRoleNameAndRoleStatus(roleName, Constants.STATUS_ACTIVE.getShortValue());
 
         TMsUserRole tRfUserRole = new TMsUserRole();
         tRfUserRole.setRole(tMsRole);
@@ -102,7 +125,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(tMsUser == null)
             throw new DataNotFoundException("User " + username + " not found");
 
-        final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(tMsUser.getUserId());
+        final List<TMsUserRole> tRfUserRoleList = userRoleRepository
+                .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), Constants.STATUS_ACTIVE.getShortValue());
 
         final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
         userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
@@ -114,7 +138,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public UserDTO getAUserById(Long userId) {
         final TMsUser tMsUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
 
-        final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(tMsUser.getUserId());
+        final List<TMsUserRole> tRfUserRoleList = userRoleRepository
+                .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), Constants.STATUS_ACTIVE.getShortValue());
 
         final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
 
@@ -135,7 +160,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
             UserDTO userDTO = new UserDTO();
 
-            final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(user.getUserId());
+            final List<TMsUserRole> tRfUserRoleList = userRoleRepository
+                    .findAllByUser_UserIdAndUsrlStatus(user.getUserId(), Constants.STATUS_ACTIVE.getShortValue());
 
             userDTO.setId(user.getUserId());
             userDTO.setPartyCode(user.getParty().getPrtyCode());
@@ -147,6 +173,49 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         });
 
         return userDTOList;
+    }
+
+    @Override
+    public PaginatedEntity userPaginatedSearch(String username, String partyCode, Integer page, Integer size) {
+
+        PaginatedEntity paginatedUserList = null;
+        List<UserDTO> userList = null;
+
+        if (page < 1)
+            throw new InvalidDataException("Page should be a value greater than 0");
+
+        if (size < 1)
+            throw new InvalidDataException("Limit should be a value greater than 0");
+
+        partyCode = partyCode.isEmpty() ? null : partyCode;
+
+        final Page<TMsUser> tMsUserPage = userRepository
+                .getActiveUsers(username, partyCode, Constants.STATUS_ACTIVE.getShortValue(), PageRequest.of(page - 1, size));
+
+        if (tMsUserPage.getSize() == 0)
+            return null;
+
+        paginatedUserList = new PaginatedEntity();
+        userList = new ArrayList<>();
+
+        for (TMsUser tMsUser : tMsUserPage) {
+            tMsUser.setUserPassword(null);
+            userList.add(UserMapper.INSTANCE.entityToDTO(tMsUser));
+        }
+
+        for(UserDTO userDTO : userList) {
+
+            final List<TMsUserRole> tRfUserRoleList = userRoleRepository
+                    .findAllByUser_UserIdAndUsrlStatus(userDTO.getId(), Constants.STATUS_ACTIVE.getShortValue());
+
+            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+        }
+
+        paginatedUserList.setTotalNoOfPages(tMsUserPage.getTotalPages());
+        paginatedUserList.setTotalNoOfRecords(tMsUserPage.getTotalElements());
+        paginatedUserList.setEntities(userList);
+
+        return paginatedUserList;
     }
 
     @Override
@@ -181,7 +250,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         Collection<SimpleGrantedAuthority> authorities = new ArrayList<>();
 
-        final List<TMsUserRole> tRfUserRoleList = userRoleRepository.findAllById(userInDb.getId());
+        final List<TMsUserRole> tRfUserRoleList = userRoleRepository
+                .findAllByUser_UserIdAndUsrlStatus(userInDb.getId(), Constants.STATUS_ACTIVE.getShortValue());
 
         Collection<FunctionDTO> permittedFunctions = new ArrayList<>();
 

@@ -1,5 +1,6 @@
 package lk.lakderana.hms.service;
 
+import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.dto.UserDTO;
 import lk.lakderana.hms.entity.TMsRole;
 import lk.lakderana.hms.entity.TMsRoleFunction;
@@ -20,6 +21,8 @@ public interface UserService {
     UserDTO getAUserById(Long userId);
 
     List<UserDTO> getAllUsers();
+
+    PaginatedEntity userPaginatedSearch(String username, String partyCode, Integer page, Integer size);
 
     List<TMsRoleFunction> getPermissionsByRole(Long roleId);
 

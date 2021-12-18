@@ -18,7 +18,8 @@ public interface UserMapper {
             @Mapping(source = "party.prtyName", target = "displayName"),
             @Mapping(source = "userUsername", target = "username"),
             @Mapping(source = "userPassword", target = "password"),
-            @Mapping(source = "party.prtyCode", target = "partyCode")
+            @Mapping(source = "party.prtyCode", target = "partyCode"),
+            @Mapping(source = "userStatus", target = "status")
     })
     UserDTO entityToDTO(TMsUser entity);
 

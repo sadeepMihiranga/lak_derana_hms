@@ -10,7 +10,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class UserDTO implements Paginated {
 
     private Long id;
     @NotBlank(message = "Party Code is required")
@@ -20,5 +20,6 @@ public class UserDTO {
     private String username;
     @NotBlank(message = "Password is required")
     private String password;
+    private Short status;
     private List<RoleDTO> roles;
 }

@@ -27,4 +27,7 @@ public class TMsUser {
 
     @Column(name = "USER_USERNAME")
     private String userUsername;
+
+    @Column(name = "USER_STATUS")
+    private Short userStatus;
 }

@@ -25,6 +25,14 @@ public class UserController {
         return SuccessResponseHandler.generateResponse(userService.getAllUsers());
     }
 
+    @GetMapping("/search")
+    public ResponseEntity<SuccessResponse> getPaginatedUsers(@RequestParam(name = "username", required = false) String username,
+                                                             @RequestParam(name = "partyCode", required = false) String partyCode,
+                                                             @RequestParam(name = "page", required = true) Integer page,
+                                                             @RequestParam(name = "size", required = true) Integer size) {
+        return SuccessResponseHandler.generateResponse(userService.userPaginatedSearch(username, partyCode, page, size));
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<SuccessResponse> getAUser(@PathVariable("userId") Long userId) {
         return SuccessResponseHandler.generateResponse(userService.getAUserById(userId));
