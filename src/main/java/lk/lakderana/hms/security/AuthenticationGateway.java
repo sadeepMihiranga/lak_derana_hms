@@ -17,7 +17,6 @@ import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.PartyTokenService;
 import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.Constants;
-import lk.lakderana.hms.util.ContactTypes;
 import lk.lakderana.hms.util.RequestType;
 import org.apache.commons.io.IOUtils;
 import org.slf4j.Logger;
@@ -37,6 +36,8 @@ import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+
+import static lk.lakderana.hms.util.CommonReferenceCodes.*;
 
 /**
  * Class for authentication functions
@@ -103,9 +104,11 @@ public class AuthenticationGateway {
             throw new DataNotFoundException("Username and Contact Type are Required.");
         }
 
-        if (resetPassword.getContactType().equals(ContactTypes.CEMIL.toString()))
+        PARTY_CONTACT_EMAIL.getValue();
+        
+        if (resetPassword.getContactType().equals(PARTY_CONTACT_EMAIL.getValue()))
             response = generateResetPasswordTokenEmail(resetPassword.getUsername(), templateName, emailSubject);
-        else if (resetPassword.getContactType().equals(ContactTypes.CMOBL.toString()))
+        else if (resetPassword.getContactType().equals(PARTY_CONTACT_MOBILE.getValue()))
             response = generateResetPasswordTokenMobile(resetPassword.getUsername());
         else
             throw new InvalidDataException("Invalid Contact Type");
@@ -189,21 +192,21 @@ public class AuthenticationGateway {
 
         String token = null;
         final PartyContactDTO partyContactDTO = partyContactService.getContactsByPartyCodeAndType(userDTO.getPartyCode(),
-                ContactTypes.CEMIL.toString());
+                PARTY_CONTACT_EMAIL.getValue());
         if (partyContactDTO == null) {
             response = new SuccessResponse(null, "No Email Address for the given Username", false, 1000);
             return response;
         }
 
         try {
-            token = generateAndSaveNewPasswordToken(ContactTypes.CEMIL.toString(), userDTO.getPartyCode());
+            token = generateAndSaveNewPasswordToken(PARTY_CONTACT_EMAIL.getValue(), userDTO.getPartyCode());
         } catch (Exception e) {
             logger.debug("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when generating the token string");
         }
 
         try {
-            String emailFrom = "from_mail";
+            String emailFrom = "saddeepmihiranga@gmail.com";
             emailSender.send(constructResetTokenEmail(token, userDTO.getPartyCode(), partyContactDTO.getContactNumber(),
                     templateName, emailSubject, partyUsername));
             response = new SuccessResponse(userDTO.getPartyCode(), "SUCCESS", true, 1100);
@@ -235,7 +238,7 @@ public class AuthenticationGateway {
 
         String token = null;
         final PartyContactDTO partyContactDTO = partyContactService.getContactsByPartyCodeAndType(userDTO.getPartyCode(),
-                ContactTypes.CMOBL.toString());
+                PARTY_CONTACT_EMAIL.getValue());
 
         if (partyContactDTO == null) {
             response = new SuccessResponse(null, "No Contacts for the given Username", false, 1000);
@@ -243,7 +246,7 @@ public class AuthenticationGateway {
         }
 
         try {
-            token = generateAndSaveNewPasswordToken(ContactTypes.CMOBL.toString(), userDTO.getPartyCode());
+            token = generateAndSaveNewPasswordToken(PARTY_CONTACT_MOBILE.getValue(), userDTO.getPartyCode());
         } catch (Exception e) {
             logger.debug("Auth -> generateResetPasswordTokenMobile -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when generating the PIN Number");
@@ -273,9 +276,9 @@ public class AuthenticationGateway {
 
         TMsPartyToken tCmMsPartyToken = new TMsPartyToken();
 
-        if (contactType.equals(ContactTypes.CEMIL.toString())) {
+        if (contactType.equals(PARTY_CONTACT_EMAIL.getValue())) {
             token = UUID.randomUUID().toString();
-        } else if (contactType.equals(ContactTypes.CMOBL.toString())) {
+        } else if (contactType.equals(PARTY_CONTACT_EMAIL.getValue())) {
             Random rand = new Random();
             token = String.format("%06d", 100000 + rand.nextInt(900000));
         }
@@ -352,21 +355,21 @@ public class AuthenticationGateway {
             throw new DataNotFoundException(violation.getMessage());
         });
 
-        if (updatePassword.getTokenType().equals(ContactTypes.CEMIL.toString())) {
+        if (updatePassword.getTokenType().equals(PARTY_CONTACT_EMAIL.getValue())) {
             verifyResetPasswordForTokenString(updatePassword.getUsername(), updatePassword.getToken());
-        } else if (updatePassword.getTokenType().equals(ContactTypes.CMOBL.toString())) {
+        } else if (updatePassword.getTokenType().equals(PARTY_CONTACT_MOBILE.getValue())) {
             verifyResetPasswordForPinNo(updatePassword.getUsername(), updatePassword.getToken());
         }
 
-        if (updatePassword.getTokenType().equals(ContactTypes.CEMIL.toString())) {
+        if (updatePassword.getTokenType().equals(PARTY_CONTACT_EMAIL.getValue())) {
             response = updUserPasswordByCode(updatePassword.getUsername(), updatePassword.getNewPassword());
             if (response.getSuccess().equals(true)) {
-                updatePasswordTokenStatus(ContactTypes.CEMIL.toString(), updatePassword.getUsername(), updatePassword.getToken());
+                updatePasswordTokenStatus(PARTY_CONTACT_EMAIL.getValue(), updatePassword.getUsername(), updatePassword.getToken());
             }
         } else {
             response = updUserPasswordByUsername(updatePassword.getUsername(), updatePassword.getNewPassword());
             if (response.getSuccess().equals(true)) {
-                updatePasswordTokenStatus(ContactTypes.CMOBL.toString(), updatePassword.getUsername(), updatePassword.getToken());
+                updatePasswordTokenStatus(PARTY_CONTACT_MOBILE.getValue(), updatePassword.getUsername(), updatePassword.getToken());
             }
         }
 
@@ -447,7 +450,7 @@ public class AuthenticationGateway {
      * @Return token sequence number
      */
     private String updatePasswordTokenStatus(String contactType, String partyCode, String token) {
-        if (contactType.equals(ContactTypes.CEMIL.toString())) {
+        if (contactType.equals(PARTY_CONTACT_EMAIL.getValue())) {
             TMsPartyToken partyToken = partyTokenService.findAllByPartyCodeToken(partyCode, token);
 
             partyToken.setLastModDate(new Date());
@@ -456,7 +459,7 @@ public class AuthenticationGateway {
             partyTokenService.update(partyToken);
             return partyToken.getToknSeqNo();
 
-        } else if (contactType.equals(ContactTypes.CMOBL.toString())) {
+        } else if (contactType.equals(PARTY_CONTACT_MOBILE.getValue())) {
             final TMsUser tMsUser = userRepository.findByParty_PrtyCodeAndUserStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
             TMsPartyToken partyToken = partyTokenService.findAllByPartyCodePIN(tMsUser.getParty().getPrtyCode(), token);
 

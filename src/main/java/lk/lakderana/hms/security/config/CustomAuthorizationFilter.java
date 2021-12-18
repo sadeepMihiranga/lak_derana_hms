@@ -17,8 +17,10 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+
+import static lk.lakderana.hms.util.ResponseMessageKeys.*;
 
 @Slf4j
 @Component
@@ -48,7 +50,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                                 new UsernamePasswordAuthenticationToken(userDetails, "", jwtTokenProvider.extractRoles(token));
                         authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
-                        log.info("authenticated user " + username + ", setting security context");
+                        log.info("Authenticated user " + username + ", setting security context");
                         SecurityContextHolder.getContext().setAuthentication(authentication);
                     }
                     filterChain.doFilter(request, response);
@@ -56,14 +58,18 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 } catch (Exception e) {
                     log.error("Error logging in : {} ", e.getMessage());
 
+                    Map<String ,Object> errorAttributes = new LinkedHashMap<>();
+
+                    errorAttributes.put(KEY_DATA, null);
+                    errorAttributes.put(KEY_MESSAGE, e.getMessage());
+                    errorAttributes.put(KEY_SUCCESS, false);
+                    errorAttributes.put(KEY_CODE, HttpServletResponse.SC_FORBIDDEN);
+
                     response.setHeader("Error", e.getMessage());
                     response.setStatus(HttpServletResponse.SC_FORBIDDEN);
 
-                    Map<String, String> error = new HashMap<>();
-                    error.put("error_message", e.getMessage());
-
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-                    new ObjectMapper().writeValue(response.getOutputStream(), error);
+                    new ObjectMapper().writeValue(response.getOutputStream(), errorAttributes);
                 }
             } else {
                 filterChain.doFilter(request, response);

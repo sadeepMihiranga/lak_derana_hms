@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 /**
  * Exception class for internal server errors
  */
-public class OperationException extends BaseException{
+public class OperationException extends BaseException {
 
     private static String message = "Error Processing the Operation";
     private static HttpStatus status = HttpStatus.INTERNAL_SERVER_ERROR;

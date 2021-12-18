@@ -7,7 +7,7 @@ public enum CommonReferenceCodes {
     PARTY_TYPE_EMPLOYEE("EMPLY"),
 
     /** party contact types */
-    PARTY_CONTACT_TYPE_MOBILE("CNMBL"),
+    PARTY_CONTACT_MOBILE("CNMBL"),
     PARTY_CONTACT_EMAIL("CNEML");
 
     private String value;

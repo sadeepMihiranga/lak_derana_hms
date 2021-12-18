@@ -1,0 +1,552 @@
+/*custom css file*/
+
+body {
+	font-family: 'Nunito', sans-serif;
+}
+
+h1 {
+	font-family: 'Nunito', sans-serif;
+	font-weight: 800;
+	color: #142661;
+	font-size: 32px;
+	margin-top: 0px;
+}
+
+p {
+	font-family: 'Nunito', sans-serif;
+	font-weight: 600;
+	font-size: 16px;
+	color: #566596;
+}
+
+label,
+input {
+	font-family: 'Nunito', sans-serif;
+	font-size: 16px;
+	font-weight: 600;
+}
+
+label {
+	color: #415083;
+	margin-bottom: 0px;
+}
+
+.btn {
+	font-family: 'Nunito', sans-serif;
+	font-weight: 600;
+	color: #fff;
+	font-size: 16px;
+	border-radius: 4px;
+	padding: 16px 34px;
+}
+
+.btn:hover {
+	color: #fff;
+}
+
+.btn-regular {
+	border-radius: 4px;
+	box-shadow: 0 3px 29px 0 rgba(67, 103, 243, 0.25);
+	background-image: linear-gradient(103deg, #4864eb, #374bdc);
+}
+
+.login-contain {
+	position: absolute;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	top: 0;
+	display: flex;
+}
+
+.login-contain .h-c {
+	margin-left: 0px;
+}
+
+.login-contain {
+	background: #fafbfe;
+}
+
+.login-form-contain {
+	/*padding: 86px;*/
+	min-width: 520px;
+}
+
+.h-c {
+	width: 100%
+}
+
+.f-c {
+	height: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.sign-logo {}
+
+.user-heading {
+	margin: 20px 0 18px 0;
+	padding: 0 12px;
+}
+
+.user-heading p {
+	margin-bottom: 42px;
+}
+
+.user-heading p span {
+	font-size: 36px;
+	position: relative;
+	bottom: 2px;
+	letter-spacing: 4px;
+}
+
+.im {
+	background-image: url('../images/sign-bg.png');
+	background-size: cover;
+	background-position: center;
+	background-repeat-x: no-repeat;
+}
+
+.user-form .form-group {
+	margin-bottom: 0px;
+	padding: 22px 42px;
+	position: relative;
+}
+
+.user-form .form-group input {
+	border: none;
+	box-shadow: none;
+	padding: 0px;
+	font-size: 16px;
+	color: #142661;
+	font-weight: 300;
+	height: 30px;
+}
+
+.input-set {
+	margin-left: 0px !important;
+	overflow: hidden;
+	margin-top: 12px;
+	margin-bottom: 5px;
+}
+
+.input-set input {
+	display: block;
+	/*background-color: #ccc;*/
+	font-size: 24px !important;
+	font-weight: bold !important;
+	height: 22px !important;
+	outline: none;
+}
+
+.input-set input:nth-last-child(-n+3) {
+	text-align: right;
+	padding-right: 25px;
+	left: 25px;
+}
+
+.input-set input:nth-child(-n+3) {
+	/*background: #000;*/
+	padding-left: 25px;
+	right: 25px;
+}
+
+.input-set input:nth-child(6n+4),
+.input-set input:nth-child(6n+5) {
+	border-right: 1px solid #d4dbef;
+}
+
+.input-set input:nth-child(6n+2),
+.input-set input:nth-child(6n+3) {
+	border-left: 1px solid #d4dbef;
+}
+
+.user-form {
+	background: #fff;
+	border-radius: 4px;
+	box-shadow: 0 6px 36px 0 rgba(67, 103, 243, 0.07);
+}
+
+.user-form .form-group:first-child {
+	border-bottom: 1px solid #e6ebf7;
+	border-radius: 4px 4px 0 0;
+}
+
+.user-form .form-group:last-child {
+	border-radius: 0 0 4px 4px;
+}
+
+.form-help-text {
+	position: absolute;
+	top: 23px;
+	right: 42px;
+	font-size: 14px;
+	font-weight: 600 !important;
+}
+
+.form-help-text a {
+	color: #415083 !important;
+	text-decoration: none;
+}
+
+.field-invalid {
+	border-left: 3px solid #fb2c2c;
+}
+
+.field-invalid .form-help-text {
+	color: #e80c58
+}
+
+.field-valid {
+	border-left: 3px solid #5365e8;
+}
+
+.field-valid .form-help-text {
+	color: #ccc;
+}
+
+.field-pw-strong {
+	border-left: 3px solid #0ecb6c;
+}
+
+.field-pw-strong .form-help-text {
+	color: #0ecb6c;
+}
+
+.field-help-ico {
+	float: right;
+	position: relative;
+	bottom: 26px;
+	color: #BCC4E3;
+	cursor: pointer;
+}
+
+.sign-form-options {
+	margin: 16px 0;
+	padding: 18px 14px;
+	overflow: hidden;
+}
+
+.footer-note {
+	font-size: 13px;
+	color: #566596;
+	margin-top: 64px;
+	padding: 0 14px 10px 14px;
+}
+
+.form-action {
+	margin-top: 15px;
+}
+
+.form-check label {
+	font-size: 14px;
+}
+
+.form-check label {
+	-webkit-user-select: none;
+	/* Chrome all / Safari all */
+	-moz-user-select: none;
+	/* Firefox all */
+	-ms-user-select: none;
+	/* IE 10+ */
+	user-select: none;
+	/* Likely future */
+}
+
+.pop-msg {
+	background: #ccc;
+	border-radius: 3px;
+	padding: 10px 22px;
+	margin-bottom: 18px;
+	font-weight: 600;
+}
+
+.pop-sucess {
+	border: solid 1px #b0ffd7;
+	background-color: #ebfff5;
+	color: #0ebd65;
+}
+
+.pop-btn {
+	background: none;
+	border: none;
+	float: right;
+	font-weight: 400;
+}
+
+.form-action a {
+	color: #566596;
+	font-size: 16px;
+	font-weight: 600;
+	text-decoration: none;
+}
+
+.form-action i {
+	margin-right: 20px;
+}
+
+.form-pin-input {
+	letter-spacing: 4px;
+}
+
+.line {
+	width: 3%;
+	background: #142661;
+	position: absolute;
+	z-index: 1;
+	top: 45px;
+	left: 49%;
+	height: 1px;
+}
+
+.resend-code {
+	color: #142661;
+	font-weight: 700;
+}
+
+.form-selection {
+	padding-left: 70px !important;
+}
+
+.radio-place {
+	position: absolute;
+	left: 20px;
+	top: 36px;
+}
+
+.info-view {
+	font-weight: 800;
+	letter-spacing: 2px;
+}
+
+::placeholder {
+	color: #c8cdde;
+	opacity: 1;
+	/* Firefox */
+}
+
+:-ms-input-placeholder {
+	/* Internet Explorer 10-11 */
+	color: #c8cdde;
+}
+
+::-ms-input-placeholder {
+	/* Microsoft Edge */
+	color: #c8cdde;
+}
+
+.radio-contain {
+	display: block;
+	position: relative;
+	padding-left: 35px;
+	margin-bottom: 12px;
+	cursor: pointer;
+	font-size: 22px;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}
+
+
+/* Hide the browser's default radio button */
+
+.radio-contain input {
+	position: absolute;
+	opacity: 0;
+	cursor: pointer;
+}
+
+
+/* Create a custom radio button */
+
+.checkmark {
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 18px;
+	width: 18px;
+	background-color: #fff;
+	border: solid 1px #c1c9e1;
+	border-radius: 50%;
+}
+
+
+/* On mouse-over, add a grey background color */
+
+.radio-contain:hover input~.checkmark {
+	background-color: #ccc;
+}
+
+
+/* When the radio button is checked, add a blue background */
+
+.radio-contain input:checked~.checkmark {
+	background-color: #fff;
+}
+
+
+/* Create the indicator (the dot/circle - hidden when not checked) */
+
+.checkmark:after {
+	content: "";
+	position: absolute;
+	display: none;
+}
+
+
+/* Show the indicator (dot/circle) when checked */
+
+.radio-contain input:checked~.checkmark:after {
+	display: block;
+}
+
+
+/* Style the indicator (dot/circle) */
+
+.radio-contain .checkmark:after {
+	top: 4px;
+	left: 4px;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+	background: #5365e8;
+}
+
+input[type=checkbox]+label {
+	display: block;
+	cursor: pointer;
+}
+
+input[type=checkbox] {
+	display: none;
+}
+
+input[type=checkbox]+label:before {
+	content: "\2714";
+	border: 0.1em solid #e3e8f7;
+	background-color: #e3e8f7;
+	border-radius: 25px !important;
+	border-radius: 0.2em;
+	display: inline-block;
+	width: 22px;
+	height: 22px;
+	padding-left: 0.2em;
+	padding-bottom: 0.3em;
+	margin-right: 15px;
+	vertical-align: bottom;
+	color: transparent;
+	transition: .2s;
+	font-size: 15px;
+	font-weight: 100;
+	background-image: url(../images/check.png);
+	background-size: contain;
+	background-position: center;
+}
+
+input[type=checkbox]+label:active:before {
+	transform: scale(0);
+}
+
+input[type=checkbox]:checked+label:before {
+	background-color: #5365e8;
+	border-color: #5365e8;
+	color: transparent;
+	border-radius: 25px;
+	font-size: 15px;
+	font-weight: 100;
+}
+
+input[type=checkbox]:disabled+label:before {
+	transform: scale(1);
+	border-color: #aaa;
+}
+
+input[type=checkbox]:checked:disabled+label:before {
+	transform: scale(1);
+	background-color: #bfb;
+	border-color: #bfb;
+}
+
+@media only screen and (min-width: 1380px) {
+	.footer-note {
+		margin-top: 155px;
+	}
+}
+
+@media only screen and (max-width: 1203px) {
+	.login-form-contain {
+		min-width: 300px;
+	}
+}
+
+@media only screen and (min-width: 991px) {
+	.input-set {
+		max-width: 436px;
+	}
+}
+
+@media only screen and (max-width: 991px) {
+	.im {
+		height: 36%;
+	}
+	.f-c {
+		display: block;
+	}
+	body {
+		background: #fafbfe;
+	}
+}
+
+@media only screen and (max-width: 512px) {
+	h1 {
+		font-size: 30px;
+	}
+	.im {
+		height: 22%;
+	}
+	.user-heading {
+		margin-top: 2px;
+	}
+	.user-form .form-group {
+		padding: 22px 25px;
+	}
+	.form-help-text {
+		right: 20px;
+	}
+	.sign-form-options .pull-left,
+	.pull-right {
+		float: none !important;
+		margin-bottom: 15px;
+	}
+}
+
+.alert {
+	padding: 20px;
+	background-color: #f42022;
+	color: white;
+	opacity: 1;
+	transition: opacity 0.6s;
+	margin-bottom: 15px;
+}
+
+.alert.success {
+	background-color: #14bb71;
+	color: darkgreen;
+}
+
+.closebtn {
+	margin-left: 15px;
+	color: darkgreen;
+	font-weight: bold;
+	float: right;
+	font-size: 12px;
+	line-height: 10px;
+	cursor: pointer;
+	transition: 0.3s;
+}
+
+.closebtn:hover {
+	color: black;
+}

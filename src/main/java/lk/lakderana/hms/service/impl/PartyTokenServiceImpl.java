@@ -36,7 +36,6 @@ public class PartyTokenServiceImpl implements PartyTokenService {
 		String tokenSeqNo = sequenceGeneratorRepository.generateSequenceNo("T_MS_PARTY_TOKEN");
 		tCmMsPartyToken.setToknSeqNo(tokenSeqNo);
 		partyTokenRepository.save(tCmMsPartyToken);
-
 	}
 
 	public void update(TMsPartyToken tCmMsPartyToken) {
@@ -53,8 +52,8 @@ public class PartyTokenServiceImpl implements PartyTokenService {
 	/**
 	 * List all Party tokens in T_MS_PARTY_TOKEN table for a given party code and request type
 	 */
-	public List<TMsPartyToken> findAllByPartyCodeRequestType(String tokenPartyCode, String toknRequestType) {
-		return partyTokenRepository.findAllByPartyCodeRequestType(tokenPartyCode, toknRequestType);
+	public List<TMsPartyToken> findAllByPartyCodeRequestType(String tokenPartyCode, String tokenRequestType) {
+		return partyTokenRepository.findAllByPartyCodeRequestType(tokenPartyCode, tokenRequestType);
 	}
 	
 	/**

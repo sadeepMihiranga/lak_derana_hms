@@ -1,9 +1,13 @@
 package lk.lakderana.hms.security.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.web.error.ErrorAttributeOptions;
+import org.springframework.boot.web.servlet.error.DefaultErrorAttributes;
+import org.springframework.boot.web.servlet.error.ErrorAttributes;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.BeanIds;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -12,6 +16,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.header.writers.StaticHeadersWriter;
+import org.springframework.web.context.request.WebRequest;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import static lk.lakderana.hms.util.ResponseMessageKeys.*;
 
 @Configuration
 @EnableWebSecurity
@@ -68,5 +79,32 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated();
         http
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);;
+        http
+                .headers()
+                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "*"))
+                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE"))
+                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Max-Age", "3600"))
+                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Credentials", "true"))
+                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Headers", "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization"));
+    }
+
+    @Bean
+    public ErrorAttributes errorAttributes() {
+        return new DefaultErrorAttributes() {
+            @Override
+            public Map<String, Object> getErrorAttributes(WebRequest webRequest, ErrorAttributeOptions options) {
+
+                Map<String ,Object> defaultMap = super.getErrorAttributes(webRequest, options);
+                Map<String ,Object> errorAttributes = new LinkedHashMap<>();
+
+                errorAttributes.put(KEY_DATA, null);
+                errorAttributes.put(KEY_MESSAGE, defaultMap.get(KEY_MESSAGE));
+                errorAttributes.put(KEY_SUCCESS, false);
+                //errorAttributes.put(KEY_CODE, defaultMap.get(KEY_STATUS));
+                errorAttributes.put(KEY_CODE, HttpStatus.OK.value());
+
+                return errorAttributes;
+            }
+        };
     }
 }

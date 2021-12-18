@@ -9,6 +9,7 @@ import lk.lakderana.hms.dto.ResetPasswordDTO;
 import lk.lakderana.hms.dto.UpdatePasswordDTO;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.response.SuccessResponse;
+import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.security.AuthenticationGateway;
 import lk.lakderana.hms.security.config.JwtTokenProvider;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +42,7 @@ public class AuthenticationController {
     }
 
     @PostMapping(value = "/token", consumes = {"application/json", "application/x-www-form-urlencoded"})
-    public ResponseEntity<JwtAuthenticationResponse> getToken(@RequestBody String payload) throws IOException {
+    public ResponseEntity<SuccessResponse> getToken(@RequestBody String payload) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         AuthenticationRequestDTO loginRequest = mapper.readValue(payload, AuthenticationRequestDTO.class);
         Authentication authentication = authenticationManager.authenticate(
@@ -55,7 +56,7 @@ public class AuthenticationController {
         String jwt = jwtTokenProvider.generateToken(authentication);
         String refreshToken = jwtTokenProvider.generateRefreshToken(authentication);
 
-        return ResponseEntity.ok(new JwtAuthenticationResponse(jwt, refreshToken));
+        return SuccessResponseHandler.generateResponse(new JwtAuthenticationResponse(jwt, refreshToken));
     }
 
     @PostMapping(value = "/token/refresh")

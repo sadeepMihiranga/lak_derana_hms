@@ -39,7 +39,6 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     }
 
     private ResponseEntity handleException(BaseException ex, HttpStatus httpStatus) throws IOException {
-        //return handleExceptionInternal(ex, mapper.readTree(ex.toString()).toString(), httpHeaders, ex.getStatus(),null);
         Map<String ,Object> errorAttributes = new LinkedHashMap<>();
 
         errorAttributes.put(KEY_DATA, null);

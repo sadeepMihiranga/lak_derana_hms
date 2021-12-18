@@ -1,9 +1,7 @@
 package lk.lakderana.hms.controller;
 
-import lk.lakderana.hms.dto.RoleDTO;
 import lk.lakderana.hms.dto.UserDTO;
 import lk.lakderana.hms.entity.TMsRole;
-import lk.lakderana.hms.entity.TMsUserRole;
 import lk.lakderana.hms.response.SuccessResponse;
 import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.service.UserService;
