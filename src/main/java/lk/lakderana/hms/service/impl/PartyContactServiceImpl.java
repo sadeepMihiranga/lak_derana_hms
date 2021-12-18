@@ -82,4 +82,23 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
 
         return contactDTOList;
     }
+
+    @Override
+    public PartyContactDTO getContactsByPartyCodeAndType(String partyCode, String contactType) {
+
+        if(Strings.isNullOrEmpty(partyCode))
+            throw new NoRequiredInfoException("Party Code is required");
+
+        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
+
+        final TMsPartyContact tMsPartyContact = partyContactRepository
+                .findAllByParty_PrtyCodeAndPtcnContactTypeAndPtcnStatus(partyCode, contactType, Constants.STATUS_ACTIVE.getShortValue());
+
+        List<PartyContactDTO> contactDTOList = new ArrayList<>();
+
+        return PartyContactMapper.INSTANCE.entityToDTO(tMsPartyContact);
+    }
 }

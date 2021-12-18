@@ -4,7 +4,8 @@ import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.dto.UserDTO;
 import lk.lakderana.hms.entity.TMsRole;
 import lk.lakderana.hms.entity.TMsRoleFunction;
-import lk.lakderana.hms.security.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import java.util.List;
 
@@ -12,19 +13,23 @@ public interface UserService {
 
     UserDTO createUser(UserDTO userDTO);
 
-    TMsRole createRole(TMsRole role);
-
-    void addRoleToUser(String username, String roleName);
-
-    UserDTO getUserByUsername(String username);
-
     UserDTO getAUserById(Long userId);
 
     List<UserDTO> getAllUsers();
 
     PaginatedEntity userPaginatedSearch(String username, String partyCode, Integer page, Integer size);
 
+    UserDTO getUserByUsername(String username);
+
+    UserDTO getUserByPartyCode(String partyCode);
+
+    UserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
+
     List<TMsRoleFunction> getPermissionsByRole(Long roleId);
 
-    User getUserDetailsByUsername(String username);
+    Long removeUser(Long userId);
+
+    Boolean assignRoleToUser(Long userId, List<String> roles);
+
+    TMsRole createRole(TMsRole role);
 }

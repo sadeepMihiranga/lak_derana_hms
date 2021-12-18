@@ -5,13 +5,14 @@ import lk.lakderana.hms.entity.*;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.DuplicateRecordException;
 import lk.lakderana.hms.exception.InvalidDataException;
-import lk.lakderana.hms.mapper.PartyMapper;
+import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.mapper.UserMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,7 +23,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -61,7 +64,8 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         if(tMsParty == null)
             throw new DataNotFoundException("Invalid Party Code " + userDTO.getPartyCode());
 
-        final TMsUser userExists = userRepository.findByUserUsername(userDTO.getUsername());
+        final TMsUser userExists = userRepository
+                .findByUserUsernameAndUserStatus(userDTO.getUsername(), Constants.STATUS_ACTIVE.getShortValue());
 
         if(userExists != null)
             throw new InvalidDataException("An User already exists with " + userDTO.getUsername());
@@ -106,21 +110,55 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Transactional
     @Override
-    public void addRoleToUser(String username, String roleName) {
-        final TMsUser tMsUser = userRepository.findByUserUsername(username);
-        final TMsRole tMsRole = roleRepository.findByRoleNameAndRoleStatus(roleName, Constants.STATUS_ACTIVE.getShortValue());
+    public Boolean assignRoleToUser(Long userId, List<String> roles) {
 
-        TMsUserRole tRfUserRole = new TMsUserRole();
-        tRfUserRole.setRole(tMsRole);
-        tRfUserRole.setUser(tMsUser);
-        tRfUserRole.setUsrlStatus(Short.valueOf("1"));
+        if(userId == null)
+            throw new NoRequiredInfoException("User Id is required");
 
-        userRoleRepository.save(tRfUserRole);
+        if(roles == null || roles.isEmpty())
+            throw new NoRequiredInfoException("Roles required");
+
+        final TMsUser tMsUser = userRepository.findByUserIdAndUserStatus(userId, Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsUser == null)
+            throw new DataNotFoundException("User not found for Id " + userId);
+
+        List<TMsUserRole> tMsUserRoleList = new ArrayList<>();
+
+        roles.forEach(roleName -> {
+
+            final TMsRole tMsRole = roleRepository.findByRoleNameAndRoleStatus(roleName, Constants.STATUS_ACTIVE.getShortValue());
+
+            if(tMsRole == null)
+                throw new DataNotFoundException("Role " + roleName + " not found");
+
+            final TMsUserRole existingUserRole = userRoleRepository
+                    .findByUser_UserIdAndRole_RoleId(tMsUser.getUserId(), tMsRole.getRoleId());
+
+            if(existingUserRole != null) {
+
+                existingUserRole.setUsrlStatus(Constants.STATUS_ACTIVE.getShortValue());
+                tMsUserRoleList.add(existingUserRole);
+
+            } else {
+
+                TMsUserRole tRfUserRole = new TMsUserRole();
+                tRfUserRole.setRole(tMsRole);
+                tRfUserRole.setUser(tMsUser);
+                tRfUserRole.setUsrlStatus(Constants.STATUS_ACTIVE.getShortValue());
+
+                tMsUserRoleList.add(tRfUserRole);
+            }
+        });
+
+        userRoleRepository.saveAll(tMsUserRoleList);
+
+        return true;
     }
 
     @Override
     public UserDTO getUserByUsername(String username) {
-        final TMsUser tMsUser = userRepository.findByUserUsername(username);
+        final TMsUser tMsUser = userRepository.findByUserUsernameAndUserStatus(username, Constants.STATUS_ACTIVE.getShortValue());
 
         if(tMsUser == null)
             throw new DataNotFoundException("User " + username + " not found");
@@ -135,7 +173,27 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
+    public UserDTO getUserByPartyCode(String partyCode) {
+        final TMsUser tMsUser = userRepository.findByParty_PrtyCodeAndUserStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsUser == null)
+            throw new DataNotFoundException("User " + partyCode + " not found");
+
+        final List<TMsUserRole> tRfUserRoleList = userRoleRepository
+                .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), Constants.STATUS_ACTIVE.getShortValue());
+
+        final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
+        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+
+        return userDTO;
+    }
+
+    @Override
     public UserDTO getAUserById(Long userId) {
+
+        if(userId == null)
+            throw new NoRequiredInfoException("User Id is required");
+
         final TMsUser tMsUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
 
         final List<TMsUserRole> tRfUserRoleList = userRoleRepository
@@ -154,7 +212,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         List<UserDTO> userDTOList = new ArrayList<>();
 
-        final List<TMsUser> userList = userRepository.findAll();
+        final List<TMsUser> userList = userRepository.findAllByUserStatus(Constants.STATUS_ACTIVE.getShortValue());
 
         userList.forEach(user -> {
 
@@ -225,8 +283,25 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User getUserDetailsByUsername(String username) {
-        return (User) loadUserByUsername(username);
+    public Long removeUser(Long userId) {
+
+        if(userId == null)
+            throw new NoRequiredInfoException("User Id is required");
+
+        final TMsUser tMsUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
+
+        tMsUser.setUserStatus(Constants.STATUS_INACTIVE.getShortValue());
+
+        final List<TMsUserRole> tMsUserRoleList = userRoleRepository
+                .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), Constants.STATUS_ACTIVE.getShortValue());
+
+        tMsUserRoleList.forEach(tMsUserRole -> {
+            tMsUserRole.setUsrlStatus(Constants.STATUS_INACTIVE.getShortValue());
+
+            userRoleRepository.save(tMsUserRole);
+        });
+
+        return userRepository.save(tMsUser).getUserId();
     }
 
     private RoleDTO mapRoleToRoleDTO(TMsRole role) {

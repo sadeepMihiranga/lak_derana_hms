@@ -1,5 +1,6 @@
 package lk.lakderana.hms.controller;
 
+import lk.lakderana.hms.dto.RoleDTO;
 import lk.lakderana.hms.dto.UserDTO;
 import lk.lakderana.hms.entity.TMsRole;
 import lk.lakderana.hms.entity.TMsUserRole;
@@ -8,6 +9,8 @@ import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -43,14 +46,18 @@ public class UserController {
         return SuccessResponseHandler.generateResponse(userService.createUser(userDTO));
     }
 
+    @DeleteMapping("/{userId}")
+    public ResponseEntity<SuccessResponse> removeUser(@PathVariable("userId") Long userId) {
+        return SuccessResponseHandler.generateResponse(userService.removeUser(userId));
+    }
+
+    @PostMapping("/{userId}/roles/assign")
+    public ResponseEntity<?> assignRoleToUser(@PathVariable("userId") Long userId, @RequestBody List<String> roles) {
+        return SuccessResponseHandler.generateResponse(userService.assignRoleToUser(userId, roles));
+    }
+
     @PostMapping("/role")
     public ResponseEntity<TMsRole> createARole(@RequestBody TMsRole role) {
         return ResponseEntity.ok().body(userService.createRole(role));
-    }
-
-    @PostMapping("/role/assign")
-    public ResponseEntity<?> assignRoleToUser(@RequestBody TMsUserRole roleToUser) {
-        userService.addRoleToUser(roleToUser.getUser().getUserUsername(), roleToUser.getRole().getRoleName());
-        return ResponseEntity.ok().build();
     }
 }

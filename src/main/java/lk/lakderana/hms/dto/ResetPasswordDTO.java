@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class TokenRequestDTO {
+@NoArgsConstructor
+public class ResetPasswordDTO {
 
-    private String username;
-    private String password;
+	private String username;
+	private String contactType;
 }

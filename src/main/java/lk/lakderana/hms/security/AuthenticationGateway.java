@@ -1,0 +1,471 @@
+package lk.lakderana.hms.security;
+
+import lk.lakderana.hms.dto.PartyContactDTO;
+import lk.lakderana.hms.dto.ResetPasswordDTO;
+import lk.lakderana.hms.dto.UpdatePasswordDTO;
+import lk.lakderana.hms.dto.UserDTO;
+import lk.lakderana.hms.entity.TMsPartyToken;
+import lk.lakderana.hms.entity.TMsUser;
+import lk.lakderana.hms.exception.DataNotFoundException;
+import lk.lakderana.hms.exception.InvalidDataException;
+import lk.lakderana.hms.exception.OperationException;
+import lk.lakderana.hms.repository.PartyRepository;
+import lk.lakderana.hms.repository.UserRepository;
+import lk.lakderana.hms.response.SuccessResponse;
+import lk.lakderana.hms.security.config.PasswordResetConfig;
+import lk.lakderana.hms.service.PartyContactService;
+import lk.lakderana.hms.service.PartyTokenService;
+import lk.lakderana.hms.service.UserService;
+import lk.lakderana.hms.util.Constants;
+import lk.lakderana.hms.util.ContactTypes;
+import lk.lakderana.hms.util.RequestType;
+import org.apache.commons.io.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
+
+import javax.mail.internet.MimeMessage;
+import javax.validation.ConstraintViolation;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.security.NoSuchAlgorithmException;
+import java.util.*;
+
+/**
+ * Class for authentication functions
+ */
+@Service
+@Configuration
+public class AuthenticationGateway {
+
+    private final PasswordResetConfig passwordResetConfig;
+    private final LocalValidatorFactoryBean localValidatorFactoryBean;
+    private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender emailSender;
+
+    private final PartyTokenService partyTokenService;
+    private final PartyContactService partyContactService;
+    private final UserService userService;
+
+    private final PartyRepository partyRepository;
+    private final UserRepository userRepository;
+
+    private Logger logger = LoggerFactory.getLogger(AuthenticationGateway.class);
+
+    public AuthenticationGateway(PasswordResetConfig passwordResetConfig,
+                                 LocalValidatorFactoryBean localValidatorFactoryBean,
+                                 PartyTokenService partyTokenService,
+                                 PartyContactService partyContactService,
+                                 UserService userService,
+                                 PartyRepository partyRepository,
+                                 UserRepository userRepository,
+                                 PasswordEncoder passwordEncoder,
+                                 JavaMailSender emailSender) {
+        this.passwordResetConfig = passwordResetConfig;
+        this.localValidatorFactoryBean = localValidatorFactoryBean;
+        this.partyTokenService = partyTokenService;
+        this.partyContactService = partyContactService;
+        this.userService = userService;
+        this.partyRepository = partyRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.emailSender = emailSender;
+    }
+
+    private String formatNumber(String number) {
+        String frontCharacters = number.substring(0, 3);
+        String endCharacters = number.substring(number.length() - 3, number.length());
+        String middleChars = number.substring(3, number.length() - 3);
+        String hiddenCharacters = new String(new char[middleChars.length()]).replace("\0", "*");
+        return frontCharacters + hiddenCharacters + endCharacters;
+    }
+
+    /**
+     * API call to generate reset password token (via email or SMS)
+     *
+     * @return generate email with token string or insert to SMS log table with PIN number for SMS
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    public SuccessResponse generateResetPasswordToken(ResetPasswordDTO resetPassword, String templateName, String emailSubject) {
+        SuccessResponse response = null;
+
+        if (resetPassword == null || resetPassword.getContactType() == null ||
+                resetPassword.getUsername() == null || resetPassword.getContactType().isEmpty() ||
+                resetPassword.getUsername().isEmpty()) {
+            throw new DataNotFoundException("Username and Contact Type are Required.");
+        }
+
+        if (resetPassword.getContactType().equals(ContactTypes.CEMIL.toString()))
+            response = generateResetPasswordTokenEmail(resetPassword.getUsername(), templateName, emailSubject);
+        else if (resetPassword.getContactType().equals(ContactTypes.CMOBL.toString()))
+            response = generateResetPasswordTokenMobile(resetPassword.getUsername());
+        else
+            throw new InvalidDataException("Invalid Contact Type");
+
+        return response;
+    }
+
+    /**
+     * API to verify generated token with the user code before updating reset
+     * password
+     *
+     * @param token - token string
+     * @return - party code if valid token
+     * @Param partyCode - party code
+     */
+    public SuccessResponse verifyResetPasswordForTokenString(String partyCode, String token) {
+        SuccessResponse response = null;
+
+        if (partyCode == null || token == null)
+            throw new DataNotFoundException("User Code and Token String are Required.");
+
+        final UserDTO userDTO = userService.getUserByPartyCode(partyCode);
+
+        TMsPartyToken tCmMsPartyToken = partyTokenService.findAllByPartyCodeToken(userDTO.getPartyCode(), token);
+        if (tCmMsPartyToken == null)
+            throw new InvalidDataException("Email Link is Invalid.");
+
+        if ((tCmMsPartyToken.getToknExpiryTime().getTime() - Calendar.getInstance().getTime().getTime()) <= 0)
+            throw new InvalidDataException("Email Link is Expired.");
+        else
+            response = new SuccessResponse(userDTO.getPartyCode(), "Valid Token", true, 1100);
+
+        return response;
+    }
+
+    /**
+     * API to verify generated PIN No with the user code before updating reset
+     * password
+     *
+     * @return party code if valid PIN number
+     * @Param partyCode - party code
+     */
+    public SuccessResponse verifyResetPasswordForPinNo(String username, String pinNo) {
+        SuccessResponse response = null;
+        if (username == null || pinNo == null)
+            throw new DataNotFoundException("Username and PIN Number are Required.");
+
+        final UserDTO userDTO = userService.getUserByUsername(username);
+        if (userDTO == null)
+            throw new InvalidDataException("INVALID_USERNAME");
+
+        TMsPartyToken tCmMsPartyToken = partyTokenService.findAllByPartyCodePIN(userDTO.getPartyCode(), pinNo);
+        if (tCmMsPartyToken == null)
+            throw new InvalidDataException("Invalid PIN Number");
+
+        if ((tCmMsPartyToken.getToknExpiryTime().getTime() - Calendar.getInstance().getTime().getTime()) <= 0)
+            throw new InvalidDataException("Expired PIN Number");
+        else
+            response = new SuccessResponse(userDTO.getPartyCode(), "Valid PIN", true, 1100);
+
+        return response;
+    }
+
+    /**
+     * Generate reset password token for email contact type
+     *
+     * @param partyUsername
+     * @return generated token string for email password recovery
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    private SuccessResponse generateResetPasswordTokenEmail(String partyUsername, String templateName, String emailSubject) {
+        SuccessResponse response = null;
+
+        if (partyUsername == null || partyUsername.isEmpty())
+            throw new DataNotFoundException("Username is Required.");
+
+        final UserDTO userDTO = userService.getUserByUsername(partyUsername);
+        if (userDTO == null)
+            throw new InvalidDataException("Username is invalid.");
+
+        String token = null;
+        final PartyContactDTO partyContactDTO = partyContactService.getContactsByPartyCodeAndType(userDTO.getPartyCode(),
+                ContactTypes.CEMIL.toString());
+        if (partyContactDTO == null) {
+            response = new SuccessResponse(null, "No Email Address for the given Username", false, 1000);
+            return response;
+        }
+
+        try {
+            token = generateAndSaveNewPasswordToken(ContactTypes.CEMIL.toString(), userDTO.getPartyCode());
+        } catch (Exception e) {
+            logger.debug("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : {}", e.getMessage());
+            throw new OperationException("Error when generating the token string");
+        }
+
+        try {
+            String emailFrom = "from_mail";
+            emailSender.send(constructResetTokenEmail(token, userDTO.getPartyCode(), partyContactDTO.getContactNumber(),
+                    templateName, emailSubject, partyUsername));
+            response = new SuccessResponse(userDTO.getPartyCode(), "SUCCESS", true, 1100);
+        } catch (Exception e) {
+            logger.debug("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : " + e.getMessage());
+            throw new OperationException("Error when sending the email");
+        }
+
+        return response;
+    }
+
+    /**
+     * Generate reset password token for mobile contact type
+     *
+     * @param partyUsername
+     * @return generated token string for mobile password recovery
+     * @throws UnsupportedEncodingException
+     * @throws NoSuchAlgorithmException
+     */
+    private SuccessResponse generateResetPasswordTokenMobile(String partyUsername) {
+        SuccessResponse response = null;
+
+        if (partyUsername == null || partyUsername.isEmpty())
+            throw new DataNotFoundException("Username is Required.");
+
+        final UserDTO userDTO = userService.getUserByUsername(partyUsername);
+        if (userDTO == null)
+            throw new InvalidDataException("Username is invalid");
+
+        String token = null;
+        final PartyContactDTO partyContactDTO = partyContactService.getContactsByPartyCodeAndType(userDTO.getPartyCode(),
+                ContactTypes.CMOBL.toString());
+
+        if (partyContactDTO == null) {
+            response = new SuccessResponse(null, "No Contacts for the given Username", false, 1000);
+            return response;
+        }
+
+        try {
+            token = generateAndSaveNewPasswordToken(ContactTypes.CMOBL.toString(), userDTO.getPartyCode());
+        } catch (Exception e) {
+            logger.debug("Auth -> generateResetPasswordTokenMobile -> AuthenticationGateway : {}", e.getMessage());
+            throw new OperationException("Error when generating the PIN Number");
+        }
+
+        // insert to sms log table
+        try {
+            response = new SuccessResponse(userDTO.getPartyCode(), "SUCCESS", true, 1100);
+        } catch (Exception e) {
+            logger.debug("Auth -> generateResetPasswordTokenMobile -> AuthenticationGateway : {}", e.getMessage());
+            throw new OperationException("Error when inserting to SMS log table");
+        }
+
+        return response;
+    }
+
+    /**
+     * Generate token string / pin number and save in party token table
+     *
+     * @param contactType (email or mobile)
+     * @return Generated token
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
+    private String generateAndSaveNewPasswordToken(String contactType, String partyCode) {
+        String token = null;
+
+        TMsPartyToken tCmMsPartyToken = new TMsPartyToken();
+
+        if (contactType.equals(ContactTypes.CEMIL.toString())) {
+            token = UUID.randomUUID().toString();
+        } else if (contactType.equals(ContactTypes.CMOBL.toString())) {
+            Random rand = new Random();
+            token = String.format("%06d", 100000 + rand.nextInt(900000));
+        }
+
+        tCmMsPartyToken.setToknPinNo(token);
+        tCmMsPartyToken.setToknRequestType(RequestType.PW.toString());
+        tCmMsPartyToken.setToknExpiryTime();
+        tCmMsPartyToken.setParty(partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue()));
+        tCmMsPartyToken.setCreatedUserCode(partyCode);
+        tCmMsPartyToken.setCreatedDate(new Date());
+        tCmMsPartyToken.setLastModDate(new Date());
+        tCmMsPartyToken.setLastModUserCode(partyCode);
+        tCmMsPartyToken.setToknStatus("A");
+        partyTokenService.insert(tCmMsPartyToken);
+
+        return token;
+    }
+
+    /**
+     * Generate Simple mail message
+     *
+     * @param to      - receiver address
+     * @param subject - mail subject
+     * @param text    - text message
+     * @return Construct email
+     */
+    private MimeMessage constructEmail(String to, String subject, String text, String username, String templateName) {
+        MimeMessage message = emailSender.createMimeMessage();
+        MimeMessageHelper helper;
+
+        try {
+            String emailString = IOUtils.toString(new ClassPathResource("templates/" + templateName).getInputStream());
+            emailString = emailString.replace("#link#", text);
+            emailString = emailString.replace("#username#", username);
+            helper = new MimeMessageHelper(message, false, "utf-8");
+            helper.setTo(to);
+            helper.setSubject(subject);
+            helper.setText(emailString, true);
+            helper.setFrom("from_mail");
+        } catch (Exception e) {
+            logger.debug("Auth -> constructEmail -> AuthenticationGateway : {}", e.getMessage());
+        }
+        return message;
+    }
+
+    /**
+     * Generate Email message with reset password token
+     *
+     * @param token          - token string
+     * @param partyCode      - party code
+     * @param toEmailAddress - receiver email address
+     * @return send email
+     */
+    private MimeMessage constructResetTokenEmail(final String token, final String partyCode, final String toEmailAddress,
+                                                 String templateName, String emailSubject, String username) throws UnsupportedEncodingException {
+        final String url = passwordResetConfig.getCallbackHost()
+                + "/auth/reset_password?id=" + partyCode
+                + "&token=" + URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
+                + "&type=CEMIL";
+        return constructEmail(toEmailAddress, emailSubject, url, username, templateName);
+    }
+
+    /**
+     * Update user password by given new password string (either for a given username or user code)
+     *
+     * @return username, if password successfully saved.
+     * @author NJ
+     * @since 01/2019
+     */
+    public SuccessResponse updUserPassword(UpdatePasswordDTO updatePassword) {
+        SuccessResponse response = null;
+        Set<ConstraintViolation<UpdatePasswordDTO>> violations = localValidatorFactoryBean.validate(updatePassword);
+        violations.stream().findFirst().ifPresent(violation -> {
+            throw new DataNotFoundException(violation.getMessage());
+        });
+
+        if (updatePassword.getTokenType().equals(ContactTypes.CEMIL.toString())) {
+            verifyResetPasswordForTokenString(updatePassword.getUsername(), updatePassword.getToken());
+        } else if (updatePassword.getTokenType().equals(ContactTypes.CMOBL.toString())) {
+            verifyResetPasswordForPinNo(updatePassword.getUsername(), updatePassword.getToken());
+        }
+
+        if (updatePassword.getTokenType().equals(ContactTypes.CEMIL.toString())) {
+            response = updUserPasswordByCode(updatePassword.getUsername(), updatePassword.getNewPassword());
+            if (response.getSuccess().equals(true)) {
+                updatePasswordTokenStatus(ContactTypes.CEMIL.toString(), updatePassword.getUsername(), updatePassword.getToken());
+            }
+        } else {
+            response = updUserPasswordByUsername(updatePassword.getUsername(), updatePassword.getNewPassword());
+            if (response.getSuccess().equals(true)) {
+                updatePasswordTokenStatus(ContactTypes.CMOBL.toString(), updatePassword.getUsername(), updatePassword.getToken());
+            }
+        }
+
+        return response;
+    }
+
+    /**
+     * Update user password by given new password string for a given username
+     *
+     * @param partyUsername - username
+     * @param newPassword   - new password string
+     * @return - username if password successfully saved.
+     */
+    public SuccessResponse updUserPasswordByUsername(String partyUsername, String newPassword) {
+        SuccessResponse response = null;
+
+        if (partyUsername == null || newPassword == null)
+            throw new DataNotFoundException("Username and New Password are Required.");
+
+        final TMsUser tMsUser = userRepository.findByUserUsernameAndUserStatus(partyUsername, Constants.STATUS_ACTIVE.getShortValue());
+        if (tMsUser == null)
+            throw new InvalidDataException("Username is invalid");
+
+        // update party table with new password
+        try {
+            tMsUser.setUserPassword(passwordEncoder.encode(newPassword));
+            /*tMsUser.setLastModDate(new Date());
+            tMsUser.setLastModUserCode(tCmMsParty.getId());*/
+            userRepository.save(tMsUser);
+            response = new SuccessResponse(partyUsername, "SUCCESS", true, 1100);
+        } catch (Exception e) {
+            logger.debug("Auth -> updUserPasswordByUsername -> AuthenticationGateway : {}", e.getMessage());
+            throw new OperationException("Error when updating the password");
+        }
+
+        return response;
+    }
+
+    /**
+     * Update user password by given new password string and for the given user id - when password
+     * is reset via email link.
+     *
+     * @param partyCode   - party code
+     * @param newPassowrd - new password string
+     * @return - party code if password successfully saved.
+     */
+    public SuccessResponse updUserPasswordByCode(String partyCode, String newPassowrd) {
+        SuccessResponse response = null;
+
+        if (partyCode == null || newPassowrd == null)
+            throw new DataNotFoundException("User Code and New Password are Required.");
+
+        final TMsUser tMsUser = userRepository.findByParty_PrtyCodeAndUserStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+        if (tMsUser == null)
+            throw new InvalidDataException("Invalid User Code");
+
+        // update party table with new password
+        try {
+            tMsUser.setUserPassword(passwordEncoder.encode(newPassowrd));
+            /*tMsUser.setLastModDate(new Date());
+            tMsUser.setLastModUserCode(tCmMsParty.getId());*/
+            userRepository.save(tMsUser);
+            response = new SuccessResponse(tMsUser.getUserUsername(), "SUCCESS", true, 1100);
+        } catch (Exception e) {
+            logger.debug("Auth -> updUserPasswordByCode -> AuthenticationGateway : {}", e.getMessage());
+            throw new OperationException("Error when updating the password");
+        }
+
+        return response;
+    }
+
+    /**
+     * Update token status once it is utilized
+     *
+     * @param contactType (contact code)
+     * @param partyCode   (party code)
+     * @Param token (email token string or mobile PIN Number]
+     * @Return token sequence number
+     */
+    private String updatePasswordTokenStatus(String contactType, String partyCode, String token) {
+        if (contactType.equals(ContactTypes.CEMIL.toString())) {
+            TMsPartyToken partyToken = partyTokenService.findAllByPartyCodeToken(partyCode, token);
+
+            partyToken.setLastModDate(new Date());
+            partyToken.setLastModUserCode(partyCode);
+            partyToken.setToknStatus("I");
+            partyTokenService.update(partyToken);
+            return partyToken.getToknSeqNo();
+
+        } else if (contactType.equals(ContactTypes.CMOBL.toString())) {
+            final TMsUser tMsUser = userRepository.findByParty_PrtyCodeAndUserStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+            TMsPartyToken partyToken = partyTokenService.findAllByPartyCodePIN(tMsUser.getParty().getPrtyCode(), token);
+
+            partyToken.setLastModDate(new Date());
+            partyToken.setLastModUserCode(tMsUser.getParty().getPrtyCode());
+            partyToken.setToknStatus("I");
+            partyTokenService.update(partyToken);
+            return partyToken.getToknSeqNo();
+        }
+        return null;
+    }
+}

@@ -11,4 +11,6 @@ public interface PartyContactService {
     PartyContactDTO updatePartyContact(PartyContactDTO partyContactDTO, String partyCode, Long contactId);
 
     List<PartyContactDTO> getContactsByPartyCode(String partyCode, Boolean isPartyValidated);
+
+    PartyContactDTO getContactsByPartyCodeAndType(String partyCode, String contactType);
 }
