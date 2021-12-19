@@ -11,12 +11,12 @@ import org.springframework.context.annotation.Configuration;
 @Getter
 public class PasswordResetConfig {
 
-//    @Value("${email.callback.host}")
-    private String callbackHost = "https://lakderana-hms-web.herokuapp.com/api";
+    @Value("${email.callback.host}")
+    private String callbackHost;
 
-//    @Value("${email.callback.port}")
+    @Value("${email.callback.port}")
     private int port;
 
-//    @Value("${reset.mobile.number}")
+    @Value("${reset.mobile.number}")
     private  String mobileNumber;
 }

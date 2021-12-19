@@ -1,5 +1,6 @@
 package lk.lakderana.hms.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -10,14 +11,24 @@ import java.util.Properties;
 @Configuration
 public class EmailConfig {
 
+    @Value("${mail.host}")
+    private String host;
+    @Value("${mail.port}")
+    private Integer port;
+    @Value("${mail.username}")
+    private String username;
+    @Value("${mail.password}")
+    private String password;
+
     @Bean
     public JavaMailSender javaMailService() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
-        javaMailSender.setHost("smtp.gmail.com");
-        javaMailSender.setPort(587);
-        javaMailSender.setUsername("saddeepmihiranga@gmail.com");
-        javaMailSender.setPassword("hifacogltbjdtyqf");
+        javaMailSender.setHost(host);
+        javaMailSender.setPort(port);
+        javaMailSender.setUsername(username);
+        javaMailSender.setPassword(password);
+
         javaMailSender.setJavaMailProperties(getMailProperties());
 
         return javaMailSender;
