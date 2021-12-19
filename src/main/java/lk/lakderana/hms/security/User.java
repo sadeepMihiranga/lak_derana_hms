@@ -13,7 +13,7 @@ public class User implements UserDetails {
     private Long id;
     private String name;
     private String partyCode;
-    private String branchCode;
+    private Collection<Long> branches;
     private String username;
     private String password;
     private Collection<SimpleGrantedAuthority> authorities;
@@ -102,11 +102,11 @@ public class User implements UserDetails {
         this.partyCode = partyCode;
     }
 
-    public String getBranchCode() {
-        return branchCode;
+    public Collection<Long> getBranches() {
+        return branches;
     }
 
-    public void setBranchCode(String branchCode) {
-        this.branchCode = branchCode;
+    public void setBranches(Collection<Long> branches) {
+        this.branches = branches;
     }
 }

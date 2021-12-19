@@ -8,6 +8,7 @@ import lk.lakderana.hms.entity.TMsParty;
 import lk.lakderana.hms.entity.TRfBranch;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.InvalidDataException;
+import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.PartyMapper;
 import lk.lakderana.hms.repository.BranchRepository;
@@ -207,7 +208,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new TransactionConflictException("Transaction Updated by Another User.");
         } catch (Exception e) {
-            throw e;
+            throw new OperationException(e.getMessage());
         }
     }
 }

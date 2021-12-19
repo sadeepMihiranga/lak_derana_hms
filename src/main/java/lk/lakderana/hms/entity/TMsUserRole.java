@@ -12,7 +12,7 @@ public class TMsUserRole {
 
     @javax.persistence.Id
     @GeneratedValue(generator = "UserRoleSequence")
-    @SequenceGenerator(name = "UserRoleSequence", schema = "LAKDERANA_BASE", sequenceName = "T_RF_USER_ROLES_ID_seq", allocationSize = 1)
+    @SequenceGenerator(name = "UserRoleSequence", schema = "LAKDERANA_BASE", sequenceName = "\"T_RF_USER_ROLES_ID_seq\"", allocationSize = 1)
     @Column(name="USRL_ID")
     private Long usrlId;
 

@@ -75,7 +75,7 @@ public class JwtTokenProvider {
                 .claim(PARTY_CODE, partyDTO.getPartyCode())
                 .claim(DISPLAY_NAME, partyDTO.getFirstName())
                 .claim(USER_ID, userPrincipal.getId())
-                .claim(BRANCH_CODE, userPrincipal.getBranchCode())
+                .claim(BRANCHES, userPrincipal.getBranches())
                 .setSubject(userPrincipal.getUsername())
                 .setAudience(clientId)
                 .setIssuer(realm)
@@ -121,7 +121,7 @@ public class JwtTokenProvider {
                     .claim(PARTY_CODE, userDetails.getPartyCode())
                     .claim(DISPLAY_NAME, partyDTO.getFirstName())
                     .claim(USER_ID, userDetails.getId())
-                    .claim(BRANCH_CODE, userDetails.getBranchCode())
+                    .claim(BRANCHES, userDetails.getBranches())
                     .setSubject(userDetails.getUsername())
                     .setAudience(clientId)
                     .setIssuer(realm)
@@ -141,6 +141,10 @@ public class JwtTokenProvider {
 
     public String extractUsername(String token) {
         return extractClaimsFromToken(token).getBody().getSubject();
+    }
+
+    public String extractPartyCode(String token) {
+        return extractClaimsFromToken(token).getBody().get("partyCode").toString();
     }
 
     public Collection<SimpleGrantedAuthority> extractRoles(String token) {

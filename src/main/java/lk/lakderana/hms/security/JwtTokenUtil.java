@@ -11,7 +11,7 @@ public class JwtTokenUtil {
     public static final String ROLES = "roles";
     public static final String DISPLAY_NAME = "displayName";
     public static final String PARTY_CODE = "partyCode";
-    public static final String BRANCH_CODE = "branchCode";
+    public static final String BRANCHES = "branches";
     public static final String USER_ID = "userId";
     public static final String FUNCTIONS = "functions";
     public static final String TOKEN_PREFIX_BEARER = "Bearer ";

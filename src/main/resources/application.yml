@@ -75,8 +75,8 @@ reset:
 mail:
   host: smtp.gmail.com
   port: 587
-  username: saddeepmihiranga@gmail.com
-  password: hifacogltbjdtyqf
+  username: lakderanahms@gmail.com
+  password: jbfvyavtnzneabad
   properties:
     mail:
       smtp:

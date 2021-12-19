@@ -16,7 +16,6 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.header.writers.StaticHeadersWriter;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.LinkedHashMap;
@@ -80,13 +79,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authenticated();
         http
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);;
-        http
-                .headers()
-                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Origin", "*"))
-                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE"))
-                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Max-Age", "3600"))
-                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Credentials", "true"))
-                .addHeaderWriter(new StaticHeadersWriter("Access-Control-Allow-Headers", "Origin,Accept,X-Requested-With,Content-Type,Access-Control-Request-Method,Access-Control-Request-Headers,Authorization"));
     }
 
     @Bean

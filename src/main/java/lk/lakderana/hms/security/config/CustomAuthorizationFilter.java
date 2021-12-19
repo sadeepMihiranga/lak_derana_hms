@@ -52,6 +52,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
 
                         log.info("Authenticated user " + username + ", setting security context");
                         SecurityContextHolder.getContext().setAuthentication(authentication);
+
+                        final String partyCode = jwtTokenProvider.extractPartyCode(token);
                     }
                     filterChain.doFilter(request, response);
 

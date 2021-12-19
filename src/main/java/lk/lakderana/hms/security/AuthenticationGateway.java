@@ -30,6 +30,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import javax.validation.ConstraintViolation;
 import java.io.UnsupportedEncodingException;
@@ -205,7 +206,6 @@ public class AuthenticationGateway {
         }
 
         try {
-            String emailFrom = "saddeepmihiranga@gmail.com";
             emailSender.send(constructResetTokenEmail(token, userDTO.getPartyCode(), partyContactDTO.getContactNumber(),
                     templateName, emailSubject, partyUsername));
             response = new SuccessResponse(userDTO.getPartyCode(), "Email sent successfully", true, 1100);
@@ -318,8 +318,10 @@ public class AuthenticationGateway {
             helper.setSubject(subject);
             helper.setText(emailString, true);
             helper.setFrom("from_mail");
+            message.setFrom(new InternetAddress("from_mail", "Lak Derana"));
         } catch (Exception e) {
             logger.debug("Auth -> constructEmail -> AuthenticationGateway : {}", e.getMessage());
+            throw new OperationException("Error while sending the email");
         }
         return message;
     }

@@ -16,8 +16,8 @@ public class AuditorAwareImpl implements AuditorAware<String> {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         if (RequestContextHolder.getRequestAttributes() != null) {
             HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
-            //return Optional.of(request.getHeader("PARTY_CODE"));
-            return Optional.of("ADMIN");
+            return Optional.of(request.getHeader("PARTY_CODE"));
+            //return Optional.of("ADMIN");
         } else {
             return Optional.of("ADMIN");
         }

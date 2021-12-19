@@ -3,8 +3,11 @@ package lk.lakderana.hms.service.impl;
 import lk.lakderana.hms.dto.PartyContactDTO;
 import lk.lakderana.hms.entity.TMsParty;
 import lk.lakderana.hms.entity.TMsPartyContact;
+import lk.lakderana.hms.entity.TRfInquiry;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
+import lk.lakderana.hms.exception.OperationException;
+import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.PartyContactMapper;
 import lk.lakderana.hms.repository.PartyContactRepository;
 import lk.lakderana.hms.repository.PartyRepository;
@@ -13,6 +16,7 @@ import lk.lakderana.hms.util.Constants;
 import lk.lakderana.hms.config.EntityValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -48,7 +52,7 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         tMsPartyContact.setPtcnStatus(Constants.STATUS_ACTIVE.getShortValue());
         tMsPartyContact.setParty(tMsParty);
 
-        final TMsPartyContact createdPartyContact = partyContactRepository.save(tMsPartyContact);
+        final TMsPartyContact createdPartyContact = persistEntity(tMsPartyContact);
 
         return PartyContactMapper.INSTANCE.entityToDTO(createdPartyContact);
     }
@@ -100,5 +104,16 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         List<PartyContactDTO> contactDTOList = new ArrayList<>();
 
         return PartyContactMapper.INSTANCE.entityToDTO(tMsPartyContact);
+    }
+
+    private TMsPartyContact persistEntity(TMsPartyContact tMsPartyContact) {
+        try {
+            validateEntity(tMsPartyContact);
+            return partyContactRepository.save(tMsPartyContact);
+        } catch (ObjectOptimisticLockingFailureException e) {
+            throw new TransactionConflictException("Transaction Updated by Another User.");
+        } catch (Exception e) {
+            throw new OperationException(e.getMessage());
+        }
     }
 }

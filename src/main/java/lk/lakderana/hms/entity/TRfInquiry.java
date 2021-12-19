@@ -16,13 +16,12 @@ public class TRfInquiry extends AuditModel {
 
     @javax.persistence.Id
     @GeneratedValue(generator = "InquirySequence")
-    @SequenceGenerator(name = "InquirySequence", schema = "LAKDERANA_BASE", sequenceName = "T_MS_INQUIRY_INQR_ID_seq", allocationSize = 1)
+    @SequenceGenerator(name = "InquirySequence", schema = "LAKDERANA_BASE", sequenceName = "\"T_MS_INQUIRY_INQR_ID_seq\"", allocationSize = 1)
     @Column(name = "INQR_ID")
     private Long inqrId;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="INQR_CUSTOMER_CODE", nullable = false)
-    private TMsParty party;
+    @JoinColumn(name="INQR_CUSTOMER_CODE")
+    private String inqrCustomerCode;
 
     @Column(name = "INQR_DATE_TIME")
     private LocalDateTime inqrDateTime;
@@ -41,5 +40,5 @@ public class TRfInquiry extends AuditModel {
     private String inqrCustomerName;
 
     @Column(name = "INQR_CONTACT_NO")
-    private String inqrCustomerNo;
+    private String inqrCustomerContactNo;
 }
