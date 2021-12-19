@@ -14,7 +14,8 @@ import javax.persistence.*;
 public class TRfBranch {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "BranchSequence")
+    @SequenceGenerator(name = "BranchSequence", schema = "LAKDERANA_BASE", sequenceName = "T_RF_BRANCH_BRNH_ID_seq", allocationSize = 1)
     @Column(name = "BRNH_ID")
     private Long brnhId;
 

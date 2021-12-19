@@ -14,7 +14,8 @@ import javax.persistence.*;
 public class TMsPartyContact {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "PartyContactSequence")
+    @SequenceGenerator(name = "PartyContactSequence", schema = "LAKDERANA_BASE", sequenceName = "T_MS_PARTY_CONTACT_PTCN_ID_seq", allocationSize = 1)
     @Column(name = "PTCN_ID")
     private Long ptcnId;
 

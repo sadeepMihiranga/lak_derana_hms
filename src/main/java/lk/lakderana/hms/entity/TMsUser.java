@@ -14,7 +14,8 @@ import javax.persistence.*;
 public class TMsUser {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "UserSequence")
+    @SequenceGenerator(name = "UserSequence", schema = "LAKDERANA_BASE", sequenceName = "T_MS_USER_USER_ID_seq", allocationSize = 1)
     @Column(name = "USER_ID")
     private Long userId;
 

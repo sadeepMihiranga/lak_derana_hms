@@ -14,7 +14,8 @@ import javax.persistence.*;
 public class TMsRoleFunction {
 
     @javax.persistence.Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(generator = "RoleFunctionSequence")
+    @SequenceGenerator(name = "RoleFunctionSequence", schema = "LAKDERANA_BASE", sequenceName = "T_MS_ROLE_FUNCTION_ROFU_Id_seq", allocationSize = 1)
     @Column(name = "ROFU_ID")
     private Long rofuId;
 

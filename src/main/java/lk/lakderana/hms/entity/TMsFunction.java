@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="\"T_MS_FUNCTION\"")
+@Table(name="T_MS_FUNCTION")
 public class TMsFunction {
 
     @javax.persistence.Id
