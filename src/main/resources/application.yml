@@ -53,12 +53,12 @@ spring:
 
   email:
     callback:
-      host: ${HOST_IP:dev.surecore.co}
+      host: ${HOST_IP:https://lakderana-hms-web.herokuapp.com}
       port: 80
 
   reset:
     mobile:
-      number: 0777777777
+      number: 0711111111
 
   security:
     signing-key: 8x/A?D(G+KbPeSgVkYp3s6v9y$B&E)H@McQfTjWmZq4t7w!z%C*F-JaNdRgUkXp2
@@ -70,5 +70,5 @@ spring:
       grant-type: password
       scope-read: read
       scope-write: write
-      resource-ids: Surecore-WebResource
+      resource-ids: Lakderana-WebResource
 

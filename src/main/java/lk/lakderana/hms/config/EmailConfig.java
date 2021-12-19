@@ -14,10 +14,10 @@ public class EmailConfig {
     public JavaMailSender javaMailService() {
         JavaMailSenderImpl javaMailSender = new JavaMailSenderImpl();
 
-        javaMailSender.setHost("EMAIL_HOST");
-        javaMailSender.setPort(1111);
-        javaMailSender.setUsername("EMAIL_USERNAME");
-        javaMailSender.setPassword("EMAIL_PASSWORD");
+        javaMailSender.setHost("smtp.gmail.com");
+        javaMailSender.setPort(587);
+        javaMailSender.setUsername("saddeepmihiranga@gmail.com");
+        javaMailSender.setPassword("hifacogltbjdtyqf");
         javaMailSender.setJavaMailProperties(getMailProperties());
 
         return javaMailSender;

@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
 public class PasswordResetConfig {
 
 //    @Value("${email.callback.host}")
-    private String callbackHost;
+    private String callbackHost = "https://lakderana-hms-web.herokuapp.com/api";
 
 //    @Value("${email.callback.port}")
     private int port;

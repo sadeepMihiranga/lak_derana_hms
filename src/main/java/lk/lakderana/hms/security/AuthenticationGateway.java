@@ -19,6 +19,7 @@ import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.Constants;
 import lk.lakderana.hms.util.RequestType;
 import org.apache.commons.io.IOUtils;
+import org.assertj.core.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
@@ -103,8 +104,6 @@ public class AuthenticationGateway {
                 resetPassword.getUsername().isEmpty()) {
             throw new DataNotFoundException("Username and Contact Type are Required.");
         }
-
-        PARTY_CONTACT_EMAIL.getValue();
         
         if (resetPassword.getContactType().equals(PARTY_CONTACT_EMAIL.getValue()))
             response = generateResetPasswordTokenEmail(resetPassword.getUsername(), templateName, emailSubject);
@@ -209,7 +208,7 @@ public class AuthenticationGateway {
             String emailFrom = "saddeepmihiranga@gmail.com";
             emailSender.send(constructResetTokenEmail(token, userDTO.getPartyCode(), partyContactDTO.getContactNumber(),
                     templateName, emailSubject, partyUsername));
-            response = new SuccessResponse(userDTO.getPartyCode(), "SUCCESS", true, 1100);
+            response = new SuccessResponse(userDTO.getPartyCode(), "Email sent successfully", true, 1100);
         } catch (Exception e) {
             logger.debug("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : " + e.getMessage());
             throw new OperationException("Error when sending the email");
@@ -253,6 +252,7 @@ public class AuthenticationGateway {
         }
 
         // insert to sms log table
+        // send sms
         try {
             response = new SuccessResponse(userDTO.getPartyCode(), "SUCCESS", true, 1100);
         } catch (Exception e) {
@@ -278,12 +278,12 @@ public class AuthenticationGateway {
 
         if (contactType.equals(PARTY_CONTACT_EMAIL.getValue())) {
             token = UUID.randomUUID().toString();
-        } else if (contactType.equals(PARTY_CONTACT_EMAIL.getValue())) {
-            Random rand = new Random();
-            token = String.format("%06d", 100000 + rand.nextInt(900000));
+            tCmMsPartyToken.setToknToken(token);
+        } else if (contactType.equals(PARTY_CONTACT_MOBILE.getValue())) {
+            token = String.format("%06d", 100000 + new Random().nextInt(900000));
+            tCmMsPartyToken.setToknPinNo(token);
         }
 
-        tCmMsPartyToken.setToknPinNo(token);
         tCmMsPartyToken.setToknRequestType(RequestType.PW.toString());
         tCmMsPartyToken.setToknExpiryTime();
         tCmMsPartyToken.setParty(partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue()));
@@ -337,7 +337,7 @@ public class AuthenticationGateway {
         final String url = passwordResetConfig.getCallbackHost()
                 + "/auth/reset_password?id=" + partyCode
                 + "&token=" + URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
-                + "&type=CEMIL";
+                + "&type=" + PARTY_CONTACT_EMAIL.getValue();
         return constructEmail(toEmailAddress, emailSubject, url, username, templateName);
     }
 
@@ -345,32 +345,27 @@ public class AuthenticationGateway {
      * Update user password by given new password string (either for a given username or user code)
      *
      * @return username, if password successfully saved.
-     * @author NJ
-     * @since 01/2019
      */
-    public SuccessResponse updUserPassword(UpdatePasswordDTO updatePassword) {
+    public SuccessResponse updateUserPassword(UpdatePasswordDTO updatePassword) {
         SuccessResponse response = null;
         Set<ConstraintViolation<UpdatePasswordDTO>> violations = localValidatorFactoryBean.validate(updatePassword);
         violations.stream().findFirst().ifPresent(violation -> {
             throw new DataNotFoundException(violation.getMessage());
         });
 
-        if (updatePassword.getTokenType().equals(PARTY_CONTACT_EMAIL.getValue())) {
+        if (updatePassword.getTokenType().equals(PARTY_CONTACT_EMAIL.getValue()))
             verifyResetPasswordForTokenString(updatePassword.getUsername(), updatePassword.getToken());
-        } else if (updatePassword.getTokenType().equals(PARTY_CONTACT_MOBILE.getValue())) {
+        else if (updatePassword.getTokenType().equals(PARTY_CONTACT_MOBILE.getValue()))
             verifyResetPasswordForPinNo(updatePassword.getUsername(), updatePassword.getToken());
-        }
 
         if (updatePassword.getTokenType().equals(PARTY_CONTACT_EMAIL.getValue())) {
             response = updUserPasswordByCode(updatePassword.getUsername(), updatePassword.getNewPassword());
-            if (response.getSuccess().equals(true)) {
+            if (response.getSuccess().equals(true))
                 updatePasswordTokenStatus(PARTY_CONTACT_EMAIL.getValue(), updatePassword.getUsername(), updatePassword.getToken());
-            }
         } else {
             response = updUserPasswordByUsername(updatePassword.getUsername(), updatePassword.getNewPassword());
-            if (response.getSuccess().equals(true)) {
+            if (response.getSuccess().equals(true))
                 updatePasswordTokenStatus(PARTY_CONTACT_MOBILE.getValue(), updatePassword.getUsername(), updatePassword.getToken());
-            }
         }
 
         return response;
@@ -413,26 +408,26 @@ public class AuthenticationGateway {
      * is reset via email link.
      *
      * @param partyCode   - party code
-     * @param newPassowrd - new password string
+     * @param newPassword - new password string
      * @return - party code if password successfully saved.
      */
-    public SuccessResponse updUserPasswordByCode(String partyCode, String newPassowrd) {
+    public SuccessResponse updUserPasswordByCode(String partyCode, String newPassword) {
         SuccessResponse response = null;
 
-        if (partyCode == null || newPassowrd == null)
-            throw new DataNotFoundException("User Code and New Password are Required.");
+        if (Strings.isNullOrEmpty(partyCode) || Strings.isNullOrEmpty(newPassword))
+            throw new DataNotFoundException("User Code and New Password are Required");
 
         final TMsUser tMsUser = userRepository.findByParty_PrtyCodeAndUserStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
         if (tMsUser == null)
-            throw new InvalidDataException("Invalid User Code");
+            throw new InvalidDataException("Invalid Party Code");
 
         // update party table with new password
         try {
-            tMsUser.setUserPassword(passwordEncoder.encode(newPassowrd));
+            tMsUser.setUserPassword(passwordEncoder.encode(newPassword));
             /*tMsUser.setLastModDate(new Date());
             tMsUser.setLastModUserCode(tCmMsParty.getId());*/
             userRepository.save(tMsUser);
-            response = new SuccessResponse(tMsUser.getUserUsername(), "SUCCESS", true, 1100);
+            response = new SuccessResponse(tMsUser.getUserUsername(), "Password Reset Success", true, 1100);
         } catch (Exception e) {
             logger.debug("Auth -> updUserPasswordByCode -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when updating the password");

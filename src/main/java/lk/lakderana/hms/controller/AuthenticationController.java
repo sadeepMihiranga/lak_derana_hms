@@ -41,6 +41,7 @@ public class AuthenticationController {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
+    /** login api / create access and refresh tokens */
     @PostMapping(value = "/token", consumes = {"application/json", "application/x-www-form-urlencoded"})
     public ResponseEntity<SuccessResponse> getToken(@RequestBody String payload) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
@@ -59,12 +60,13 @@ public class AuthenticationController {
         return SuccessResponseHandler.generateResponse(new JwtAuthenticationResponse(jwt, refreshToken));
     }
 
+    /** token refresh api */
     @PostMapping(value = "/token/refresh")
     public ResponseEntity<JwtAuthenticationResponse> getTokenUsingRefreshToken(@RequestBody String payload) {
         ObjectMapper mapper = new ObjectMapper();
         try {
             JsonNode jsonNode = mapper.readTree(payload);
-            String refreshToken = jsonNode.get("refresh_token").textValue();
+            String refreshToken = jsonNode.get("refreshToken").textValue();
             Map<String, String> tokenMap = jwtTokenProvider.generateTokenPairFromRefreshToken(refreshToken);
             return ResponseEntity.ok(new JwtAuthenticationResponse(tokenMap.get("jwt"), tokenMap.get("refresh")));
         } catch (JsonProcessingException e) {
@@ -81,7 +83,8 @@ public class AuthenticationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @PostMapping(value = "/resetPassword")
+    /** reset password email sending api for two factor authentication */
+    @PostMapping(value = "/password/reset")
     public ResponseEntity<SuccessResponse> generatePasswordResetToken(@RequestBody String resetPasswordJson) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         ResetPasswordDTO resetPassword = mapper.readValue(resetPasswordJson, ResetPasswordDTO.class);
@@ -90,15 +93,15 @@ public class AuthenticationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    // if type = CEMIL -> username = party code, else it's username
-    @PutMapping(value = "/userPassword")
+    @PutMapping(value = "/password/update")
     public ResponseEntity<SuccessResponse> updatePassword(@RequestBody String updatePasswordJson) throws IOException {
         ObjectMapper mapper = new ObjectMapper();
         UpdatePasswordDTO updatePassword = mapper.readValue(updatePasswordJson, UpdatePasswordDTO.class);
-        SuccessResponse response = authenticationGateway.updUserPassword(updatePassword);
+        SuccessResponse response = authenticationGateway.updateUserPassword(updatePassword);
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
+    /** verify two factor authentication via a pin number (mobile) */
     @GetMapping(value = "/verifyPin")
     public ResponseEntity<SuccessResponse> verifyPIN(@RequestParam("username") String username,
                                                      @RequestParam("pinNo") String pin) {
@@ -106,7 +109,8 @@ public class AuthenticationController {
         return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
-    @GetMapping(value = "/verifyEmailLink")
+    /** verify two factor authentication via token (email) */
+    @GetMapping(value = "/email/verify")
     public ResponseEntity<SuccessResponse> verifyEmailLink(@RequestParam("partyCode") String partyCode,
                                                            @RequestParam("token") String token) {
         SuccessResponse response = authenticationGateway.verifyResetPasswordForTokenString(partyCode, token);
