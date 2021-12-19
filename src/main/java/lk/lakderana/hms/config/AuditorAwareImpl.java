@@ -8,6 +8,8 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
+import static lk.lakderana.hms.util.Constants.PARTY_CODE;
+
 public class AuditorAwareImpl implements AuditorAware<String> {
 
     /** return login user's user code */
@@ -16,8 +18,7 @@ public class AuditorAwareImpl implements AuditorAware<String> {
         RequestAttributes attributes = RequestContextHolder.getRequestAttributes();
         if (RequestContextHolder.getRequestAttributes() != null) {
             HttpServletRequest request = ((ServletRequestAttributes) attributes).getRequest();
-            return Optional.of(request.getHeader("PARTY_CODE"));
-            //return Optional.of("ADMIN");
+            return Optional.of(request.getAttribute(PARTY_CODE.getValue()).toString());
         } else {
             return Optional.of("ADMIN");
         }

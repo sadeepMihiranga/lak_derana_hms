@@ -4,7 +4,9 @@ public enum Constants {
 
     /** status */
     STATUS_ACTIVE((short) 1),
-    STATUS_INACTIVE((short) 0);
+    STATUS_INACTIVE((short) 0),
+
+    PARTY_CODE("PARTY_CODE");
 
     private String value;
     private short shortValue;
