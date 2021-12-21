@@ -208,6 +208,8 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new TransactionConflictException("Transaction Updated by Another User.");
         } catch (Exception e) {
+            e.printStackTrace();
+            log.error("Error while persisting : " + e.getMessage());
             throw new OperationException(e.getMessage());
         }
     }

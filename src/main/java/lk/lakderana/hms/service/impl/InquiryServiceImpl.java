@@ -2,19 +2,25 @@ package lk.lakderana.hms.service.impl;
 
 import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.InquiryDTO;
+import lk.lakderana.hms.dto.PaginatedEntity;
+import lk.lakderana.hms.dto.PartyDTO;
+import lk.lakderana.hms.entity.TMsParty;
 import lk.lakderana.hms.entity.TRfInquiry;
-import lk.lakderana.hms.exception.DataNotFoundException;
-import lk.lakderana.hms.exception.NoRequiredInfoException;
-import lk.lakderana.hms.exception.OperationException;
-import lk.lakderana.hms.exception.TransactionConflictException;
+import lk.lakderana.hms.exception.*;
 import lk.lakderana.hms.mapper.InquiryMapper;
+import lk.lakderana.hms.mapper.PartyMapper;
 import lk.lakderana.hms.repository.InquiryRepository;
 import lk.lakderana.hms.service.InquiryService;
+import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
 
@@ -53,6 +59,42 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
             throw new DataNotFoundException("An Inquiry not not found for the id " + inquiryId);
 
         return InquiryMapper.INSTANCE.entityToDTO(tRfInquiry);
+    }
+
+    @Override
+    public PaginatedEntity inquiryPaginatedSearch(String customerName, String customerContactNo, String partyCode,
+                                                  Integer page, Integer size) {
+
+        PaginatedEntity paginatedInquiryList = null;
+        List<InquiryDTO> inquiryDTOList = null;
+
+        if (page < 1)
+            throw new InvalidDataException("Page should be a value greater than 0");
+
+        if (size < 1)
+            throw new InvalidDataException("Limit should be a value greater than 0");
+
+        partyCode = partyCode.isEmpty() ? null : partyCode;
+
+        final Page<TRfInquiry> tRfInquiryPage = inquiryRepository
+                .getActiveInquiries(customerName, customerContactNo, partyCode,
+                        STATUS_ACTIVE.getShortValue(), PageRequest.of(page - 1, size));
+
+        if (tRfInquiryPage.getSize() == 0)
+            return null;
+
+        paginatedInquiryList = new PaginatedEntity();
+        inquiryDTOList = new ArrayList<>();
+
+        for (TRfInquiry tRfInquiry : tRfInquiryPage) {
+            inquiryDTOList.add(InquiryMapper.INSTANCE.entityToDTO(tRfInquiry));
+        }
+
+        paginatedInquiryList.setTotalNoOfPages(tRfInquiryPage.getTotalPages());
+        paginatedInquiryList.setTotalNoOfRecords(tRfInquiryPage.getTotalElements());
+        paginatedInquiryList.setEntities(inquiryDTOList);
+
+        return paginatedInquiryList;
     }
 
     private TRfInquiry persistEntity(TRfInquiry tRfInquiry) {

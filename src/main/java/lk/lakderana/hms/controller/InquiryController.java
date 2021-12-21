@@ -1,7 +1,6 @@
 package lk.lakderana.hms.controller;
 
 import lk.lakderana.hms.dto.InquiryDTO;
-import lk.lakderana.hms.dto.UserDTO;
 import lk.lakderana.hms.response.SuccessResponse;
 import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.service.InquiryService;
@@ -27,5 +26,15 @@ public class InquiryController {
     @GetMapping("/{inquiryId}")
     public ResponseEntity<SuccessResponse> getInquiryById(@PathVariable("inquiryId") Long inquiryId) {
         return SuccessResponseHandler.generateResponse(inquiryService.getInquiryById(inquiryId));
+    }
+
+    @GetMapping(path = "/search")
+    public ResponseEntity<SuccessResponse> getCustomersByNamePaginated(@RequestParam(name = "customerName", required = false) String customerName,
+                                                                       @RequestParam(name = "customerContactNo", required = false) String customerContactNo,
+                                                                       @RequestParam(name = "partyCode", required = false) String partyCode,
+                                                                       @RequestParam(name = "page", required = true) Integer page,
+                                                                       @RequestParam(name = "size", required = true) Integer size) {
+        return SuccessResponseHandler.generateResponse(inquiryService
+                .inquiryPaginatedSearch(customerName, customerContactNo, partyCode, page, size));
     }
 }
