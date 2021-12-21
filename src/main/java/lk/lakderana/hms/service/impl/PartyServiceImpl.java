@@ -61,14 +61,20 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
     @Override
     public PartyDTO createParty(PartyDTO partyDTO) {
 
+        String partyNumber = null;
         validateEntity(partyDTO);
 
         final TMsParty tMsParty = PartyMapper.INSTANCE.dtoToEntity(partyDTO);
 
         populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
 
-        final String partyNumber = numberGeneratorRepository.generateNumber("CU", "Y", "#", "#",
-                "#", "#", "#", "#");
+        try {
+            partyNumber = numberGeneratorRepository.generateNumber("CU", "Y", "#", "#",
+                    "#", "#", "#", "#");
+        } catch (Exception e) {
+            log.error("Error while creating a Party Code : " + e.getMessage());
+            throw new OperationException("Error while creating a Party Code");
+        }
 
         tMsParty.setPrtyStatus(Constants.STATUS_ACTIVE.getShortValue());
         tMsParty.setPrtyCode(partyNumber);
@@ -208,7 +214,6 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new TransactionConflictException("Transaction Updated by Another User.");
         } catch (Exception e) {
-            e.printStackTrace();
             log.error("Error while persisting : " + e.getMessage());
             throw new OperationException(e.getMessage());
         }

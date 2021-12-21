@@ -20,6 +20,7 @@ import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -38,8 +39,13 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
     @Override
     public PartyContactDTO insertPartyContact(PartyContactDTO partyContactDTO) {
 
+        TMsPartyContact tMsPartyContact = null;
+
         if(Strings.isNullOrEmpty(partyContactDTO.getContactNumber()))
             throw new NoRequiredInfoException("Contact Number is required");
+
+        if(Strings.isNullOrEmpty(partyContactDTO.getPartyCode()))
+            throw new NoRequiredInfoException("Party Code is required");
 
         final TMsParty tMsParty = partyRepository
                 .findByPrtyCodeAndPrtyStatus(partyContactDTO.getPartyCode(), Constants.STATUS_ACTIVE.getShortValue());
@@ -47,14 +53,17 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         if(tMsParty == null)
             throw new DataNotFoundException("Party not found for the Code : " + partyContactDTO.getPartyCode());
 
-        final TMsPartyContact tMsPartyContact = PartyContactMapper.INSTANCE.dtoToEntity(partyContactDTO);
+        try {
+            tMsPartyContact = PartyContactMapper.INSTANCE.dtoToEntity(partyContactDTO);
 
-        tMsPartyContact.setPtcnStatus(Constants.STATUS_ACTIVE.getShortValue());
-        tMsPartyContact.setParty(tMsParty);
+            tMsPartyContact.setPtcnStatus(Constants.STATUS_ACTIVE.getShortValue());
+            tMsPartyContact.setParty(tMsParty);
+        } catch (Exception e) {
+            log.error("Error while creating a Party Contact {0} ", e.getMessage());
+            throw new OperationException("Error while creating a Party Contact");
+        }
 
-        final TMsPartyContact createdPartyContact = persistEntity(tMsPartyContact);
-
-        return PartyContactMapper.INSTANCE.entityToDTO(createdPartyContact);
+        return PartyContactMapper.INSTANCE.entityToDTO(persistEntity(tMsPartyContact));
     }
 
     @Override
@@ -78,6 +87,9 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         final List<TMsPartyContact> tMsPartyContactList = partyContactRepository
                 .findAllByParty_PrtyCodeAndPtcnStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
 
+        if(tMsPartyContactList.isEmpty() || tMsPartyContactList == null)
+            return Collections.emptyList();
+
         List<PartyContactDTO> contactDTOList = new ArrayList<>();
 
         tMsPartyContactList.forEach(tMsPartyContact -> {
@@ -93,15 +105,20 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         if(Strings.isNullOrEmpty(partyCode))
             throw new NoRequiredInfoException("Party Code is required");
 
+        if(Strings.isNullOrEmpty(contactType))
+            throw new NoRequiredInfoException("Contact Type Code is required");
+
         final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
 
         if(tMsParty == null)
             throw new DataNotFoundException("Party not found for the Code : " + partyCode);
 
+        // TODO : this should be getting active type of contact for the given type
         final TMsPartyContact tMsPartyContact = partyContactRepository
                 .findAllByParty_PrtyCodeAndPtcnContactTypeAndPtcnStatus(partyCode, contactType, Constants.STATUS_ACTIVE.getShortValue());
 
-        List<PartyContactDTO> contactDTOList = new ArrayList<>();
+        if(tMsPartyContact == null)
+            throw new DataNotFoundException("Contact Not found");
 
         return PartyContactMapper.INSTANCE.entityToDTO(tMsPartyContact);
     }
@@ -113,6 +130,7 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new TransactionConflictException("Transaction Updated by Another User.");
         } catch (Exception e) {
+            log.error("Error while persisting : " + e.getMessage());
             throw new OperationException(e.getMessage());
         }
     }

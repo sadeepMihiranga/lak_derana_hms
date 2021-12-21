@@ -2,6 +2,7 @@ package lk.lakderana.hms.service.impl;
 
 import com.google.common.base.Strings;
 import lk.lakderana.hms.dto.DropDownDTO;
+import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.repository.FunctionRepository;
 import lk.lakderana.hms.repository.RoleRepository;
@@ -68,6 +69,8 @@ public class DropDownServiceImpl implements DropDownService {
                     downDTOList.add(new DropDownDTO(tMsRole.getRoleId().toString(), tMsRole.getRoleName(), tMsRole.getRoleStatus()));
                 });
                 break;
+            default:
+                throw new InvalidDataException("Requested Dropdown Code is invalid");
         }
 
         return downDTOList;

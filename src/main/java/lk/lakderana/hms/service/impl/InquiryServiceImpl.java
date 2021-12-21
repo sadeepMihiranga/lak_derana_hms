@@ -3,15 +3,11 @@ package lk.lakderana.hms.service.impl;
 import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.InquiryDTO;
 import lk.lakderana.hms.dto.PaginatedEntity;
-import lk.lakderana.hms.dto.PartyDTO;
-import lk.lakderana.hms.entity.TMsParty;
 import lk.lakderana.hms.entity.TRfInquiry;
 import lk.lakderana.hms.exception.*;
 import lk.lakderana.hms.mapper.InquiryMapper;
-import lk.lakderana.hms.mapper.PartyMapper;
 import lk.lakderana.hms.repository.InquiryRepository;
 import lk.lakderana.hms.service.InquiryService;
-import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -37,6 +33,8 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
     @Override
     public InquiryDTO createInquiry(InquiryDTO inquiryDTO) {
 
+        InquiryDTO createdInquiry = null;
+
         inquiryDTO.setBranchId(1l);
         validateEntity(inquiryDTO);
 
@@ -44,7 +42,9 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         tRfInquiry.setInqrStatus(STATUS_ACTIVE.getShortValue());
         tRfInquiry.setInqrDateTime(LocalDateTime.now());
 
-        return InquiryMapper.INSTANCE.entityToDTO(persistEntity(tRfInquiry));
+        createdInquiry = InquiryMapper.INSTANCE.entityToDTO(persistEntity(tRfInquiry));
+
+        return createdInquiry;
     }
 
     @Override

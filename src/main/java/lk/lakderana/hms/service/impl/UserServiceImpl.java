@@ -377,6 +377,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
         } catch (ObjectOptimisticLockingFailureException e) {
             throw new TransactionConflictException("Transaction Updated by Another User.");
         } catch (Exception e) {
+            log.error("Error while persisting : " + e.getMessage());
             throw new OperationException(e.getMessage());
         }
     }

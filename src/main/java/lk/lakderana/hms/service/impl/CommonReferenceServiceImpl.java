@@ -36,7 +36,7 @@ public class CommonReferenceServiceImpl implements CommonReferenceService {
         final List<TRfCommonReference> tRfCommonReferenceList = commonReferenceRepository
                 .findAllByReferenceTypeCmrtCodeAndCmrfStatus(cmrtCode, Constants.STATUS_ACTIVE.getShortValue());
 
-        if(tRfCommonReferenceList.isEmpty())
+        if(tRfCommonReferenceList.isEmpty() || tRfCommonReferenceList == null)
             return Collections.emptyList();
 
         List<CommonReferenceDTO> commonReferenceDTOList = new ArrayList<>();

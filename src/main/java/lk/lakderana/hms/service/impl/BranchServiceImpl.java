@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -26,6 +27,9 @@ public class BranchServiceImpl implements BranchService {
     public List<BranchDTO> getAllBranches() {
 
         final List<TRfBranch> tRfBranchList = branchRepository.findAllByBrnhStatus(Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tRfBranchList.isEmpty() || tRfBranchList == null)
+            return Collections.emptyList();
 
         List<BranchDTO> branchDTOList = new ArrayList<>();
 
