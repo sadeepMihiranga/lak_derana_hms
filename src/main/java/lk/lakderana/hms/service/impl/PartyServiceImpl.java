@@ -68,6 +68,8 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
         populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
 
+        partyDTO.setName(partyDTO.getFirstName() + " " + partyDTO.getLastName());
+
         try {
             partyNumber = numberGeneratorRepository.generateNumber("CU", "Y", "#", "#",
                     "#", "#", "#", "#");
@@ -130,6 +132,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
         populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
 
+        partyDTO.setName(partyDTO.getFirstName() + " " + partyDTO.getLastName());
         tMsParty.setPrtyAddress1(partyDTO.getAddress1());
         tMsParty.setPrtyAddress2(partyDTO.getAddress2());
         tMsParty.setPrtyAddress3(partyDTO.getAddress3());
