@@ -207,6 +207,25 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
         userDTO.setPassword(null);
         userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
+        userDTO.getRoles().forEach(roleDTO -> {
+            final List<TMsRoleFunction> functionList = getPermissionsByRole(roleDTO.getId());
+
+            functionList.forEach(tMsRoleFunction -> {
+
+                List<FunctionDTO> functionDTOList = new ArrayList<>();
+
+                functionDTOList.add(
+                        new FunctionDTO(
+                                tMsRoleFunction.getFunction().getFuncId(),
+                                tMsRoleFunction.getFunction().getDunsDescription(),
+                                tMsRoleFunction.getRofuStatus()
+                        )
+                );
+
+                roleDTO.setFunctions(functionDTOList);
+            });
+        });
+
         return userDTO;
     }
 
