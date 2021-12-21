@@ -64,11 +64,11 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         String partyNumber = null;
         validateEntity(partyDTO);
 
+        partyDTO.setName(partyDTO.getFirstName() + " " + partyDTO.getLastName());
+
         final TMsParty tMsParty = PartyMapper.INSTANCE.dtoToEntity(partyDTO);
 
         populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
-
-        partyDTO.setName(partyDTO.getFirstName() + " " + partyDTO.getLastName());
 
         try {
             partyNumber = numberGeneratorRepository.generateNumber("CU", "Y", "#", "#",

@@ -203,17 +203,23 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
                 .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), STATUS_ACTIVE.getShortValue());
 
         final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
+        List<FunctionDTO> functionDTOList = new ArrayList<>();
 
         userDTO.setPassword(null);
         userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+        userDTO.setFunctions(getFunctionsByRoles(userDTO));
+
+        return userDTO;
+    }
+
+    private List<FunctionDTO> getFunctionsByRoles(UserDTO userDTO) {
+
+        List<FunctionDTO> functionDTOList = new ArrayList<>();
 
         userDTO.getRoles().forEach(roleDTO -> {
             final List<TMsRoleFunction> functionList = getPermissionsByRole(roleDTO.getId());
 
             functionList.forEach(tMsRoleFunction -> {
-
-                List<FunctionDTO> functionDTOList = new ArrayList<>();
-
                 functionDTOList.add(
                         new FunctionDTO(
                                 tMsRoleFunction.getFunction().getFuncId(),
@@ -221,12 +227,10 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
                                 tMsRoleFunction.getRofuStatus()
                         )
                 );
-
-                roleDTO.setFunctions(functionDTOList);
             });
         });
 
-        return userDTO;
+        return functionDTOList;
     }
 
     @Override
@@ -289,6 +293,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
                     .findAllByUser_UserIdAndUsrlStatus(userDTO.getId(), STATUS_ACTIVE.getShortValue());
 
             userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+            userDTO.setFunctions(getFunctionsByRoles(userDTO));
         }
 
         paginatedUserList.setTotalNoOfPages(tMsUserPage.getTotalPages());

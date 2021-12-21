@@ -8,6 +8,7 @@ import lk.lakderana.hms.exception.OperationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -58,11 +59,17 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     public final ResponseEntity handleDataNotFoundException(DataNotFoundException ex) throws IOException {
         return handleException(ex, HttpStatus.NOT_FOUND);
     }
-    
+
     @ExceptionHandler(OperationException.class)
     public final ResponseEntity handleOperationException(OperationException ex) throws IOException {
         return handleException(ex, HttpStatus.INTERNAL_SERVER_ERROR);
     }
+
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public final ResponseEntity handleOperationException() throws IOException {
+        return handleException(new lk.lakderana.hms.exception.DataIntegrityViolationException(), HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
 
     @Override
     protected ResponseEntity handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {

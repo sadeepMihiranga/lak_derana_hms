@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -22,4 +23,5 @@ public class UserDTO implements Paginated {
     private String password;
     private Short status;
     private List<RoleDTO> roles;
+    private List<FunctionDTO> functions;
 }

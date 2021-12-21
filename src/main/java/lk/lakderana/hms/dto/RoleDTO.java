@@ -14,5 +14,4 @@ public class RoleDTO {
 
     private Long id;
     private String name;
-    private List<FunctionDTO> functions = new ArrayList<>();
 }

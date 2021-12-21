@@ -208,7 +208,8 @@ public class AuthenticationGateway {
         try {
             emailSender.send(constructResetTokenEmail(token, userDTO.getPartyCode(), partyContactDTO.getContactNumber(),
                     templateName, emailSubject, partyUsername));
-            response = new SuccessResponse(userDTO.getPartyCode(), "Email sent successfully", true, 1100);
+            response = new SuccessResponse(userDTO.getPartyCode(),
+                    "You will receive an Email to " + partyContactDTO.getContactNumber() + " address.", true, 1100);
         } catch (Exception e) {
             logger.debug("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : " + e.getMessage());
             throw new OperationException("Error when sending the email");
