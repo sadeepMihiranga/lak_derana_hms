@@ -14,14 +14,14 @@ public interface InquiryRepository extends JpaRepository<TRfInquiry, String> {
     TRfInquiry findByInqrIdAndBranch_BrnhId(Long inqrId, Long brnhId);
 
     @Query("SELECT t FROM TRfInquiry t " +
-            "WHERE t.inqrStatus = :status " +
-            "AND (:prtyCode IS NULL OR (:prtyCode IS NOT NULL AND t.inqrCustomerCode = :prtyCode)) " +
+            "WHERE (:prtyCode IS NULL OR (:prtyCode IS NOT NULL AND t.inqrCustomerCode = :prtyCode)) " +
             "AND UPPER(t.inqrCustomerName) LIKE CONCAT('%', UPPER(:customerName), '%') " +
             "AND UPPER(t.inqrCustomerContactNo) LIKE CONCAT('%', UPPER(:customerContactNo), '%') " +
+            "AND t.branch.brnhId = :branchId " +
             "ORDER BY t.lastModDate DESC")
     Page<TRfInquiry> getActiveInquiries(@Param("customerName") String customerName,
                                         @Param("customerContactNo") String customerContactNo,
                                         @Param("prtyCode") String prtyCode,
-                                        @Param("status") Short status,
+                                        @Param("branchId") Long branchId,
                                         Pageable pageable);
 }

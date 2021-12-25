@@ -75,17 +75,13 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         PaginatedEntity paginatedInquiryList = null;
         List<InquiryDTO> inquiryDTOList = null;
 
-        if (page < 1)
-            throw new InvalidDataException("Page should be a value greater than 0");
-
-        if (size < 1)
-            throw new InvalidDataException("Limit should be a value greater than 0");
+        validatePaginateIndexes(page, size);
 
         partyCode = partyCode.isEmpty() ? null : partyCode;
 
         final Page<TRfInquiry> tRfInquiryPage = inquiryRepository
-                .getActiveInquiries(customerName, customerContactNo, partyCode,
-                        STATUS_ACTIVE.getShortValue(), PageRequest.of(page - 1, size));
+                .getActiveInquiries(customerName, customerContactNo, partyCode, captureBranchId(),
+                        PageRequest.of(page - 1, size));
 
         if (tRfInquiryPage.getSize() == 0)
             return null;
