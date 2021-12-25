@@ -80,7 +80,7 @@ public class JwtTokenProvider {
                 .setAudience(clientId)
                 .setIssuer(realm)
                 .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                .setExpiration(ACCESS_TOKEN_EXPIRE_30_MIN)
+                .setExpiration(ACCESS_TOKEN_EXPIRE_1_MONTH)
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes(StandardCharsets.UTF_8))
                 .compact();
     }
@@ -126,7 +126,7 @@ public class JwtTokenProvider {
                     .setAudience(clientId)
                     .setIssuer(realm)
                     .setIssuedAt(Date.from(LocalDateTime.now().atZone(ZoneId.systemDefault()).toInstant()))
-                    .setExpiration(ACCESS_TOKEN_EXPIRE_30_MIN)
+                    .setExpiration(ACCESS_TOKEN_EXPIRE_1_MONTH)
                     .signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes(StandardCharsets.UTF_8))
                     .compact();
 
