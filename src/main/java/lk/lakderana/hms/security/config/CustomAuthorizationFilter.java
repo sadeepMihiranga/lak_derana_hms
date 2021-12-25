@@ -2,7 +2,6 @@ package lk.lakderana.hms.security.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lk.lakderana.hms.service.UserService;
-import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,7 +20,8 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static lk.lakderana.hms.util.Constants.PARTY_CODE;
+import static lk.lakderana.hms.util.Constants.REQUEST_PARTY_CODE;
+import static lk.lakderana.hms.util.Constants.REQUEST_BRANCHES;
 import static lk.lakderana.hms.util.ResponseMessageKeys.*;
 
 @Slf4j
@@ -55,7 +55,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                         log.info("Authenticated user " + username + ", setting security context");
                         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                        request.setAttribute(PARTY_CODE.getValue(), jwtTokenProvider.extractPartyCode(token));
+                        request.setAttribute(REQUEST_PARTY_CODE.getValue(), jwtTokenProvider.extractPartyCode(token));
+                        request.setAttribute(REQUEST_BRANCHES.getValue(), jwtTokenProvider.extractBranches(token));
                     }
                     filterChain.doFilter(request, response);
 

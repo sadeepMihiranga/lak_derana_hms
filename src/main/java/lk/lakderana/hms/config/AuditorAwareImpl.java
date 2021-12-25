@@ -8,8 +8,6 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Optional;
 
-import static lk.lakderana.hms.util.Constants.PARTY_CODE;
-
 public class AuditorAwareImpl implements AuditorAware<String> {
 
     /** return login user's user code */

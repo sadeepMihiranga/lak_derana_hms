@@ -8,12 +8,14 @@ import lk.lakderana.hms.exception.*;
 import lk.lakderana.hms.mapper.InquiryMapper;
 import lk.lakderana.hms.repository.InquiryRepository;
 import lk.lakderana.hms.service.InquiryService;
+import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,9 +26,13 @@ import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
 @Service
 public class InquiryServiceImpl extends EntityValidator implements InquiryService {
 
+    private final HttpServletRequest request;
+
     private final InquiryRepository inquiryRepository;
 
-    public InquiryServiceImpl(InquiryRepository inquiryRepository) {
+    public InquiryServiceImpl(HttpServletRequest request,
+                              InquiryRepository inquiryRepository) {
+        this.request = request;
         this.inquiryRepository = inquiryRepository;
     }
 
@@ -35,7 +41,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
 
         InquiryDTO createdInquiry = null;
 
-        inquiryDTO.setBranchId(1l);
+        inquiryDTO.setBranchId(captureBranchId());
         validateEntity(inquiryDTO);
 
         final TRfInquiry tRfInquiry = InquiryMapper.INSTANCE.dtoToEntity(inquiryDTO);

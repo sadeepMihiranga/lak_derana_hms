@@ -6,7 +6,8 @@ public enum Constants {
     STATUS_ACTIVE((short) 1),
     STATUS_INACTIVE((short) 0),
 
-    PARTY_CODE("PARTY_CODE");
+    REQUEST_PARTY_CODE("PARTY_CODE"),
+    REQUEST_BRANCHES("BRANCHES");
 
     private String value;
     private short shortValue;

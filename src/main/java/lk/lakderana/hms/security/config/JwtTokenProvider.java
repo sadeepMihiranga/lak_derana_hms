@@ -144,7 +144,11 @@ public class JwtTokenProvider {
     }
 
     public String extractPartyCode(String token) {
-        return extractClaimsFromToken(token).getBody().get("partyCode").toString();
+        return extractClaimsFromToken(token).getBody().get(PARTY_CODE).toString();
+    }
+
+    public String extractBranches(String token) {
+        return extractClaimsFromToken(token).getBody().get(BRANCHES).toString();
     }
 
     public Collection<SimpleGrantedAuthority> extractRoles(String token) {
