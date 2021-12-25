@@ -1,10 +1,7 @@
 package lk.lakderana.hms.exception.handle;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import lk.lakderana.hms.exception.BaseException;
-import lk.lakderana.hms.exception.DataNotFoundException;
-import lk.lakderana.hms.exception.InvalidDataException;
-import lk.lakderana.hms.exception.OperationException;
+import lk.lakderana.hms.exception.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.TypeMismatchException;
@@ -47,7 +44,7 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         errorAttributes.put(KEY_SUCCESS, false);
         errorAttributes.put(KEY_CODE, ex.getCode());
 
-        return new ResponseEntity<Object>(errorAttributes, httpStatus);
+        return new ResponseEntity<Object>(errorAttributes, HttpStatus.OK);
     }
     
     @ExceptionHandler(InvalidDataException.class)
@@ -70,6 +67,25 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
         return handleException(new lk.lakderana.hms.exception.DataIntegrityViolationException(), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(NoRequiredInfoException.class)
+    public final ResponseEntity handleNoRequiredInfoException(NoRequiredInfoException ex) throws IOException {
+        return handleException(ex, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(ConstraintException.class)
+    public final ResponseEntity handleConstraintExceptionException(ConstraintException ex) throws IOException {
+        return handleException(ex, HttpStatus.FAILED_DEPENDENCY);
+    }
+
+    @ExceptionHandler(DuplicateRecordException.class)
+    public final ResponseEntity handleDuplicateRecordException(DuplicateRecordException ex) throws IOException {
+        return handleException(ex, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(TransactionConflictException.class)
+    public final ResponseEntity handleTransactionConflictException(TransactionConflictException ex) throws IOException {
+        return handleException(ex, HttpStatus.CONFLICT);
+    }
 
     @Override
     protected ResponseEntity handleMissingServletRequestParameter(MissingServletRequestParameterException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {

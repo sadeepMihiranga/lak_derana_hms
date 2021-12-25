@@ -71,7 +71,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                     errorAttributes.put(KEY_CODE, HttpServletResponse.SC_FORBIDDEN);
 
                     response.setHeader("Error", e.getMessage());
-                    response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    //response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                    response.setStatus(HttpServletResponse.SC_OK);
 
                     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
                     new ObjectMapper().writeValue(response.getOutputStream(), errorAttributes);
