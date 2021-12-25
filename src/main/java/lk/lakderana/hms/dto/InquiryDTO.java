@@ -28,4 +28,5 @@ public class InquiryDTO implements Paginated {
     private String customerName;
     @NotBlank(message = "Customer Contact Number is required")
     private String customerContactNo;
+    private Long transferredFrom;
 }

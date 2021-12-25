@@ -9,7 +9,9 @@ import org.springframework.data.repository.query.Param;
 
 public interface InquiryRepository extends JpaRepository<TRfInquiry, String> {
 
-    TRfInquiry findByInqrIdAndInqrStatus(Long inqrId, Short inqrStatus);
+    TRfInquiry findByInqrIdAndBranch_BrnhIdAndInqrStatus(Long inqrId, Long brnhId, Short inqrStatus);
+
+    TRfInquiry findByInqrIdAndBranch_BrnhId(Long inqrId, Long brnhId);
 
     @Query("SELECT t FROM TRfInquiry t " +
             "WHERE t.inqrStatus = :status " +

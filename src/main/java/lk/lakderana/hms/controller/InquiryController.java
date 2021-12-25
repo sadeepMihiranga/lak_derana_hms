@@ -37,4 +37,9 @@ public class InquiryController {
         return SuccessResponseHandler.generateResponse(inquiryService
                 .inquiryPaginatedSearch(customerName, customerContactNo, partyCode, page, size));
     }
+
+    @PostMapping("/transfer")
+    public ResponseEntity<SuccessResponse> transferInquiry(@RequestBody InquiryDTO inquiryDTO) {
+        return SuccessResponseHandler.generateResponse(inquiryService.transferInquiry(inquiryDTO));
+    }
 }

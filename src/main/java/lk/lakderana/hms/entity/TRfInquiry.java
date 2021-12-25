@@ -41,4 +41,8 @@ public class TRfInquiry extends AuditModel {
 
     @Column(name = "INQR_CONTACT_NO")
     private String inqrCustomerContactNo;
+
+    @JoinColumn(name = "INQR_TRANSFERRED_FROM")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private TRfBranch inqrTransferredFrom;
 }
