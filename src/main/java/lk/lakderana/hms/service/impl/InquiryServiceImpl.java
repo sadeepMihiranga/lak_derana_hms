@@ -50,6 +50,13 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
     @Override
     public InquiryDTO getInquiryById(Long inquiryId) {
 
+        final TRfInquiry tRfInquiry = validateInquiryById(inquiryId);
+
+        return InquiryMapper.INSTANCE.entityToDTO(tRfInquiry);
+    }
+
+    private TRfInquiry validateInquiryById(Long inquiryId) {
+
         if(inquiryId == null)
             throw new NoRequiredInfoException("Inquiry Id is required");
 
@@ -58,7 +65,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         if(tRfInquiry == null)
             throw new DataNotFoundException("An Inquiry not not found for the id " + inquiryId);
 
-        return InquiryMapper.INSTANCE.entityToDTO(tRfInquiry);
+        return tRfInquiry;
     }
 
     @Override

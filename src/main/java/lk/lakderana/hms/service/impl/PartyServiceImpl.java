@@ -1,5 +1,6 @@
 package lk.lakderana.hms.service.impl;
 
+import lk.lakderana.hms.dto.CommonReferenceDTO;
 import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.dto.PartyContactDTO;
 import lk.lakderana.hms.dto.PartyDTO;
@@ -18,6 +19,7 @@ import lk.lakderana.hms.repository.PartyRepository;
 import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.PartyService;
+import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.CommonReferenceTypeCodes;
 import lk.lakderana.hms.util.Constants;
 import lk.lakderana.hms.config.EntityValidator;
@@ -38,6 +40,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
     private final CommonReferenceService commonReferenceService;
     private final PartyContactService partyContactService;
+    private final UserService userService;
 
     private final PartyRepository partyRepository;
     private final DepartmentRepository departmentRepository;
@@ -46,12 +49,15 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
     public PartyServiceImpl(PartyRepository partyRepository,
                             CommonReferenceService commonReferenceService,
-                            PartyContactService partyContactService, DepartmentRepository departmentRepository,
+                            PartyContactService partyContactService,
+                            UserService userService,
+                            DepartmentRepository departmentRepository,
                             BranchRepository branchRepository,
                             NumberGeneratorRepository numberGeneratorRepository) {
         this.partyRepository = partyRepository;
         this.commonReferenceService = commonReferenceService;
         this.partyContactService = partyContactService;
+        this.userService = userService;
         this.departmentRepository = departmentRepository;
         this.branchRepository = branchRepository;
         this.numberGeneratorRepository = numberGeneratorRepository;
@@ -68,7 +74,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
         final TMsParty tMsParty = PartyMapper.INSTANCE.dtoToEntity(partyDTO);
 
-        populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
+        populateAndValidatePartyReferenceDetailsOnPersist(tMsParty, partyDTO);
 
         try {
             partyNumber = numberGeneratorRepository.generateNumber("CU", "Y", "#", "#",
@@ -100,15 +106,11 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
     @Override
     public PartyDTO getPartyByPartyCode(String partyCode) {
 
-        if (Strings.isNullOrEmpty(partyCode))
-            throw new InvalidDataException("Party Code is required");
-
-        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
-
-        if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
+        final TMsParty tMsParty = validateByPartyCode(partyCode);
 
         PartyDTO partyDTO = PartyMapper.INSTANCE.entityToDTO(tMsParty);
+
+        setReferenceData(tMsParty, partyDTO);
 
         final List<PartyContactDTO> contactDTOList = partyContactService.getContactsByPartyCode(partyDTO.getPartyCode(), true);
         partyDTO.setContactList(contactDTOList);
@@ -122,15 +124,9 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
         validateEntity(partyDTO);
 
-        if (partyCode == null)
-            throw new InvalidDataException("Party Code is required");
+        TMsParty tMsParty = validateByPartyCode(partyCode);
 
-        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
-
-        if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
-
-        populateAndValidatePartyReferenceDetails(tMsParty, partyDTO);
+        populateAndValidatePartyReferenceDetailsOnPersist(tMsParty, partyDTO);
 
         partyDTO.setName(partyDTO.getFirstName() + " " + partyDTO.getLastName());
         tMsParty.setPrtyAddress1(partyDTO.getAddress1());
@@ -148,7 +144,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         return PartyMapper.INSTANCE.entityToDTO(persistEntity(tMsParty));
     }
 
-    private void populateAndValidatePartyReferenceDetails(TMsParty tMsParty, PartyDTO partyDTO) {
+    private void populateAndValidatePartyReferenceDetailsOnPersist(TMsParty tMsParty, PartyDTO partyDTO) {
 
         commonReferenceService
                 .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.PARTY_TYPES.getValue(), partyDTO.getType());
@@ -172,8 +168,17 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
     @Transactional
     @Override
-    public Long removeParty(String partyCode) {
-        return null;
+    public Boolean removeParty(String partyCode) {
+
+        TMsParty tMsParty = validateByPartyCode(partyCode);
+
+        partyContactService.removePartyContactByPartyCode(partyCode);
+        userService.removeUserByPartyCode(partyCode);
+
+        tMsParty.setPrtyStatus(Constants.STATUS_INACTIVE.getShortValue());
+        persistEntity(tMsParty);
+
+        return true;
     }
 
     @Override
@@ -200,7 +205,12 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         customerList = new ArrayList<>();
 
         for (TMsParty tMsParty : tMsPartyPage) {
-            customerList.add(PartyMapper.INSTANCE.entityToDTO(tMsParty));
+
+            PartyDTO partyDTO = PartyMapper.INSTANCE.entityToDTO(tMsParty);
+
+            setReferenceData(tMsParty, partyDTO);
+
+            customerList.add(partyDTO);
         }
 
         paginatedPartyList.setTotalNoOfPages(tMsPartyPage.getTotalPages());
@@ -208,6 +218,32 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         paginatedPartyList.setEntities(customerList);
 
         return paginatedPartyList;
+    }
+
+    private void setReferenceData(TMsParty tMsParty, PartyDTO partyDTO) {
+
+        if(tMsParty.getDepartment() != null)
+            partyDTO.setDepartmentName(tMsParty.getDepartment().getDpmtName());
+
+        if(!Strings.isNullOrEmpty(partyDTO.getGender())) {
+            final CommonReferenceDTO commonReferenceDTO = commonReferenceService
+                    .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.GENDER_TYPES.getValue(), partyDTO.getGender());
+
+            partyDTO.setGenderName(commonReferenceDTO.getDescription());
+        }
+    }
+
+    TMsParty validateByPartyCode(String partyCode) {
+
+        if (Strings.isNullOrEmpty(partyCode))
+            throw new InvalidDataException("Party Code is required");
+
+        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
+
+        return tMsParty;
     }
 
     private TMsParty persistEntity(TMsParty tMsParty) {

@@ -51,22 +51,38 @@ public class DropDownServiceImpl implements DropDownService {
         switch (code) {
             case BRANCHES :
                 branchService.getAllBranches().forEach(branchDTO -> {
-                    downDTOList.add(new DropDownDTO(branchDTO.getBranchId().toString(), branchDTO.getMame(), branchDTO.getStatus()));
+                    downDTOList.add(new DropDownDTO(
+                            branchDTO.getBranchId().toString(),
+                            branchDTO.getMame(),
+                            null,
+                            branchDTO.getStatus()));
                 });
                 break;
             case DEPARTMENTS :
                 departmentService.getAllDepartments().forEach(departmentDTO -> {
-                    downDTOList.add(new DropDownDTO(departmentDTO.getDepartmentCode(), departmentDTO.getMame(), departmentDTO.getStatus()));
+                    downDTOList.add(new DropDownDTO(
+                            departmentDTO.getDepartmentCode(),
+                            departmentDTO.getMame(),
+                            null,
+                            departmentDTO.getStatus()));
                 });
                 break;
             case PERMISSIONS :
                 functionRepository.findAll().forEach(tMsFunction -> {
-                    downDTOList.add(new DropDownDTO(tMsFunction.getFuncId(), tMsFunction.getDunsDescription(), tMsFunction.getFuncStatus()));
+                    downDTOList.add(new DropDownDTO(
+                            tMsFunction.getFuncId(),
+                            tMsFunction.getDunsDescription(),
+                            null,
+                            tMsFunction.getFuncStatus()));
                 });
                 break;
             case ROLES :
                 roleRepository.findAll().forEach(tMsRole -> {
-                    downDTOList.add(new DropDownDTO(tMsRole.getRoleId().toString(), tMsRole.getRoleName(), tMsRole.getRoleStatus()));
+                    downDTOList.add(new DropDownDTO(
+                            tMsRole.getRoleId().toString(),
+                            tMsRole.getRoleName(),
+                            tMsRole.getRoleDescription(),
+                            tMsRole.getRoleStatus()));
                 });
                 break;
             default:

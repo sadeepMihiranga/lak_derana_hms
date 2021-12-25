@@ -4,12 +4,14 @@ import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.*;
 import lk.lakderana.hms.entity.*;
 import lk.lakderana.hms.exception.*;
+import lk.lakderana.hms.mapper.RoleMapper;
 import lk.lakderana.hms.mapper.UserMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.Constants.STATUS_INACTIVE;
 
 @Slf4j
 @Service
@@ -60,6 +63,8 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
     @Transactional
     @Override
     public UserDTO createUser(UserDTO userDTO) {
+
+        validateEntity(userDTO);
 
         final TMsParty tMsParty = partyRepository
                 .findByPrtyCodeAndPrtyStatus(userDTO.getPartyCode(), STATUS_ACTIVE.getShortValue());
@@ -102,7 +107,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
             });
         }
 
-        return getAUserById(createdUser.getUserId());
+        return getUserById(createdUser.getUserId());
     }
 
     @Transactional
@@ -111,20 +116,57 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
         return roleRepository.save(tMsRole);
     }
 
-    @Transactional
     @Override
-    public Boolean assignRoleToUser(Long userId, List<String> roles) {
+    public UserDTO updateUser(Long userId, UserDTO userDTO) {
 
+        TMsUser tMsUser = validateUserById(userId);
+
+        TMsUser userWithSameName = userRepository
+                .findByUserUsernameAndUserStatus(userDTO.getUsername(), STATUS_ACTIVE.getShortValue());
+
+        if(userWithSameName.getUserId() != tMsUser.getUserId())
+            throw new InvalidDataException("Requested Username " + userDTO.getUsername() + " is already in use");
+
+        List<String> newRoleList = new ArrayList<>();
+
+        userDTO.getRoles().forEach(roleDTO -> {
+
+            if(roleDTO.getStatus() == STATUS_ACTIVE.getShortValue())
+                newRoleList.add(roleDTO.getName());
+            else {
+                TMsUserRole existingUserRole = userRoleRepository
+                        .findByUser_UserIdAndRole_RoleName(tMsUser.getUserId(), roleDTO.getName());
+                existingUserRole.setUsrlStatus(STATUS_INACTIVE.getShortValue());
+
+                userRoleRepository.save(existingUserRole);
+            }
+        });
+
+        assignRoleToUser(userId, newRoleList);
+
+        return null;
+    }
+
+    private TMsUser validateUserById(Long userId) {
         if(userId == null)
             throw new NoRequiredInfoException("User Id is required");
-
-        if(roles == null || roles.isEmpty())
-            throw new NoRequiredInfoException("Roles required");
 
         final TMsUser tMsUser = userRepository.findByUserIdAndUserStatus(userId, STATUS_ACTIVE.getShortValue());
 
         if(tMsUser == null)
             throw new DataNotFoundException("User not found for Id " + userId);
+
+        return tMsUser;
+    }
+
+    @Transactional
+    @Override
+    public Boolean assignRoleToUser(Long userId, List<String> roles) {
+
+        if(roles == null || roles.isEmpty())
+            throw new NoRequiredInfoException("Roles required");
+
+        TMsUser tMsUser = validateUserById(userId);
 
         List<TMsUserRole> tMsUserRoleList = new ArrayList<>();
 
@@ -170,7 +212,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
                 .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), STATUS_ACTIVE.getShortValue());
 
         final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
-        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
         return userDTO;
     }
@@ -186,27 +228,23 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
                 .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), STATUS_ACTIVE.getShortValue());
 
         final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
-        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
         return userDTO;
     }
 
     @Override
-    public UserDTO getAUserById(Long userId) {
+    public UserDTO getUserById(Long userId) {
 
-        if(userId == null)
-            throw new NoRequiredInfoException("User Id is required");
-
-        final TMsUser tMsUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
+        TMsUser tMsUser = validateUserById(userId);
 
         final List<TMsUserRole> tRfUserRoleList = userRoleRepository
                 .findAllByUser_UserIdAndUsrlStatus(tMsUser.getUserId(), STATUS_ACTIVE.getShortValue());
 
         final UserDTO userDTO = UserMapper.INSTANCE.entityToDTO(tMsUser);
-        List<FunctionDTO> functionDTOList = new ArrayList<>();
 
         userDTO.setPassword(null);
-        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+        userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
         userDTO.setFunctions(getFunctionsByRoles(userDTO));
 
         return userDTO;
@@ -251,7 +289,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
             userDTO.setPartyCode(user.getParty().getPrtyCode());
             userDTO.setDisplayName(user.getParty().getPrtyFirstName());
             userDTO.setUsername(user.getUserUsername());
-            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
 
             userDTOList.add(userDTO);
         });
@@ -292,7 +330,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
             final List<TMsUserRole> tRfUserRoleList = userRoleRepository
                     .findAllByUser_UserIdAndUsrlStatus(userDTO.getId(), STATUS_ACTIVE.getShortValue());
 
-            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> mapRoleToRoleDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
             userDTO.setFunctions(getFunctionsByRoles(userDTO));
         }
 
@@ -310,12 +348,36 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
     }
 
     @Override
-    public Long removeUser(Long userId) {
+    public Long removeUserById(Long userId) {
 
-        if(userId == null)
-            throw new NoRequiredInfoException("User Id is required");
+        TMsUser tMsUser = validateUserById(userId);
 
-        final TMsUser tMsUser = userRepository.findById(userId).orElseThrow(() -> new DataNotFoundException("User not found"));
+        return removeUser(tMsUser);
+    }
+
+    @Override
+    public Boolean removeUserByPartyCode(String partyCode) {
+
+        if (Strings.isNullOrEmpty(partyCode))
+            throw new InvalidDataException("Party Code is required");
+
+        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
+
+
+        TMsUser tMsUser = userRepository.findByParty_PrtyCodeAndUserStatus(partyCode, STATUS_ACTIVE.getShortValue());
+
+        final Long userId = removeUser(tMsUser);
+
+        if(userId != null)
+            return true;
+        else
+            return false;
+    }
+
+    private Long removeUser(TMsUser tMsUser) {
 
         tMsUser.setUserStatus(Constants.STATUS_INACTIVE.getShortValue());
 
@@ -328,15 +390,16 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
             userRoleRepository.save(tMsUserRole);
         });
 
+        List<TMsUserBranch> tMsUserBranchList = userBranchRepository
+                .findAllByUser_UserIdAndUsbrStatus(tMsUser.getUserId(), STATUS_ACTIVE.getShortValue());
+
+        tMsUserBranchList.forEach(tMsUserBranch -> {
+            tMsUserBranch.setUsbrStatus(Constants.STATUS_INACTIVE.getShortValue());
+
+            userBranchRepository.save(tMsUserBranch);
+        });
+
         return persistEntity(tMsUser).getUserId();
-    }
-
-    private RoleDTO mapRoleToRoleDTO(TMsRole role) {
-        RoleDTO roleDTO = new RoleDTO();
-        roleDTO.setId(role.getRoleId());
-        roleDTO.setName(role.getRoleName());
-
-        return roleDTO;
     }
 
     @Transactional

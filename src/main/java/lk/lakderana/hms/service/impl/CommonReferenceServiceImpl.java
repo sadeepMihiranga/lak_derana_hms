@@ -55,7 +55,7 @@ public class CommonReferenceServiceImpl implements CommonReferenceService {
             throw new NoRequiredInfoException("Cmrf Code is required");
 
         if(Strings.isNullOrEmpty(cmrtCode))
-        throw new NoRequiredInfoException("Cmrt Code is required");
+            throw new NoRequiredInfoException("Cmrt Code is required");
 
         final TRfCommonReference tRfCommonReference = commonReferenceRepository
                 .findByCmrtCodeAndCmrfCode(cmrtCode, cmrfCode, Constants.STATUS_ACTIVE.getShortValue());

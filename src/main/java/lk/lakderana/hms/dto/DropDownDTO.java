@@ -11,5 +11,6 @@ public class DropDownDTO {
 
     private String key;
     private String value;
+    private String description;
     private Short status;
 }

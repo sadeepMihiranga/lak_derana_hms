@@ -13,7 +13,7 @@ public interface UserService {
 
     UserDTO createUser(UserDTO userDTO);
 
-    UserDTO getAUserById(Long userId);
+    UserDTO getUserById(Long userId);
 
     List<UserDTO> getAllUsers();
 
@@ -27,9 +27,13 @@ public interface UserService {
 
     List<TMsRoleFunction> getPermissionsByRole(Long roleId);
 
-    Long removeUser(Long userId);
+    Long removeUserById(Long userId);
+
+    Boolean removeUserByPartyCode(String partyCode);
 
     Boolean assignRoleToUser(Long userId, List<String> roles);
 
     TMsRole createRole(TMsRole role);
+
+    UserDTO updateUser(Long userId, UserDTO userDTO);
 }

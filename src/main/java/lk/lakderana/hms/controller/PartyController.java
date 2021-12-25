@@ -29,12 +29,12 @@ public class PartyController {
     }
 
     @PostMapping
-    public ResponseEntity<SuccessResponse> insertParty(@RequestBody PartyDTO partyDTO) throws IOException {
+    public ResponseEntity<SuccessResponse> insertParty(@RequestBody PartyDTO partyDTO) {
         return SuccessResponseHandler.generateResponse(partyService.createParty(partyDTO));
     }
 
     @GetMapping("/{partyCode}")
-    public ResponseEntity<SuccessResponse> getPartyByPartyId(@PathVariable("partyCode") String partyCode) throws IOException {
+    public ResponseEntity<SuccessResponse> getPartyByPartyId(@PathVariable("partyCode") String partyCode) {
         return SuccessResponseHandler.generateResponse(partyService.getPartyByPartyCode(partyCode));
     }
 
@@ -42,5 +42,10 @@ public class PartyController {
     public ResponseEntity<SuccessResponse> updateParty(@PathVariable("partyCode") String partyCode,
                                                        @RequestBody PartyDTO partyDTO) throws IOException {
         return SuccessResponseHandler.generateResponse(partyService.updateParty(partyCode, partyDTO));
+    }
+
+    @DeleteMapping("/{partyCode}")
+    public ResponseEntity<SuccessResponse> removeParty(@PathVariable("partyCode") String partyCode) {
+        return SuccessResponseHandler.generateResponse(partyService.removeParty(partyCode));
     }
 }

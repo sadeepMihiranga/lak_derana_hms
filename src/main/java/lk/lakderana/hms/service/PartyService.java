@@ -16,7 +16,7 @@ public interface PartyService {
     PartyDTO updateParty(String partyCode, PartyDTO partyDTO);
 
     @Transactional
-    Long removeParty(String partyCode);
+    Boolean removeParty(String partyCode);
 
     PaginatedEntity partyPaginatedSearch(String name, String partyType, Integer page, Integer size);
 }

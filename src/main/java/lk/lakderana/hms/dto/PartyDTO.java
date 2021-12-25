@@ -26,10 +26,12 @@ public class PartyDTO implements Paginated {
     private String address2;
     private String address3;
     private String gender;
+    private String genderName;
     private String nic;
     private String passport;
     private String type;
     private String departmentCode;
+    private String departmentName;
     private Long branchId;
     private Long managedBy;
     private Short status;

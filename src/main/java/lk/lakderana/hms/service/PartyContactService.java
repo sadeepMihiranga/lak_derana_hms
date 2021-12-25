@@ -13,4 +13,6 @@ public interface PartyContactService {
     List<PartyContactDTO> getContactsByPartyCode(String partyCode, Boolean isPartyValidated);
 
     PartyContactDTO getContactsByPartyCodeAndType(String partyCode, String contactType);
+
+    Boolean removePartyContactByPartyCode(String partyCode);
 }

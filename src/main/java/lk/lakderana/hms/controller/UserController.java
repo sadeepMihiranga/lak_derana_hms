@@ -36,7 +36,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<SuccessResponse> getAUser(@PathVariable("userId") Long userId) {
-        return SuccessResponseHandler.generateResponse(userService.getAUserById(userId));
+        return SuccessResponseHandler.generateResponse(userService.getUserById(userId));
     }
 
     @PostMapping
@@ -46,7 +46,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<SuccessResponse> removeUser(@PathVariable("userId") Long userId) {
-        return SuccessResponseHandler.generateResponse(userService.removeUser(userId));
+        return SuccessResponseHandler.generateResponse(userService.removeUserById(userId));
     }
 
     @PostMapping("/{userId}/roles/assign")
@@ -57,5 +57,10 @@ public class UserController {
     @PostMapping("/role")
     public ResponseEntity<TMsRole> createARole(@RequestBody TMsRole role) {
         return ResponseEntity.ok().body(userService.createRole(role));
+    }
+
+    @PutMapping("/{userId}")
+    public ResponseEntity<SuccessResponse> updateUser(@PathVariable("userId") Long userId, @RequestBody UserDTO userDTO) {
+        return SuccessResponseHandler.generateResponse(userService.updateUser(userId, userDTO));
     }
 }

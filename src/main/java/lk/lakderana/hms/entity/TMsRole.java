@@ -23,6 +23,9 @@ public class TMsRole {
     @Column(name = "ROLE_NAME")
     private String roleName;
 
+    @Column(name = "ROLE_DESCRIPTION")
+    private String roleDescription;
+
     @Column(name = "ROLE_STATUS")
     private Short roleStatus;
 

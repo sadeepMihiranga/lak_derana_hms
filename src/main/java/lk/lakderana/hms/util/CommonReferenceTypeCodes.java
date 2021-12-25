@@ -3,7 +3,8 @@ package lk.lakderana.hms.util;
 public enum CommonReferenceTypeCodes {
 
     PARTY_TYPES("PTYPE"),
-    PARTY_CONTACT_TYPES("CONTC");
+    PARTY_CONTACT_TYPES("CONTC"),
+    GENDER_TYPES("GENDR");
 
     private String value;
     private short shortValue;
