@@ -187,11 +187,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         PaginatedEntity paginatedPartyList = null;
         List<PartyDTO> customerList = null;
 
-        if (page < 1)
-            throw new InvalidDataException("Page should be a value greater than 0");
-
-        if (size < 1)
-            throw new InvalidDataException("Limit should be a value greater than 0");
+        validatePaginateIndexes(page, size);
 
         partyType = partyType.isEmpty() ? null : partyType;
 

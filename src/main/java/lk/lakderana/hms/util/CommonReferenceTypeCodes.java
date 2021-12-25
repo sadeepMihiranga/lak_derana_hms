@@ -4,7 +4,9 @@ public enum CommonReferenceTypeCodes {
 
     PARTY_TYPES("PTYPE"),
     PARTY_CONTACT_TYPES("CONTC"),
-    GENDER_TYPES("GENDR");
+    GENDER_TYPES("GENDR"),
+    ROOM_TYPES("ROMTP"),
+    ROOM_CATEGORY_TYPES("RMCAT");
 
     private String value;
     private short shortValue;

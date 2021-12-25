@@ -303,11 +303,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
         PaginatedEntity paginatedUserList = null;
         List<UserDTO> userList = null;
 
-        if (page < 1)
-            throw new InvalidDataException("Page should be a value greater than 0");
-
-        if (size < 1)
-            throw new InvalidDataException("Limit should be a value greater than 0");
+        validatePaginateIndexes(page, size);
 
         partyCode = partyCode.isEmpty() ? null : partyCode;
 

@@ -1,9 +1,10 @@
 package lk.lakderana.hms.config;
 
 import lk.lakderana.hms.exception.DataNotFoundException;
+import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
-import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.util.Constants;
+import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
 import java.util.Set;
 
+@Slf4j
 public class EntityValidator {
 
     @Autowired
@@ -29,7 +31,12 @@ public class EntityValidator {
 
     protected final Long captureBranchId() {
 
-        String branchesString = request.getAttribute(Constants.REQUEST_BRANCHES.getValue()).toString();
+        final Object attribute = request.getAttribute(Constants.REQUEST_BRANCHES.getValue());
+
+        if(attribute == null)
+            throw new NoRequiredInfoException("Branch Id is missing");
+
+        String branchesString = attribute.toString();
 
         if(Strings.isNullOrEmpty(branchesString))
             throw new NoRequiredInfoException("Branch Id is missing");
@@ -40,6 +47,17 @@ public class EntityValidator {
                 .replaceAll("\\s", "")
                 .split(",");
 
+        log.info("Request came from branch {} ", branchesArray[0]);
+
         return  Long.valueOf(branchesArray[0]);
+    }
+
+    protected final void validatePaginateIndexes(Integer page, Integer size) {
+
+        if (page < 1)
+            throw new InvalidDataException("Page should be a value greater than 0");
+
+        if (size < 1)
+            throw new InvalidDataException("Limit should be a value greater than 0");
     }
 }
