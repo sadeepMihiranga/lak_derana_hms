@@ -376,8 +376,10 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
         if(tMsParty == null)
             throw new DataNotFoundException("Party not found for the Code : " + partyCode);
 
-
         TMsUser tMsUser = userRepository.findByParty_PrtyCodeAndUserStatus(partyCode, STATUS_ACTIVE.getShortValue());
+
+        if(tMsUser == null)
+            return true;
 
         final Long userId = removeUser(tMsUser);
 
