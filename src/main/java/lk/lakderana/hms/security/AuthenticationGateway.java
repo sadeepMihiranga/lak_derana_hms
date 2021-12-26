@@ -1,5 +1,6 @@
 package lk.lakderana.hms.security;
 
+import lk.lakderana.hms.config.EmailConfig;
 import lk.lakderana.hms.dto.PartyContactDTO;
 import lk.lakderana.hms.dto.ResetPasswordDTO;
 import lk.lakderana.hms.dto.UpdatePasswordDTO;
@@ -52,6 +53,7 @@ public class AuthenticationGateway {
     private final LocalValidatorFactoryBean localValidatorFactoryBean;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender emailSender;
+    private final EmailConfig emailConfig;
 
     private final PartyTokenService partyTokenService;
     private final PartyContactService partyContactService;
@@ -70,7 +72,8 @@ public class AuthenticationGateway {
                                  PartyRepository partyRepository,
                                  UserRepository userRepository,
                                  PasswordEncoder passwordEncoder,
-                                 JavaMailSender emailSender) {
+                                 JavaMailSender emailSender,
+                                 EmailConfig emailConfig) {
         this.passwordResetConfig = passwordResetConfig;
         this.localValidatorFactoryBean = localValidatorFactoryBean;
         this.partyTokenService = partyTokenService;
@@ -80,6 +83,7 @@ public class AuthenticationGateway {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailSender = emailSender;
+        this.emailConfig = emailConfig;
     }
 
     private String formatNumber(String number) {
@@ -306,20 +310,19 @@ public class AuthenticationGateway {
      * @param text    - text message
      * @return Construct email
      */
-    private MimeMessage constructEmail(String to, String subject, String text, String username, String templateName) {
+    private MimeMessage constructEmail(String to, String subject, String text, String templateName) {
         MimeMessage message = emailSender.createMimeMessage();
         MimeMessageHelper helper;
 
         try {
             String emailString = IOUtils.toString(new ClassPathResource("templates/" + templateName).getInputStream());
             emailString = emailString.replace("#link#", text);
-            emailString = emailString.replace("#username#", username);
             helper = new MimeMessageHelper(message, false, "utf-8");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(emailString, true);
             helper.setFrom("from_mail");
-            message.setFrom(new InternetAddress("from_mail", "Lak Derana"));
+            message.setFrom(new InternetAddress("from_mail", emailConfig.getSenderName()));
         } catch (Exception e) {
             logger.debug("Auth -> constructEmail -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error while sending the email");
@@ -340,8 +343,9 @@ public class AuthenticationGateway {
         final String url = passwordResetConfig.getCallbackHost()
                 + "?id=" + partyCode
                 + "&token=" + URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
+                + "&username=" + username
                 + "&type=" + PARTY_CONTACT_EMAIL.getValue();
-        return constructEmail(toEmailAddress, emailSubject, url, username, templateName);
+        return constructEmail(toEmailAddress, emailSubject, url, templateName);
     }
 
     /**

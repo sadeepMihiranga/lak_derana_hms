@@ -78,6 +78,7 @@ mail:
   port: 587
   username: lakderanahms@gmail.com
   password: jbfvyavtnzneabad
+  senderName: Lak Derana
   properties:
     mail:
       smtp:

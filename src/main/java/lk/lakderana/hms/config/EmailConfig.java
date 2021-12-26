@@ -1,5 +1,6 @@
 package lk.lakderana.hms.config;
 
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -8,6 +9,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
+@Getter
 @Configuration
 public class EmailConfig {
 
@@ -19,6 +21,8 @@ public class EmailConfig {
     private String username;
     @Value("${mail.password}")
     private String password;
+    @Value("${mail.senderName}")
+    private String senderName;
 
     @Bean
     public JavaMailSender javaMailService() {
