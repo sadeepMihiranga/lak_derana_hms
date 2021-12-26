@@ -397,7 +397,7 @@ public class AuthenticationGateway {
             /*tMsUser.setLastModDate(new Date());
             tMsUser.setLastModUserCode(tCmMsParty.getId());*/
             userRepository.save(tMsUser);
-            response = new SuccessResponse(partyUsername, "SUCCESS", true, 1100);
+            response = new SuccessResponse(partyUsername, "Password has been reset successfully.\n Please Signin with Newer Password", true, 1100);
         } catch (Exception e) {
             logger.debug("Auth -> updUserPasswordByUsername -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when updating the password");
@@ -424,13 +424,12 @@ public class AuthenticationGateway {
         if (tMsUser == null)
             throw new InvalidDataException("Invalid Party Code");
 
-        // update party table with new password
         try {
             tMsUser.setUserPassword(passwordEncoder.encode(newPassword));
             /*tMsUser.setLastModDate(new Date());
             tMsUser.setLastModUserCode(tCmMsParty.getId());*/
             userRepository.save(tMsUser);
-            response = new SuccessResponse(tMsUser.getUserUsername(), "Password Reset Success", true, 1100);
+            response = new SuccessResponse(tMsUser.getUserUsername(), "Password has been reset successfully.\n Please Signin with Newer Password", true, 1100);
         } catch (Exception e) {
             logger.debug("Auth -> updUserPasswordByCode -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when updating the password");
