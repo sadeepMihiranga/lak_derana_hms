@@ -66,7 +66,7 @@ spring:
 
 email:
   callback:
-    host: ${HOST_IP:https://lakderana-hms-web.herokuapp.com}
+    host: ${HOST_IP:http://lakderana-hms-web.herokuapp.com/auth/reset-password}
     port: 80
 
 reset:

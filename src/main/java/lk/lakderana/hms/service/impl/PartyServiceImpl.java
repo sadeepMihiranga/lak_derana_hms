@@ -104,6 +104,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         return PartyMapper.INSTANCE.entityToDTO(createdParty);
     }
 
+    @Transactional
     @Override
     public PartyDTO getPartyByPartyCode(String partyCode) {
 

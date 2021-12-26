@@ -3,6 +3,7 @@ package lk.lakderana.hms.service.impl;
 import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.InquiryDTO;
 import lk.lakderana.hms.dto.PaginatedEntity;
+import lk.lakderana.hms.dto.PartyDTO;
 import lk.lakderana.hms.entity.TRfBranch;
 import lk.lakderana.hms.entity.TRfInquiry;
 import lk.lakderana.hms.exception.*;
@@ -10,8 +11,12 @@ import lk.lakderana.hms.mapper.InquiryMapper;
 import lk.lakderana.hms.repository.BranchRepository;
 import lk.lakderana.hms.repository.InquiryRepository;
 import lk.lakderana.hms.service.InquiryService;
+import lk.lakderana.hms.service.PartyService;
+import lk.lakderana.hms.util.CommonReferenceCodes;
+import lk.lakderana.hms.util.Constants;
 import lk.lakderana.hms.util.InquiryStatus;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Strings;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -20,8 +25,11 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static lk.lakderana.hms.util.CommonReferenceCodes.PARTY_CONTACT_MOBILE;
 import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.InquiryStatus.CANCELED;
 import static lk.lakderana.hms.util.InquiryStatus.TRANSFERRED_TO_ANOTHER;
 
 @Slf4j
@@ -31,10 +39,14 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
     private final InquiryRepository inquiryRepository;
     private final BranchRepository branchRepository;
 
+    private final PartyService partyService;
+
     public InquiryServiceImpl(InquiryRepository inquiryRepository,
-                              BranchRepository branchRepository) {
+                              BranchRepository branchRepository,
+                              PartyService partyService) {
         this.inquiryRepository = inquiryRepository;
         this.branchRepository = branchRepository;
+        this.partyService = partyService;
     }
 
     @Override
@@ -134,6 +146,51 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
                 .save(InquiryMapper.INSTANCE.dtoToEntity(inquiryToTransfer));
 
         return InquiryMapper.INSTANCE.entityToDTO(transferredInquiry);
+    }
+
+    @Override
+    public Boolean cancelInquiryById(Long inquiryId) {
+
+        final TRfInquiry tRfInquiry = validateInquiryById(inquiryId, captureBranchIds());
+
+        tRfInquiry.setInqrStatus(CANCELED.getShortValue());
+
+        persistEntity(tRfInquiry);
+
+        return true;
+    }
+
+    @Override
+    public InquiryDTO updateInquiry(Long inquiryId, InquiryDTO inquiryDTO) {
+
+        final TRfInquiry tRfInquiry = validateInquiryById(inquiryId, captureBranchIds());
+
+        if(!Strings.isNullOrEmpty(inquiryDTO.getPartyCode())) {
+
+            final PartyDTO existingCustomer = partyService.getPartyByPartyCode(inquiryDTO.getPartyCode());
+            tRfInquiry.setInqrCustomerCode(existingCustomer.getPartyCode());
+            tRfInquiry.setInqrCustomerName(existingCustomer.getName());
+
+            final List<String> mobileNoList = existingCustomer.getContactList()
+                    .stream()
+                    .filter(partyContactDTO -> partyContactDTO.getContactType().equals(PARTY_CONTACT_MOBILE.getValue()))
+                    .map(partyContactDTO -> partyContactDTO.getContactNumber())
+                    .collect(Collectors.toList());
+
+            if(!mobileNoList.isEmpty())
+                tRfInquiry.setInqrCustomerContactNo(mobileNoList.get(0));
+            else
+                tRfInquiry.setInqrCustomerContactNo(inquiryDTO.getCustomerContactNo());
+
+        } else {
+
+            tRfInquiry.setInqrCustomerName(inquiryDTO.getCustomerName());
+            tRfInquiry.setInqrCustomerContactNo(inquiryDTO.getCustomerContactNo());
+        }
+
+        tRfInquiry.setInqrRemarks(inquiryDTO.getRemarks());
+
+        return InquiryMapper.INSTANCE.entityToDTO(persistEntity(tRfInquiry));
     }
 
     private TRfInquiry validateInquiryById(Long inquiryId, List<Long> branchIdList) {

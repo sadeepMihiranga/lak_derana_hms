@@ -42,4 +42,15 @@ public class InquiryController {
     public ResponseEntity<SuccessResponse> transferInquiry(@RequestBody InquiryDTO inquiryDTO) {
         return SuccessResponseHandler.generateResponse(inquiryService.transferInquiry(inquiryDTO));
     }
+
+    @PutMapping("/{inquiryId}/cancel")
+    public ResponseEntity<SuccessResponse> cancelInquiry(@PathVariable("inquiryId") Long inquiryId) {
+        return SuccessResponseHandler.generateResponse(inquiryService.cancelInquiryById(inquiryId));
+    }
+
+    @PutMapping("/{inquiryId}")
+    public ResponseEntity<SuccessResponse> updateInquiry(@PathVariable("inquiryId") Long inquiryId,
+                                                         @RequestBody InquiryDTO inquiryDTO) {
+        return SuccessResponseHandler.generateResponse(inquiryService.updateInquiry(inquiryId, inquiryDTO));
+    }
 }

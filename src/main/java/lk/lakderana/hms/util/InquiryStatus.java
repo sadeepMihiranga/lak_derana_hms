@@ -4,7 +4,8 @@ public enum InquiryStatus {
 
     CREATED((short) 1),
     RESERVED((short) 2),
-    TRANSFERRED_TO_ANOTHER((short) 3);
+    TRANSFERRED_TO_ANOTHER((short) 3),
+    CANCELED((short) 4);
 
     private short shortValue;
 

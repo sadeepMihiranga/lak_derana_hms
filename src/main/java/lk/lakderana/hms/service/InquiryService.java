@@ -17,4 +17,8 @@ public interface InquiryService {
      * @return        New inquiry created on the accepted branch
      */
     InquiryDTO transferInquiry(InquiryDTO inquiryDTO);
+
+    Boolean cancelInquiryById(Long inquiryId);
+
+    InquiryDTO updateInquiry(Long inquiryId, InquiryDTO inquiryDTO);
 }

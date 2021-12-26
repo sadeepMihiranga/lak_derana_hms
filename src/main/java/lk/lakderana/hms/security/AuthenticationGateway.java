@@ -338,7 +338,7 @@ public class AuthenticationGateway {
     private MimeMessage constructResetTokenEmail(final String token, final String partyCode, final String toEmailAddress,
                                                  String templateName, String emailSubject, String username) throws UnsupportedEncodingException {
         final String url = passwordResetConfig.getCallbackHost()
-                + "/auth/reset_password?id=" + partyCode
+                + "?id=" + partyCode
                 + "&token=" + URLEncoder.encode(token, StandardCharsets.UTF_8.toString())
                 + "&type=" + PARTY_CONTACT_EMAIL.getValue();
         return constructEmail(toEmailAddress, emailSubject, url, username, templateName);
