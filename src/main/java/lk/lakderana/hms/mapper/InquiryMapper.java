@@ -22,7 +22,7 @@ public interface InquiryMapper {
             @Mapping(source = "branch.brnhId", target = "branchId"),
             @Mapping(source = "inqrCustomerName", target = "customerName"),
             @Mapping(source = "inqrCustomerContactNo", target = "customerContactNo"),
-            @Mapping(source = "inqrTransferredFrom.brnhId", target = "transferredFrom")
+            @Mapping(source = "inqrTransferredFrom", target = "transferredFrom")
     })
     InquiryDTO entityToDTO(TRfInquiry entity);
 
