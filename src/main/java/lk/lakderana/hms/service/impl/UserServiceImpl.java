@@ -308,7 +308,8 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
         partyCode = partyCode.isEmpty() ? null : partyCode;
 
         final Page<TMsUser> tMsUserPage = userRepository
-                .getActiveUsers(username, partyCode, STATUS_ACTIVE.getShortValue(), PageRequest.of(page - 1, size));
+                .getActiveUsers(username, partyCode, STATUS_ACTIVE.getShortValue(), captureBranchIds(),
+                        PageRequest.of(page - 1, size));
 
         if (tMsUserPage.getSize() == 0)
             return null;
@@ -326,7 +327,8 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
             final List<TMsUserRole> tRfUserRoleList = userRoleRepository
                     .findAllByUser_UserIdAndUsrlStatus(userDTO.getId(), STATUS_ACTIVE.getShortValue());
 
-            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
+            userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole ->
+                    RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
             userDTO.setFunctions(getFunctionsByRoles(userDTO));
         }
 

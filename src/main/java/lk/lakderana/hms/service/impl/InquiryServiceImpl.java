@@ -42,7 +42,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
 
         InquiryDTO createdInquiry = null;
 
-        inquiryDTO.setBranchId(captureBranchId());
+        inquiryDTO.setBranchId(captureBranchIds().get(0));
         validateEntity(inquiryDTO);
 
         final TRfInquiry tRfInquiry = InquiryMapper.INSTANCE.dtoToEntity(inquiryDTO);
@@ -60,7 +60,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         if(inquiryId == null)
             throw new NoRequiredInfoException("Inquiry Id is required");
 
-        final TRfInquiry tRfInquiry = inquiryRepository.findByInqrIdAndBranch_BrnhId(inquiryId, captureBranchId());
+        final TRfInquiry tRfInquiry = inquiryRepository.findByInqrIdAndBranch_BrnhIdIn(inquiryId, captureBranchIds());
 
         if(tRfInquiry == null)
             throw new DataNotFoundException("An Inquiry not found for the id " + inquiryId);
@@ -80,7 +80,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         partyCode = partyCode.isEmpty() ? null : partyCode;
 
         final Page<TRfInquiry> tRfInquiryPage = inquiryRepository
-                .getActiveInquiries(customerName, customerContactNo, partyCode, captureBranchId(),
+                .getActiveInquiries(customerName, customerContactNo, partyCode, captureBranchIds(),
                         PageRequest.of(page - 1, size));
 
         if (tRfInquiryPage.getSize() == 0)
@@ -108,7 +108,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
     @Override
     public InquiryDTO transferInquiry(InquiryDTO inquiryDTO) {
 
-        TRfInquiry tRfInquiry = validateInquiryById(inquiryDTO.getInquiryId(), captureBranchId());
+        TRfInquiry tRfInquiry = validateInquiryById(inquiryDTO.getInquiryId(), captureBranchIds());
 
         final TRfBranch tRfBranch = branchRepository
                 .findByBrnhIdAndBrnhStatus(inquiryDTO.getBranchId(), STATUS_ACTIVE.getShortValue());
@@ -124,7 +124,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         inquiryToTransfer.setInquiryStatus(InquiryStatus.CREATED.getShortValue());
         inquiryToTransfer.setInquiryDateTime(LocalDateTime.now());
         inquiryToTransfer.setBranchId(inquiryDTO.getBranchId());
-        inquiryToTransfer.setTransferredFrom(captureBranchId());
+        inquiryToTransfer.setTransferredFrom(captureBranchIds().get(0));
         inquiryToTransfer.setCustomerName(tRfInquiry.getInqrCustomerName());
         inquiryToTransfer.setRemarks(tRfInquiry.getInqrRemarks());
         inquiryToTransfer.setCustomerContactNo(tRfInquiry.getInqrCustomerContactNo());
@@ -136,13 +136,13 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         return InquiryMapper.INSTANCE.entityToDTO(transferredInquiry);
     }
 
-    private TRfInquiry validateInquiryById(Long inquiryId, Long branchId) {
+    private TRfInquiry validateInquiryById(Long inquiryId, List<Long> branchIdList) {
 
         if(inquiryId == null)
             throw new NoRequiredInfoException("Inquiry Id is required");
 
         final TRfInquiry tRfInquiry = inquiryRepository
-                .findByInqrIdAndBranch_BrnhIdAndInqrStatus(inquiryId, branchId, STATUS_ACTIVE.getShortValue());
+                .findByInqrIdAndBranch_BrnhIdInAndInqrStatus(inquiryId, branchIdList, STATUS_ACTIVE.getShortValue());
 
         if(tRfInquiry == null)
             throw new DataNotFoundException("An Inquiry not found for the id " + inquiryId);

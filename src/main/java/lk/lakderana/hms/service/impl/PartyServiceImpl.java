@@ -71,7 +71,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         validateEntity(partyDTO);
 
         partyDTO.setName(partyDTO.getFirstName() + " " + partyDTO.getLastName());
-        partyDTO.setBranchId(captureBranchId());
+        partyDTO.setBranchId(captureBranchIds().get(0));
 
         final TMsParty tMsParty = PartyMapper.INSTANCE.dtoToEntity(partyDTO);
 
@@ -124,7 +124,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
     public PartyDTO updateParty(String partyCode, PartyDTO partyDTO) {
 
         validateEntity(partyDTO);
-        partyDTO.setBranchId(captureBranchId());
+        partyDTO.setBranchId(captureBranchIds().get(0));
 
         TMsParty tMsParty = validateByPartyCode(partyCode);
 
@@ -194,7 +194,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         partyType = partyType.isEmpty() ? null : partyType;
 
         Page<TMsParty> tMsPartyPage = partyRepository
-                .getActiveParties(name, Constants.STATUS_ACTIVE.getShortValue(), partyType, captureBranchId(),
+                .getActiveParties(name, Constants.STATUS_ACTIVE.getShortValue(), partyType, captureBranchIds(),
                         PageRequest.of(page - 1, size));
 
         if (tMsPartyPage.getSize() == 0)

@@ -11,6 +11,8 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolation;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Slf4j
@@ -29,7 +31,7 @@ public class EntityValidator {
         }
     }
 
-    protected final Long captureBranchId() {
+    protected final List<Long> captureBranchIds() {
 
         final Object attribute = request.getAttribute(Constants.REQUEST_BRANCHES.getValue());
 
@@ -47,9 +49,15 @@ public class EntityValidator {
                 .replaceAll("\\s", "")
                 .split(",");
 
+        List<Long> branches = new ArrayList<>();
+
+        for (int i = 0; i < branchesArray.length; i++) {
+            branches.add(Long.valueOf(branchesArray[i]));
+        }
+
         log.info("Request came from branch {} ", branchesArray[0]);
 
-        return  Long.valueOf(branchesArray[0]);
+        return  branches;
     }
 
     protected final void validatePaginateIndexes(Integer page, Integer size) {

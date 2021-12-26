@@ -49,7 +49,8 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         validatePaginateIndexes(page, size);
 
         Page<TMsRoom> tMsRoomPage = roomRepository
-                .getActiveRooms(roomType, roomCategory, STATUS_ACTIVE.getShortValue(), captureBranchId(), PageRequest.of(page - 1, size));
+                .getActiveRooms(roomType, roomCategory, STATUS_ACTIVE.getShortValue(), captureBranchIds(),
+                        PageRequest.of(page - 1, size));
 
         if (tMsRoomPage.getSize() == 0)
             return null;
@@ -78,7 +79,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         validateEntity(roomDTO);
         validateReferenceData(roomDTO);
 
-        roomDTO.setBranchId(captureBranchId());
+        roomDTO.setBranchId(captureBranchIds().get(0));
         roomDTO.setStatus(STATUS_ACTIVE.getShortValue());
 
         final TMsRoom tMsRoom = RoomMapper.INSTANCE.dtoToEntity(roomDTO);
@@ -92,6 +93,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         validateEntity(roomDTO);
         validateReferenceData(roomDTO);
 
+        roomDTO.setBranchId(captureBranchIds().get(0));
         TMsRoom tMsRoom = validateRoomId(roomId);
 
         tMsRoom.setRoomCategory(roomDTO.getRoomCategory());
@@ -118,7 +120,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
             throw new NoRequiredInfoException("Room Id is required");
 
         final TMsRoom tMsRoom = roomRepository
-                .getByRoomIdAndBranch_BrnhIdAndRoomStatus(roomId, captureBranchId(), STATUS_ACTIVE.getShortValue());
+                .getByRoomIdAndBranch_BrnhIdInAndRoomStatus(roomId, captureBranchIds(), STATUS_ACTIVE.getShortValue());
 
         if(tMsRoom == null)
             throw new DataNotFoundException("Room not found for Id " + roomId);

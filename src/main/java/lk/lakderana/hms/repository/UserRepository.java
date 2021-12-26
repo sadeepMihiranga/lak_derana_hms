@@ -21,10 +21,12 @@ public interface UserRepository extends JpaRepository<TMsUser, Long> {
             "WHERE t.userStatus = :userStatus " +
             "AND (:prtyCode IS NULL OR (:prtyCode IS NOT NULL AND t.party.prtyCode = :prtyCode)) " +
             "AND UPPER(t.userUsername) LIKE CONCAT('%', UPPER(:userUsername), '%') " +
+            "AND t.party.branch.brnhId IN :branchIdList " +
             "ORDER BY t.userId DESC")
     Page<TMsUser> getActiveUsers(@Param("userUsername") String username,
                                  @Param("prtyCode") String partyCode,
                                  @Param("userStatus") Short status,
+                                 @Param("branchIdList") List<Long> branchIdList,
                                  Pageable pageable);
 
     List<TMsUser> findAllByUserStatus(Short userStatus);
