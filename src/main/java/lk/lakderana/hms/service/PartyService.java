@@ -4,6 +4,7 @@ import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.dto.PartyDTO;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 public interface PartyService {
 
@@ -19,4 +20,6 @@ public interface PartyService {
     Boolean removeParty(String partyCode);
 
     PaginatedEntity partyPaginatedSearch(String name, String partyType, Integer page, Integer size);
+
+    List<PartyDTO> getPartyListByType(String partyType);
 }

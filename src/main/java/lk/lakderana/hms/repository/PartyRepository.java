@@ -24,4 +24,6 @@ public interface PartyRepository extends JpaRepository<TMsParty, Long> {
                                     Pageable pageable);
 
     TMsParty findByPrtyCodeAndPrtyStatus(String prtyCode, Short prtyStatus);
+
+    List<TMsParty> findAllByBranch_BrnhIdInAndPrtyStatusAndPrtyType(List<Long> brnhIdList, Short prtyStatus, String prtyType);
 }

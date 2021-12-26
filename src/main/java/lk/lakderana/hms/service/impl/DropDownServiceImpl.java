@@ -9,6 +9,7 @@ import lk.lakderana.hms.repository.RoleRepository;
 import lk.lakderana.hms.service.BranchService;
 import lk.lakderana.hms.service.DepartmentService;
 import lk.lakderana.hms.service.DropDownService;
+import lk.lakderana.hms.service.PartyService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -23,19 +24,24 @@ public class DropDownServiceImpl implements DropDownService {
     private static final String DEPARTMENTS = "DEPART";
     private static final String PERMISSIONS = "PERMIS";
     private static final String ROLES = "ROLES";
+    private static final String CUSTOMERS = "CUSTM";
+    private static final String EMPLOYEES = "EMPLY";
 
     private final BranchService branchService;
     private final DepartmentService departmentService;
+    private final PartyService partyService;
 
     private final FunctionRepository functionRepository;
     private final RoleRepository roleRepository;
 
     public DropDownServiceImpl(BranchService branchService,
                                DepartmentService departmentService,
+                               PartyService partyService,
                                FunctionRepository functionRepository,
                                RoleRepository roleRepository) {
         this.branchService = branchService;
         this.departmentService = departmentService;
+        this.partyService = partyService;
         this.functionRepository = functionRepository;
         this.roleRepository = roleRepository;
     }
@@ -83,6 +89,25 @@ public class DropDownServiceImpl implements DropDownService {
                             tMsRole.getRoleName(),
                             tMsRole.getRoleDescription(),
                             tMsRole.getRoleStatus()));
+                });
+            case CUSTOMERS :
+                partyService.getPartyListByType(CUSTOMERS).forEach(partyDTO -> {
+                    downDTOList.add(new DropDownDTO(
+                            partyDTO.getPartyCode(),
+                            partyDTO.getName(),
+                            null,
+                            null
+                    ));
+                });
+                break;
+            case EMPLOYEES :
+                partyService.getPartyListByType(EMPLOYEES).forEach(partyDTO -> {
+                    downDTOList.add(new DropDownDTO(
+                            partyDTO.getPartyCode(),
+                            partyDTO.getName(),
+                            null,
+                            null
+                    ));
                 });
                 break;
             default:

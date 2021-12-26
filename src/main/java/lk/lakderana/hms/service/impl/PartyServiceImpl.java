@@ -32,7 +32,10 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
+import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
 
 @Slf4j
 @Service
@@ -85,7 +88,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
             throw new OperationException("Error while creating a Party Code");
         }
 
-        tMsParty.setPrtyStatus(Constants.STATUS_ACTIVE.getShortValue());
+        tMsParty.setPrtyStatus(STATUS_ACTIVE.getShortValue());
         tMsParty.setPrtyCode(partyNumber);
 
         final TMsParty createdParty = persistEntity(tMsParty);
@@ -142,7 +145,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         tMsParty.setPrtyNic(partyDTO.getNic());
         tMsParty.setPrtyPassport(partyDTO.getPassport());
 
-        tMsParty.setPrtyStatus(Constants.STATUS_ACTIVE.getShortValue());
+        tMsParty.setPrtyStatus(STATUS_ACTIVE.getShortValue());
 
         partyDTO.getContactList().forEach(partyContactDTO -> {
             partyContactDTO.setPartyCode(partyCode);
@@ -164,7 +167,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         tMsParty.setDepartment(null);
         if(!Strings.isNullOrEmpty(partyDTO.getDepartmentCode())) {
             final TMsDepartment tMsDepartment = departmentRepository
-                    .findByDpmtCodeAndDpmtStatus(partyDTO.getDepartmentCode(), Constants.STATUS_ACTIVE.getShortValue());
+                    .findByDpmtCodeAndDpmtStatus(partyDTO.getDepartmentCode(), STATUS_ACTIVE.getShortValue());
 
             tMsParty.setDepartment(tMsDepartment);
         }
@@ -172,7 +175,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         tMsParty.setBranch(null);
         if(partyDTO.getBranchId() != null) {
             final TRfBranch tRfBranch = branchRepository
-                    .findByBrnhIdAndBrnhStatus(partyDTO.getBranchId(), Constants.STATUS_ACTIVE.getShortValue());
+                    .findByBrnhIdAndBrnhStatus(partyDTO.getBranchId(), STATUS_ACTIVE.getShortValue());
 
             tMsParty.setBranch(tRfBranch);
         }
@@ -204,7 +207,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         partyType = partyType.isEmpty() ? null : partyType;
 
         Page<TMsParty> tMsPartyPage = partyRepository
-                .getActiveParties(name, Constants.STATUS_ACTIVE.getShortValue(), partyType, captureBranchIds(),
+                .getActiveParties(name, STATUS_ACTIVE.getShortValue(), partyType, captureBranchIds(),
                         PageRequest.of(page - 1, size));
 
         if (tMsPartyPage.getSize() == 0)
@@ -229,6 +232,30 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         return paginatedPartyList;
     }
 
+    @Override
+    public List<PartyDTO> getPartyListByType(String partyType) {
+
+        final List<TMsParty> tMsPartyList = partyRepository
+                .findAllByBranch_BrnhIdInAndPrtyStatusAndPrtyType(captureBranchIds(), STATUS_ACTIVE.getShortValue(), partyType);
+
+        if(tMsPartyList.isEmpty())
+            return Collections.emptyList();
+
+        List<PartyDTO> partyDTOList = new ArrayList<>();
+
+        tMsPartyList.forEach(tMsParty -> {
+
+            PartyDTO partyDTO = new PartyDTO();
+
+            partyDTO.setPartyCode(tMsParty.getPrtyCode());
+            partyDTO.setName(tMsParty.getPrtyName());
+
+            partyDTOList.add(partyDTO);
+        });
+
+        return partyDTOList;
+    }
+
     private void setReferenceData(TMsParty tMsParty, PartyDTO partyDTO) {
 
         if(tMsParty.getDepartment() != null)
@@ -249,7 +276,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         if (Strings.isNullOrEmpty(partyCode))
             throw new InvalidDataException("Party Code is required");
 
-        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+        final TMsParty tMsParty = partyRepository.findByPrtyCodeAndPrtyStatus(partyCode, STATUS_ACTIVE.getShortValue());
 
         if(tMsParty == null)
             throw new DataNotFoundException("Party not found for the Code : " + partyCode);
