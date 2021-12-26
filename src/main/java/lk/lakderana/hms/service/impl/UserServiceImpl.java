@@ -8,6 +8,7 @@ import lk.lakderana.hms.mapper.RoleMapper;
 import lk.lakderana.hms.mapper.UserMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.security.User;
+import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.Constants;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,8 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
     private final PartyRepository partyRepository;
     private final UserBranchRepository userBranchRepository;
 
+    private final PartyContactService partyContactService;
+
     private final PasswordEncoder passwordEncoder;
 
     public UserServiceImpl(UserRepository userRepository,
@@ -50,6 +53,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
                            RoleFunctionRepository roleFunctionRepository,
                            PartyRepository partyRepository,
                            UserBranchRepository userBranchRepository,
+                           PartyContactService partyContactService,
                            PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
@@ -57,6 +61,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
         this.roleFunctionRepository = roleFunctionRepository;
         this.partyRepository = partyRepository;
         this.userBranchRepository = userBranchRepository;
+        this.partyContactService = partyContactService;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -245,9 +250,16 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
 
         userDTO.setPassword(null);
         userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole -> RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
-        userDTO.setFunctions(getFunctionsByRoles(userDTO));
+        populateUserReferenceData(userDTO);
 
         return userDTO;
+    }
+
+    private void populateUserReferenceData(UserDTO userDTO) {
+
+        if(!Strings.isNullOrEmpty(userDTO.getPartyCode()))
+            userDTO.setContactList(partyContactService.getContactsByPartyCode(userDTO.getPartyCode(), true));
+        userDTO.setFunctions(getFunctionsByRoles(userDTO));
     }
 
     private List<FunctionDTO> getFunctionsByRoles(UserDTO userDTO) {
@@ -329,7 +341,7 @@ public class UserServiceImpl extends EntityValidator implements UserService, Use
 
             userDTO.setRoles(tRfUserRoleList.stream().map(tRfUserRole ->
                     RoleMapper.INSTANCE.entityToDTO(tRfUserRole.getRole())).collect(Collectors.toList()));
-            userDTO.setFunctions(getFunctionsByRoles(userDTO));
+            populateUserReferenceData(userDTO);
         }
 
         paginatedUserList.setTotalNoOfPages(tMsUserPage.getTotalPages());

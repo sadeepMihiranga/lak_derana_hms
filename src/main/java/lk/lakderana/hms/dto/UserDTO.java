@@ -24,4 +24,5 @@ public class UserDTO implements Paginated {
     private Short status;
     private List<RoleDTO> roles;
     private List<FunctionDTO> functions;
+    private List<PartyContactDTO> contactList;
 }

@@ -8,7 +8,7 @@ public interface PartyContactService {
 
     PartyContactDTO insertPartyContact(PartyContactDTO partyContactDTO);
 
-    PartyContactDTO updatePartyContact(PartyContactDTO partyContactDTO, String partyCode, Long contactId);
+    PartyContactDTO updatePartyContactById(PartyContactDTO partyContactDTO);
 
     List<PartyContactDTO> getContactsByPartyCode(String partyCode, Boolean isPartyValidated);
 

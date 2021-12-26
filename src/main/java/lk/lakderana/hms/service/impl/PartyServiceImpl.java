@@ -144,6 +144,15 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
         tMsParty.setPrtyStatus(Constants.STATUS_ACTIVE.getShortValue());
 
+        partyDTO.getContactList().forEach(partyContactDTO -> {
+            partyContactDTO.setPartyCode(partyCode);
+
+            if(partyContactDTO.getContactId() != null)
+                partyContactService.updatePartyContactById(partyContactDTO);
+            else
+                partyContactService.insertPartyContact(partyContactDTO);
+        });
+
         return PartyMapper.INSTANCE.entityToDTO(persistEntity(tMsParty));
     }
 
@@ -231,6 +240,8 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
             partyDTO.setGenderName(commonReferenceDTO.getDescription());
         }
+
+        partyDTO.setContactList(partyContactService.getContactsByPartyCode(partyDTO.getPartyCode(), true));
     }
 
     TMsParty validateByPartyCode(String partyCode) {

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.time.LocalDate;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -66,4 +67,7 @@ public class TMsParty extends AuditModel {
 
     @Column(name = "PRTY_STATUS")
     private Short prtyStatus;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "party")
+    private Collection<TMsPartyContact> contactList;
 }

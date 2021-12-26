@@ -16,9 +16,12 @@ import org.assertj.core.util.Strings;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
 
 @Slf4j
 @Service
@@ -33,6 +36,7 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         this.partyRepository = partyRepository;
     }
 
+    @Transactional
     @Override
     public PartyContactDTO insertPartyContact(PartyContactDTO partyContactDTO) {
 
@@ -41,19 +45,22 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         if(Strings.isNullOrEmpty(partyContactDTO.getContactNumber()))
             throw new NoRequiredInfoException("Contact Number is required");
 
-        if(Strings.isNullOrEmpty(partyContactDTO.getPartyCode()))
-            throw new NoRequiredInfoException("Party Code is required");
+        if(Strings.isNullOrEmpty(partyContactDTO.getContactType()))
+            throw new NoRequiredInfoException("Contact Type is required");
 
-        final TMsParty tMsParty = partyRepository
-                .findByPrtyCodeAndPrtyStatus(partyContactDTO.getPartyCode(), Constants.STATUS_ACTIVE.getShortValue());
+        final TMsParty tMsParty = validatePartyCode(partyContactDTO.getPartyCode());
 
-        if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the Code : " + partyContactDTO.getPartyCode());
+        final TMsPartyContact alreadyPartyContact = partyContactRepository
+                .findAllByParty_PrtyCodeAndPtcnContactTypeAndPtcnStatus(partyContactDTO.getPartyCode(),
+                        partyContactDTO.getContactType(), STATUS_ACTIVE.getShortValue());
+
+        if(alreadyPartyContact != null)
+            throw new DuplicateRecordException("There is a active Contact Number for the given Type");
 
         try {
             tMsPartyContact = PartyContactMapper.INSTANCE.dtoToEntity(partyContactDTO);
 
-            tMsPartyContact.setPtcnStatus(Constants.STATUS_ACTIVE.getShortValue());
+            tMsPartyContact.setPtcnStatus(STATUS_ACTIVE.getShortValue());
             tMsPartyContact.setParty(tMsParty);
         } catch (Exception e) {
             log.error("Error while creating a Party Contact {0} ", e.getMessage());
@@ -64,26 +71,27 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
     }
 
     @Override
-    public PartyContactDTO updatePartyContact(PartyContactDTO partyContactDTO, String partyCode, Long contactId) {
-        return null;
+    public PartyContactDTO updatePartyContactById(PartyContactDTO partyContactDTO) {
+
+        if(partyContactDTO.getContactId() == null)
+            throw new NoRequiredInfoException("Party Contact Id is required");
+
+        final TMsPartyContact tMsPartyContact = partyContactRepository
+                .findByPtcnIdAndPtcnStatus(partyContactDTO.getContactId(), STATUS_ACTIVE.getShortValue());
+
+        tMsPartyContact.setPtcnContactNumber(partyContactDTO.getContactNumber());
+
+        return PartyContactMapper.INSTANCE.entityToDTO(persistEntity(tMsPartyContact));
     }
 
     @Override
     public List<PartyContactDTO> getContactsByPartyCode(String partyCode, Boolean isPartyValidated) {
 
-        if(!isPartyValidated) {
-            if(Strings.isNullOrEmpty(partyCode))
-                throw new NoRequiredInfoException("Party Code is required");
-
-            final TMsParty tMsParty = partyRepository
-                    .findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
-
-            if(tMsParty == null)
-                throw new DataNotFoundException("Party not found for the Code : " + partyCode);
-        }
+        if(!isPartyValidated)
+           validatePartyCode(partyCode);
 
         final List<TMsPartyContact> tMsPartyContactList = partyContactRepository
-                .findAllByParty_PrtyCodeAndPtcnStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+                .findAllByParty_PrtyCodeAndPtcnStatus(partyCode, STATUS_ACTIVE.getShortValue());
 
         if(tMsPartyContactList.isEmpty() || tMsPartyContactList == null)
             return Collections.emptyList();
@@ -100,21 +108,14 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
     @Override
     public PartyContactDTO getContactsByPartyCodeAndType(String partyCode, String contactType) {
 
-        if(Strings.isNullOrEmpty(partyCode))
-            throw new NoRequiredInfoException("Party Code is required");
-
         if(Strings.isNullOrEmpty(contactType))
             throw new NoRequiredInfoException("Contact Type Code is required");
 
-        final TMsParty tMsParty = partyRepository
-                .findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
-
-        if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
+        validatePartyCode(partyCode);
 
         // TODO : this should be getting active type of contact for the given type
         final TMsPartyContact tMsPartyContact = partyContactRepository
-                .findAllByParty_PrtyCodeAndPtcnContactTypeAndPtcnStatus(partyCode, contactType, Constants.STATUS_ACTIVE.getShortValue());
+                .findAllByParty_PrtyCodeAndPtcnContactTypeAndPtcnStatus(partyCode, contactType, STATUS_ACTIVE.getShortValue());
 
         if(tMsPartyContact == null)
             throw new DataNotFoundException("Contact Not found");
@@ -125,17 +126,10 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
     @Override
     public Boolean removePartyContactByPartyCode(String partyCode) {
 
-        if (Strings.isNullOrEmpty(partyCode))
-            throw new InvalidDataException("Party Code is required");
-
-        final TMsParty tMsParty = partyRepository
-                .findByPrtyCodeAndPrtyStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
-
-        if(tMsParty == null)
-            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
+        validatePartyCode(partyCode);
 
         final List<TMsPartyContact> tMsPartyContactList = partyContactRepository
-                .findAllByParty_PrtyCodeAndPtcnStatus(partyCode, Constants.STATUS_ACTIVE.getShortValue());
+                .findAllByParty_PrtyCodeAndPtcnStatus(partyCode, STATUS_ACTIVE.getShortValue());
 
         if(tMsPartyContactList.isEmpty())
             throw new DataNotFoundException("Party Contacts not found for the Party Code : " + partyCode);
@@ -146,6 +140,20 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         });
 
         return true;
+    }
+
+    private TMsParty validatePartyCode(String partyCode) {
+
+        if(Strings.isNullOrEmpty(partyCode))
+            throw new NoRequiredInfoException("Party Code is required");
+
+        final TMsParty tMsParty = partyRepository
+                .findByPrtyCodeAndPrtyStatus(partyCode, STATUS_ACTIVE.getShortValue());
+
+        if(tMsParty == null)
+            throw new DataNotFoundException("Party not found for the Code : " + partyCode);
+
+        return tMsParty;
     }
 
     private TMsPartyContact persistEntity(TMsPartyContact tMsPartyContact) {
