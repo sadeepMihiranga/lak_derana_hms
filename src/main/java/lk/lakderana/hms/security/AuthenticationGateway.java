@@ -19,6 +19,7 @@ import lk.lakderana.hms.service.PartyTokenService;
 import lk.lakderana.hms.service.UserService;
 import lk.lakderana.hms.util.Constants;
 import lk.lakderana.hms.util.RequestType;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.util.Strings;
 import org.slf4j.Logger;
@@ -45,6 +46,7 @@ import static lk.lakderana.hms.util.CommonReferenceCodes.*;
 /**
  * Class for authentication functions
  */
+@Slf4j
 @Service
 @Configuration
 public class AuthenticationGateway {
@@ -61,8 +63,6 @@ public class AuthenticationGateway {
 
     private final PartyRepository partyRepository;
     private final UserRepository userRepository;
-
-    private Logger logger = LoggerFactory.getLogger(AuthenticationGateway.class);
 
     public AuthenticationGateway(PasswordResetConfig passwordResetConfig,
                                  LocalValidatorFactoryBean localValidatorFactoryBean,
@@ -205,7 +205,7 @@ public class AuthenticationGateway {
         try {
             token = generateAndSaveNewPasswordToken(PARTY_CONTACT_EMAIL.getValue(), userDTO.getPartyCode());
         } catch (Exception e) {
-            logger.debug("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : {}", e.getMessage());
+            log.error("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when generating the token string");
         }
 
@@ -215,7 +215,7 @@ public class AuthenticationGateway {
             response = new SuccessResponse(userDTO.getPartyCode(),
                     "You will receive an Email to " + partyContactDTO.getContactNumber() + " address.", true, 1100);
         } catch (Exception e) {
-            logger.debug("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : " + e.getMessage());
+            log.error("Auth -> generateResetPasswordTokenEmail -> AuthenticationGateway : " + e.getMessage());
             throw new OperationException("Error when sending the email");
         }
 
@@ -252,7 +252,7 @@ public class AuthenticationGateway {
         try {
             token = generateAndSaveNewPasswordToken(PARTY_CONTACT_MOBILE.getValue(), userDTO.getPartyCode());
         } catch (Exception e) {
-            logger.debug("Auth -> generateResetPasswordTokenMobile -> AuthenticationGateway : {}", e.getMessage());
+            log.error("Auth -> generateResetPasswordTokenMobile -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when generating the PIN Number");
         }
 
@@ -261,7 +261,7 @@ public class AuthenticationGateway {
         try {
             response = new SuccessResponse(userDTO.getPartyCode(), "SUCCESS", true, 1100);
         } catch (Exception e) {
-            logger.debug("Auth -> generateResetPasswordTokenMobile -> AuthenticationGateway : {}", e.getMessage());
+            log.error("Auth -> generateResetPasswordTokenMobile -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when inserting to SMS log table");
         }
 
@@ -324,7 +324,7 @@ public class AuthenticationGateway {
             helper.setFrom("from_mail");
             message.setFrom(new InternetAddress("from_mail", emailConfig.getSenderName()));
         } catch (Exception e) {
-            logger.debug("Auth -> constructEmail -> AuthenticationGateway : {}", e.getMessage());
+            log.error("Auth -> constructEmail -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error while sending the email");
         }
         return message;
@@ -403,7 +403,7 @@ public class AuthenticationGateway {
             userRepository.save(tMsUser);
             response = new SuccessResponse(partyUsername, "Password has been reset successfully.\n Please Signin with Newer Password", true, 1100);
         } catch (Exception e) {
-            logger.debug("Auth -> updUserPasswordByUsername -> AuthenticationGateway : {}", e.getMessage());
+            log.error("Auth -> updUserPasswordByUsername -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when updating the password");
         }
 
@@ -435,7 +435,7 @@ public class AuthenticationGateway {
             userRepository.save(tMsUser);
             response = new SuccessResponse(tMsUser.getUserUsername(), "Password has been reset successfully.\n Please Signin with Newer Password", true, 1100);
         } catch (Exception e) {
-            logger.debug("Auth -> updUserPasswordByCode -> AuthenticationGateway : {}", e.getMessage());
+            log.error("Auth -> updUserPasswordByCode -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error when updating the password");
         }
 

@@ -16,6 +16,8 @@ public interface RoomMapper {
     @Mappings({
             @Mapping(source = "roomId", target = "roomId"),
             @Mapping(source = "roomType", target = "roomType"),
+            @Mapping(source = "roomNo", target = "roomNo"),
+            @Mapping(source = "roomDescription", target = "roomDescription"),
             @Mapping(source = "roomCategory", target = "roomCategory"),
             @Mapping(source = "roomPrice", target = "roomPrice"),
             @Mapping(source = "roomStatus", target = "status"),

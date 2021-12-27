@@ -6,10 +6,7 @@ import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.repository.FunctionRepository;
 import lk.lakderana.hms.repository.RoleRepository;
-import lk.lakderana.hms.service.BranchService;
-import lk.lakderana.hms.service.DepartmentService;
-import lk.lakderana.hms.service.DropDownService;
-import lk.lakderana.hms.service.PartyService;
+import lk.lakderana.hms.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -26,10 +23,13 @@ public class DropDownServiceImpl implements DropDownService {
     private static final String ROLES = "ROLES";
     private static final String CUSTOMERS = "CUSTM";
     private static final String EMPLOYEES = "EMPLY";
+    private static final String ROOM_TYPES = "ROMTP";
+    private static final String ROOM_CATEGORIES = "RMCAT";
 
     private final BranchService branchService;
     private final DepartmentService departmentService;
     private final PartyService partyService;
+    private final CommonReferenceService commonReferenceService;
 
     private final FunctionRepository functionRepository;
     private final RoleRepository roleRepository;
@@ -37,11 +37,13 @@ public class DropDownServiceImpl implements DropDownService {
     public DropDownServiceImpl(BranchService branchService,
                                DepartmentService departmentService,
                                PartyService partyService,
+                               CommonReferenceService commonReferenceService,
                                FunctionRepository functionRepository,
                                RoleRepository roleRepository) {
         this.branchService = branchService;
         this.departmentService = departmentService;
         this.partyService = partyService;
+        this.commonReferenceService = commonReferenceService;
         this.functionRepository = functionRepository;
         this.roleRepository = roleRepository;
     }
@@ -105,6 +107,26 @@ public class DropDownServiceImpl implements DropDownService {
                     downDTOList.add(new DropDownDTO(
                             partyDTO.getPartyCode(),
                             partyDTO.getName(),
+                            null,
+                            null
+                    ));
+                });
+                break;
+            case ROOM_TYPES :
+                commonReferenceService.getAllByCmrtCode(ROOM_TYPES).forEach(commonReferenceDTO -> {
+                    downDTOList.add(new DropDownDTO(
+                            commonReferenceDTO.getCmrfCode(),
+                            commonReferenceDTO.getDescription(),
+                            null,
+                            null
+                    ));
+                });
+                break;
+            case ROOM_CATEGORIES :
+                commonReferenceService.getAllByCmrtCode(ROOM_CATEGORIES).forEach(commonReferenceDTO -> {
+                    downDTOList.add(new DropDownDTO(
+                            commonReferenceDTO.getCmrfCode(),
+                            commonReferenceDTO.getDescription(),
                             null,
                             null
                     ));

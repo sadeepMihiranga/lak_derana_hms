@@ -11,6 +11,7 @@ import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.RoomMapper;
+import lk.lakderana.hms.repository.NumberGeneratorRepository;
 import lk.lakderana.hms.repository.RoomRepository;
 import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.RoomService;
@@ -25,18 +26,22 @@ import java.util.List;
 
 import static lk.lakderana.hms.util.CommonReferenceTypeCodes.*;
 import static lk.lakderana.hms.util.Constants.*;
+import static lk.lakderana.hms.util.RoomStatus.READY_FOR_BOOKING;
 
 @Slf4j
 @Service
 public class RoomServiceImpl extends EntityValidator implements RoomService {
 
     private final RoomRepository roomRepository;
+    private final NumberGeneratorRepository numberGeneratorRepository;
 
     private final CommonReferenceService commonReferenceService;
 
     public RoomServiceImpl(RoomRepository roomRepository,
+                           NumberGeneratorRepository numberGeneratorRepository,
                            CommonReferenceService commonReferenceService) {
         this.roomRepository = roomRepository;
+        this.numberGeneratorRepository = numberGeneratorRepository;
         this.commonReferenceService = commonReferenceService;
     }
 
@@ -49,8 +54,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         validatePaginateIndexes(page, size);
 
         Page<TMsRoom> tMsRoomPage = roomRepository
-                .getActiveRooms(roomType, roomCategory, STATUS_ACTIVE.getShortValue(), captureBranchIds(),
-                        PageRequest.of(page - 1, size));
+                .searchRooms(roomType, roomCategory, captureBranchIds(), PageRequest.of(page - 1, size));
 
         if (tMsRoomPage.getSize() == 0)
             return null;
@@ -75,12 +79,22 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
 
     @Override
     public RoomDTO createRoom(RoomDTO roomDTO) {
+        String roomNo = null;
 
         validateEntity(roomDTO);
         validateReferenceData(roomDTO);
 
         roomDTO.setBranchId(captureBranchIds().get(0));
-        roomDTO.setStatus(STATUS_ACTIVE.getShortValue());
+        roomDTO.setStatus(READY_FOR_BOOKING.getShortValue());
+
+        try {
+            roomNo = numberGeneratorRepository.generateNumber("RM", "Y", "#", "#",
+                    "#", "#", "#", "#");
+        } catch (Exception e) {
+            log.error("Error while creating a Party Code : " + e.getMessage());
+            throw new OperationException("Error while creating a Party Code");
+        }
+        roomDTO.setRoomNo(roomNo);
 
         final TMsRoom tMsRoom = RoomMapper.INSTANCE.dtoToEntity(roomDTO);
 
@@ -120,7 +134,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
             throw new NoRequiredInfoException("Room Id is required");
 
         final TMsRoom tMsRoom = roomRepository
-                .getByRoomIdAndBranch_BrnhIdInAndRoomStatus(roomId, captureBranchIds(), STATUS_ACTIVE.getShortValue());
+                .getByRoomIdAndBranch_BrnhIdIn(roomId, captureBranchIds());
 
         if(tMsRoom == null)
             throw new DataNotFoundException("Room not found for Id " + roomId);
