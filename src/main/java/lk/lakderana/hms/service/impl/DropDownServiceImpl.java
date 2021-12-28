@@ -11,7 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -26,6 +28,7 @@ public class DropDownServiceImpl implements DropDownService {
     private static final String ROOM_TYPES = "ROMTP";
     private static final String ROOM_CATEGORIES = "RMCAT";
     private static final String FACILITIES = "FCLTP";
+    private static final String MEASUREMENTS_UNITS = "UOFMS";
 
     private final BranchService branchService;
     private final DepartmentService departmentService;
@@ -47,6 +50,25 @@ public class DropDownServiceImpl implements DropDownService {
         this.commonReferenceService = commonReferenceService;
         this.functionRepository = functionRepository;
         this.roleRepository = roleRepository;
+    }
+
+    @Override
+    public Map<String, String> getDropDownCodes() {
+
+        Map<String, String> dropDownCodes = new HashMap<>();
+
+        dropDownCodes.put("BRANCHES", BRANCHES);
+        dropDownCodes.put("DEPARTMENTS", DEPARTMENTS);
+        dropDownCodes.put("PERMISSIONS", PERMISSIONS);
+        dropDownCodes.put("ROLES", ROLES);
+        dropDownCodes.put("CUSTOMERS", CUSTOMERS);
+        dropDownCodes.put("EMPLOYEES", EMPLOYEES);
+        dropDownCodes.put("ROOM_TYPES", ROOM_TYPES);
+        dropDownCodes.put("ROOM_CATEGORIES", ROOM_CATEGORIES);
+        dropDownCodes.put("FACILITIES", FACILITIES);
+        dropDownCodes.put("MEASUREMENTS_UNITS", MEASUREMENTS_UNITS);
+
+        return dropDownCodes;
     }
 
     @Override
@@ -127,6 +149,9 @@ public class DropDownServiceImpl implements DropDownService {
                 break;
             case FACILITIES :
                 downDTOList = populateFromCommonReference(FACILITIES);
+                break;
+            case MEASUREMENTS_UNITS :
+                downDTOList = populateFromCommonReference(MEASUREMENTS_UNITS);
                 break;
             default:
                 throw new InvalidDataException("Requested Dropdown Code is invalid");

@@ -23,4 +23,9 @@ public class DropDownController {
     public ResponseEntity<SuccessResponse> getPartyByPartyId(@PathVariable("code") String code) throws IOException {
         return SuccessResponseHandler.generateResponse(dropDownService.getDropDownByCode(code));
     }
+
+    @GetMapping("/check")
+    public ResponseEntity<SuccessResponse> getCodes() throws IOException {
+        return SuccessResponseHandler.generateResponse(dropDownService.getDropDownCodes());
+    }
 }
