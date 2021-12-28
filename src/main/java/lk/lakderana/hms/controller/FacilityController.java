@@ -32,4 +32,15 @@ public class FacilityController {
     public ResponseEntity<SuccessResponse> createFacility(@RequestBody FacilityDTO facilityDTO) {
         return SuccessResponseHandler.generateResponse(facilityService.createFacility(facilityDTO));
     }
+
+    @PutMapping("/{facilityId}")
+    public ResponseEntity<SuccessResponse> createFacility(@RequestBody FacilityDTO facilityDTO,
+                                                          @PathVariable("facilityId") Long facilityId) {
+        return SuccessResponseHandler.generateResponse(facilityService.updateFacility(facilityId, facilityDTO));
+    }
+
+    @DeleteMapping("/{facilityId}")
+    public ResponseEntity<SuccessResponse> removeFacility(@PathVariable("facilityId") Long facilityId) {
+        return SuccessResponseHandler.generateResponse(facilityService.removeFacility(facilityId));
+    }
 }

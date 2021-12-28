@@ -8,4 +8,8 @@ public interface FacilityService {
     FacilityDTO createFacility(FacilityDTO facilityDTO);
 
     PaginatedEntity facilityPaginatedSearch(String facilityName, String facilityType, Integer page, Integer size);
+
+    FacilityDTO updateFacility(Long facilityId, FacilityDTO facilityDTO);
+
+    Boolean removeFacility(Long facilityId);
 }

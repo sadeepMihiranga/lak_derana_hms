@@ -33,7 +33,7 @@ public class TMsFacility extends AuditModel {
     private BigDecimal fcltPrice;
 
     @Column(name = "FLCT_UOM")
-    private Integer facltUom;
+    private String facltUom;
 
     @Column(name = "FCLT_STATUS")
     private Short facltStatus;

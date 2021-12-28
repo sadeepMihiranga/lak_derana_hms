@@ -7,7 +7,8 @@ public enum CommonReferenceTypeCodes {
     GENDER_TYPES("GENDR"),
     ROOM_TYPES("ROMTP"),
     ROOM_CATEGORY_TYPES("RMCAT"),
-    FACILITY_TYPES("FCLTP");
+    FACILITY_TYPES("FCLTP"),
+    MEASUREMENT_TYPES("UOFMS");
 
     private String value;
     private short shortValue;

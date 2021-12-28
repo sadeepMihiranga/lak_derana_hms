@@ -20,7 +20,7 @@ public class FacilityDTO implements Paginated {
     private String facilityType;
     private String facilityTypeName;
     private BigDecimal price;
-    private Integer uom;
+    private String uom;
     private Short status;
     private Long branchId;
     private String branchName;

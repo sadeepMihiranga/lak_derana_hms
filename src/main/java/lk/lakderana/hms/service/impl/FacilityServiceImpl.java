@@ -8,6 +8,8 @@ import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.dto.RoomDTO;
 import lk.lakderana.hms.entity.TMsFacility;
 import lk.lakderana.hms.entity.TMsRoom;
+import lk.lakderana.hms.exception.DataNotFoundException;
+import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.FacilityMapper;
@@ -86,6 +88,48 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
         return paginatedFacilityList;
     }
 
+    @Override
+    public FacilityDTO updateFacility(Long facilityId, FacilityDTO facilityDTO) {
+
+        validateEntity(facilityDTO);
+        validateReferenceData(facilityDTO);
+
+        final TMsFacility tMsFacility = validateByFacilityId(facilityId);
+
+        tMsFacility.setFacltUom(facilityDTO.getUom());
+        tMsFacility.setFcltDescription(facilityDTO.getDescription());
+        tMsFacility.setFcltName(facilityDTO.getFacilityName());
+        tMsFacility.setFcltPrice(facilityDTO.getPrice());
+        tMsFacility.setFcltType(facilityDTO.getFacilityType());
+
+        return FacilityMapper.INSTANCE.entityToDTO(persistEntity(tMsFacility));
+    }
+
+    @Override
+    public Boolean removeFacility(Long facilityId) {
+
+        final TMsFacility tMsFacility = validateByFacilityId(facilityId);
+
+        tMsFacility.setFacltStatus(STATUS_INACTIVE.getShortValue());
+
+        persistEntity(tMsFacility);
+
+        return true;
+    }
+
+    private TMsFacility validateByFacilityId(Long facilityId) {
+
+        if(facilityId == null)
+            throw new NoRequiredInfoException("Facility Id is required");
+
+        final TMsFacility tMsFacility = facilityRepository.findByFcltIdAndBranch_BrnhIdIn(facilityId, captureBranchIds());
+
+        if(tMsFacility == null)
+            throw new DataNotFoundException("Facility not found for the Id " + facilityId);
+
+        return tMsFacility;
+    }
+
     private void setReferenceData(TMsFacility tMsFacility, FacilityDTO facilityDTO) {
 
         if(tMsFacility.getBranch() != null)
@@ -103,6 +147,9 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
 
         commonReferenceService
                 .getByCmrfCodeAndCmrtCode(FACILITY_TYPES.getValue(), facilityDTO.getFacilityType());
+
+        commonReferenceService
+                .getByCmrfCodeAndCmrtCode(MEASUREMENT_TYPES.getValue(), facilityDTO.getUom());
     }
 
     private TMsFacility persistEntity(TMsFacility tMsFacility) {
