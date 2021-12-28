@@ -25,6 +25,7 @@ public class DropDownServiceImpl implements DropDownService {
     private static final String EMPLOYEES = "EMPLY";
     private static final String ROOM_TYPES = "ROMTP";
     private static final String ROOM_CATEGORIES = "RMCAT";
+    private static final String FACILITIES = "FCLTP";
 
     private final BranchService branchService;
     private final DepartmentService departmentService;
@@ -58,8 +59,9 @@ public class DropDownServiceImpl implements DropDownService {
 
         switch (code) {
             case BRANCHES :
+                List<DropDownDTO> branchList = downDTOList;
                 branchService.getAllBranches().forEach(branchDTO -> {
-                    downDTOList.add(new DropDownDTO(
+                    branchList.add(new DropDownDTO(
                             branchDTO.getBranchId().toString(),
                             branchDTO.getMame(),
                             null,
@@ -67,8 +69,9 @@ public class DropDownServiceImpl implements DropDownService {
                 });
                 break;
             case DEPARTMENTS :
+                List<DropDownDTO> departmentList = downDTOList;
                 departmentService.getAllDepartments().forEach(departmentDTO -> {
-                    downDTOList.add(new DropDownDTO(
+                    departmentList.add(new DropDownDTO(
                             departmentDTO.getDepartmentCode(),
                             departmentDTO.getMame(),
                             null,
@@ -76,8 +79,9 @@ public class DropDownServiceImpl implements DropDownService {
                 });
                 break;
             case PERMISSIONS :
+                List<DropDownDTO> permissionList = downDTOList;
                 functionRepository.findAll().forEach(tMsFunction -> {
-                    downDTOList.add(new DropDownDTO(
+                    permissionList.add(new DropDownDTO(
                             tMsFunction.getFuncId(),
                             tMsFunction.getDunsDescription(),
                             null,
@@ -85,16 +89,18 @@ public class DropDownServiceImpl implements DropDownService {
                 });
                 break;
             case ROLES :
+                List<DropDownDTO> roleList = downDTOList;
                 roleRepository.findAll().forEach(tMsRole -> {
-                    downDTOList.add(new DropDownDTO(
+                    roleList.add(new DropDownDTO(
                             tMsRole.getRoleId().toString(),
                             tMsRole.getRoleName(),
                             tMsRole.getRoleDescription(),
                             tMsRole.getRoleStatus()));
                 });
             case CUSTOMERS :
+                List<DropDownDTO> customerList = downDTOList;
                 partyService.getPartyListByType(CUSTOMERS).forEach(partyDTO -> {
-                    downDTOList.add(new DropDownDTO(
+                    customerList.add(new DropDownDTO(
                             partyDTO.getPartyCode(),
                             partyDTO.getName(),
                             null,
@@ -103,8 +109,9 @@ public class DropDownServiceImpl implements DropDownService {
                 });
                 break;
             case EMPLOYEES :
+                List<DropDownDTO> roomList = downDTOList;
                 partyService.getPartyListByType(EMPLOYEES).forEach(partyDTO -> {
-                    downDTOList.add(new DropDownDTO(
+                    roomList.add(new DropDownDTO(
                             partyDTO.getPartyCode(),
                             partyDTO.getName(),
                             null,
@@ -113,28 +120,33 @@ public class DropDownServiceImpl implements DropDownService {
                 });
                 break;
             case ROOM_TYPES :
-                commonReferenceService.getAllByCmrtCode(ROOM_TYPES).forEach(commonReferenceDTO -> {
-                    downDTOList.add(new DropDownDTO(
-                            commonReferenceDTO.getCmrfCode(),
-                            commonReferenceDTO.getDescription(),
-                            null,
-                            null
-                    ));
-                });
+                downDTOList = populateFromCommonReference(ROOM_TYPES);
                 break;
             case ROOM_CATEGORIES :
-                commonReferenceService.getAllByCmrtCode(ROOM_CATEGORIES).forEach(commonReferenceDTO -> {
-                    downDTOList.add(new DropDownDTO(
-                            commonReferenceDTO.getCmrfCode(),
-                            commonReferenceDTO.getDescription(),
-                            null,
-                            null
-                    ));
-                });
+                downDTOList = populateFromCommonReference(ROOM_CATEGORIES);
+                break;
+            case FACILITIES :
+                downDTOList = populateFromCommonReference(FACILITIES);
                 break;
             default:
                 throw new InvalidDataException("Requested Dropdown Code is invalid");
         }
+
+        return downDTOList;
+    }
+
+    private List<DropDownDTO> populateFromCommonReference(String code) {
+
+        List<DropDownDTO> downDTOList = new ArrayList<>();
+
+        commonReferenceService.getAllByCmrtCode(code).forEach(commonReferenceDTO -> {
+            downDTOList.add(new DropDownDTO(
+                    commonReferenceDTO.getCmrfCode(),
+                    commonReferenceDTO.getDescription(),
+                    null,
+                    null
+            ));
+        });
 
         return downDTOList;
     }
