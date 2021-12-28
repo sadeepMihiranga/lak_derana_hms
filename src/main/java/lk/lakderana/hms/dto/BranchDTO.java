@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class BranchDTO {
 
-    private Integer branchId;
+    private Long branchId;
     private String mame;
     private String description;
     private Short status;

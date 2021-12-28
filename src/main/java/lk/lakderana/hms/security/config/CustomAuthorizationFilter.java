@@ -63,6 +63,8 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
                 } catch (Exception e) {
                     log.error("Error logging in : {} ", e.getMessage());
 
+                    e.printStackTrace();
+
                     Map<String ,Object> errorAttributes = new LinkedHashMap<>();
 
                     errorAttributes.put(KEY_DATA, null);

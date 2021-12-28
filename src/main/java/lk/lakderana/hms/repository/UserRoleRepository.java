@@ -2,6 +2,7 @@ package lk.lakderana.hms.repository;
 
 import lk.lakderana.hms.entity.TMsUserRole;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -16,4 +17,8 @@ public interface UserRoleRepository extends JpaRepository<TMsUserRole, Long> {
     TMsUserRole findByUser_UserIdAndRole_RoleId(Long userId, Long roleId);
 
     TMsUserRole findByUser_UserIdAndRole_RoleName(Long userId, String roleName);
+
+    @Modifying
+    @Query("UPDATE TMsUserRole t SET t.usrlStatus = :status WHERE t.user.userId = :userId")
+    Integer inactiveByUserId(@Param("userId") Long userId, @Param("status") Short status);
 }

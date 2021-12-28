@@ -25,4 +25,5 @@ public class UserDTO implements Paginated {
     private List<RoleDTO> roles;
     private List<FunctionDTO> functions;
     private List<PartyContactDTO> contactList;
+    private List<BranchDTO> branches;
 }
