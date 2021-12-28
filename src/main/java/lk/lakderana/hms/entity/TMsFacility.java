@@ -37,4 +37,8 @@ public class TMsFacility extends AuditModel {
 
     @Column(name = "FCLT_STATUS")
     private Short facltStatus;
+
+    @JoinColumn(name = "FCLT_BRANCH_ID")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private TRfBranch branch;
 }

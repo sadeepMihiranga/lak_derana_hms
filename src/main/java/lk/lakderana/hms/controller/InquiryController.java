@@ -29,11 +29,11 @@ public class InquiryController {
     }
 
     @GetMapping(path = "/search")
-    public ResponseEntity<SuccessResponse> getCustomersByNamePaginated(@RequestParam(name = "customerName", required = false) String customerName,
-                                                                       @RequestParam(name = "customerContactNo", required = false) String customerContactNo,
-                                                                       @RequestParam(name = "partyCode", required = false) String partyCode,
-                                                                       @RequestParam(name = "page", required = true) Integer page,
-                                                                       @RequestParam(name = "size", required = true) Integer size) {
+    public ResponseEntity<SuccessResponse> customerPaginatedSearch(@RequestParam(name = "customerName", required = false) String customerName,
+                                                                   @RequestParam(name = "customerContactNo", required = false) String customerContactNo,
+                                                                   @RequestParam(name = "partyCode", required = false) String partyCode,
+                                                                   @RequestParam(name = "page", required = true) Integer page,
+                                                                   @RequestParam(name = "size", required = true) Integer size) {
         return SuccessResponseHandler.generateResponse(inquiryService
                 .inquiryPaginatedSearch(customerName, customerContactNo, partyCode, page, size));
     }

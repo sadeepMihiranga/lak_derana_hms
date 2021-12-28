@@ -20,6 +20,8 @@ public interface FacilityMapper {
             @Mapping(source = "fcltType", target = "facilityType"),
             @Mapping(source = "fcltPrice", target = "price"),
             @Mapping(source = "facltUom", target = "uom"),
+            @Mapping(source = "branch.brnhId", target = "branchId"),
+            @Mapping(source = "branch.brnhName", target = "branchName"),
             @Mapping(source = "facltStatus", target = "status")
     })
     FacilityDTO entityToDTO(TMsFacility entity);

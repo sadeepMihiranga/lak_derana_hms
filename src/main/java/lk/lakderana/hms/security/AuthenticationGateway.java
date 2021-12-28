@@ -34,6 +34,7 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import javax.transaction.Transactional;
 import javax.validation.ConstraintViolation;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -184,6 +185,7 @@ public class AuthenticationGateway {
      * @throws UnsupportedEncodingException
      * @throws NoSuchAlgorithmException
      */
+    @Transactional
     private SuccessResponse generateResetPasswordTokenEmail(String partyUsername, String templateName, String emailSubject) {
         SuccessResponse response = null;
 
@@ -324,6 +326,7 @@ public class AuthenticationGateway {
             helper.setFrom("from_mail");
             message.setFrom(new InternetAddress("from_mail", emailConfig.getSenderName()));
         } catch (Exception e) {
+            e.printStackTrace();
             log.error("Auth -> constructEmail -> AuthenticationGateway : {}", e.getMessage());
             throw new OperationException("Error while sending the email");
         }
