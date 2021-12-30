@@ -86,15 +86,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
 
         roomDTO.setBranchId(captureBranchIds().get(0));
         roomDTO.setStatus(READY_FOR_BOOKING.getShortValue());
-
-        try {
-            roomNo = numberGeneratorRepository.generateNumber("RM", "Y", "#", "#",
-                    "#", "#", "#", "#");
-        } catch (Exception e) {
-            log.error("Error while creating a Party Code : " + e.getMessage());
-            throw new OperationException("Error while creating a Party Code");
-        }
-        roomDTO.setRoomNo(roomNo);
+        roomDTO.setRoomNo(roomDTO.getRoomNo());
 
         final TMsRoom tMsRoom = RoomMapper.INSTANCE.dtoToEntity(roomDTO);
 
@@ -113,6 +105,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         tMsRoom.setRoomCategory(roomDTO.getRoomCategory());
         tMsRoom.setRoomType(roomDTO.getRoomType());
         tMsRoom.setRoomPrice(roomDTO.getRoomPrice());
+        tMsRoom.setRoomNo(roomDTO.getRoomNo());
 
         return RoomMapper.INSTANCE.entityToDTO(persistEntity(tMsRoom));
     }

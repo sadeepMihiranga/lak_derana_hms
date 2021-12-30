@@ -119,6 +119,7 @@ public class DropDownServiceImpl implements DropDownService {
                             tMsRole.getRoleDescription(),
                             tMsRole.getRoleStatus()));
                 });
+                break;
             case CUSTOMERS :
                 List<DropDownDTO> customerList = downDTOList;
                 partyService.getPartyListByType(CUSTOMERS).forEach(partyDTO -> {
