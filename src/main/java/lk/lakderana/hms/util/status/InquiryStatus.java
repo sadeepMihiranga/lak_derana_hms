@@ -1,4 +1,4 @@
-package lk.lakderana.hms.util;
+package lk.lakderana.hms.util.status;
 
 public enum InquiryStatus {
 

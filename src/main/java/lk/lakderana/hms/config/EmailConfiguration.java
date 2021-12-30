@@ -11,7 +11,7 @@ import java.util.Properties;
 
 @Getter
 @Configuration
-public class EmailConfig {
+public class EmailConfiguration {
 
     @Value("${mail.host}")
     private String host;

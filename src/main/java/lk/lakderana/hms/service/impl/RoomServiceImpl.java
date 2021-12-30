@@ -26,7 +26,7 @@ import java.util.List;
 
 import static lk.lakderana.hms.util.CommonReferenceTypeCodes.*;
 import static lk.lakderana.hms.util.Constants.*;
-import static lk.lakderana.hms.util.RoomStatus.READY_FOR_BOOKING;
+import static lk.lakderana.hms.util.status.RoomStatus.READY_FOR_BOOKING;
 
 @Slf4j
 @Service

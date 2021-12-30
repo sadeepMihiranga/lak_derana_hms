@@ -1,6 +1,6 @@
 package lk.lakderana.hms.security;
 
-import lk.lakderana.hms.config.EmailConfig;
+import lk.lakderana.hms.config.EmailConfiguration;
 import lk.lakderana.hms.dto.PartyContactDTO;
 import lk.lakderana.hms.dto.ResetPasswordDTO;
 import lk.lakderana.hms.dto.UpdatePasswordDTO;
@@ -22,8 +22,6 @@ import lk.lakderana.hms.util.RequestType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.util.Strings;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -56,7 +54,7 @@ public class AuthenticationGateway {
     private final LocalValidatorFactoryBean localValidatorFactoryBean;
     private final PasswordEncoder passwordEncoder;
     private final JavaMailSender emailSender;
-    private final EmailConfig emailConfig;
+    private final EmailConfiguration emailConfig;
 
     private final PartyTokenService partyTokenService;
     private final PartyContactService partyContactService;
@@ -74,7 +72,7 @@ public class AuthenticationGateway {
                                  UserRepository userRepository,
                                  PasswordEncoder passwordEncoder,
                                  JavaMailSender emailSender,
-                                 EmailConfig emailConfig) {
+                                 EmailConfiguration emailConfig) {
         this.passwordResetConfig = passwordResetConfig;
         this.localValidatorFactoryBean = localValidatorFactoryBean;
         this.partyTokenService = partyTokenService;
