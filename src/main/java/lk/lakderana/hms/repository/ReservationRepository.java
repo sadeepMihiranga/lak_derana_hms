@@ -20,4 +20,6 @@ public interface ReservationRepository extends JpaRepository<TMsReservation, Lon
                                             @Param("status") Short status,
                                             @Param("branchIdList") List<Long> branchIdList,
                                             Pageable pageable);
+
+    TMsReservation findByResvIdAndBranch_BrnhIdIn(Long resvId, List<Long> branchIdList);
 }

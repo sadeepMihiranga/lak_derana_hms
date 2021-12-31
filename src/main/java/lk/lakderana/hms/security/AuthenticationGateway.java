@@ -17,8 +17,8 @@ import lk.lakderana.hms.security.config.PasswordResetConfig;
 import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.PartyTokenService;
 import lk.lakderana.hms.service.UserService;
-import lk.lakderana.hms.util.Constants;
-import lk.lakderana.hms.util.RequestType;
+import lk.lakderana.hms.util.constant.Constants;
+import lk.lakderana.hms.util.constant.RequestType;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
 import org.assertj.core.util.Strings;
@@ -40,7 +40,7 @@ import java.nio.charset.StandardCharsets;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 
-import static lk.lakderana.hms.util.CommonReferenceCodes.*;
+import static lk.lakderana.hms.util.constant.CommonReferenceCodes.*;
 
 /**
  * Class for authentication functions

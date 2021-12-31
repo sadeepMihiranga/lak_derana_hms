@@ -10,7 +10,7 @@ import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.security.User;
 import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.UserService;
-import lk.lakderana.hms.util.Constants;
+import lk.lakderana.hms.util.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.data.domain.Page;
@@ -29,8 +29,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
-import static lk.lakderana.hms.util.Constants.STATUS_INACTIVE;
+import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.constant.Constants.STATUS_INACTIVE;
 
 @Slf4j
 @Service

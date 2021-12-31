@@ -12,7 +12,7 @@ import lk.lakderana.hms.repository.BranchRepository;
 import lk.lakderana.hms.repository.InquiryRepository;
 import lk.lakderana.hms.service.InquiryService;
 import lk.lakderana.hms.service.PartyService;
-import lk.lakderana.hms.util.status.InquiryStatus;
+import lk.lakderana.hms.util.constant.status.InquiryStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.data.domain.Page;
@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static lk.lakderana.hms.util.CommonReferenceCodes.PARTY_CONTACT_MOBILE;
-import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
-import static lk.lakderana.hms.util.status.InquiryStatus.CANCELED;
-import static lk.lakderana.hms.util.status.InquiryStatus.TRANSFERRED_TO_ANOTHER;
+import static lk.lakderana.hms.util.constant.CommonReferenceCodes.PARTY_CONTACT_MOBILE;
+import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.constant.status.InquiryStatus.CANCELED;
+import static lk.lakderana.hms.util.constant.status.InquiryStatus.TRANSFERRED_TO_ANOTHER;
 
 @Slf4j
 @Service

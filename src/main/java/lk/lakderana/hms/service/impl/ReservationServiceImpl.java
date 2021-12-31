@@ -7,6 +7,7 @@ import lk.lakderana.hms.dto.ReservationDTO;
 import lk.lakderana.hms.entity.TMsReservation;
 import lk.lakderana.hms.entity.TRfInquiry;
 import lk.lakderana.hms.exception.DataNotFoundException;
+import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.ReservationMapper;
@@ -23,7 +24,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static lk.lakderana.hms.util.status.ReservationStatus.*;
+import static lk.lakderana.hms.util.constant.status.ReservationStatus.*;
 
 @Slf4j
 @Service
@@ -107,6 +108,40 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         tMsReservation.setResvStatus(CONFIRMED.getShortValue());
 
         return ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
+    }
+
+    @Override
+    public Long cancelReservation(Long reservationId, ReservationDTO reservationDTO) {
+
+        TMsReservation tMsReservation = validateReservationById(reservationId);
+        tMsReservation.setResvStatus(CANCELLED.getShortValue());
+        tMsReservation.setResvCancellationReasons(reservationDTO.getCancellationReasons());
+
+        //TODO : need to check pending payments
+
+        return persistEntity(tMsReservation).getResvId();
+    }
+
+    @Override
+    public ReservationDTO updateReservation(Long reservationId, ReservationDTO reservationDTO) {
+
+        TMsReservation tMsReservation = validateReservationById(reservationId);
+
+        return null;
+    }
+
+    private TMsReservation validateReservationById(Long reservationId) {
+
+        if(reservationId == null)
+            throw new NoRequiredInfoException("Reservation Id is required " + reservationId);
+
+        final TMsReservation tMsReservation = reservationRepository
+                .findByResvIdAndBranch_BrnhIdIn(reservationId, captureBranchIds());
+
+        if(tMsReservation == null)
+            throw new DataNotFoundException("Reservation not found for the Id " + reservationId);
+
+        return tMsReservation;
     }
 
     private TMsReservation persistEntity(TMsReservation tMsReservation) {

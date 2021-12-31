@@ -3,7 +3,7 @@ package lk.lakderana.hms.config;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.InvalidDataException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
-import lk.lakderana.hms.util.Constants;
+import lk.lakderana.hms.util.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package lk.lakderana.hms.util.status;
+package lk.lakderana.hms.util.constant.status;
 
 public enum RoomStatus {
 

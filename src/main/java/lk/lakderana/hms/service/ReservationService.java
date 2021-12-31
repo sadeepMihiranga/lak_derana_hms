@@ -8,4 +8,8 @@ public interface ReservationService {
     PaginatedEntity reservationPaginatedSearch(Short status, Integer noOfPersons, Integer page, Integer size);
 
     ReservationDTO createReservation(ReservationDTO reservationDTO);
+
+    Long cancelReservation(Long reservationId, ReservationDTO reservationDTO);
+
+    ReservationDTO updateReservation(Long reservationId, ReservationDTO reservationDTO);
 }

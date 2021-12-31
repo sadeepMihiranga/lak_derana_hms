@@ -20,8 +20,8 @@ import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.PartyContactService;
 import lk.lakderana.hms.service.PartyService;
 import lk.lakderana.hms.service.UserService;
-import lk.lakderana.hms.util.CommonReferenceTypeCodes;
-import lk.lakderana.hms.util.Constants;
+import lk.lakderana.hms.util.constant.CommonReferenceTypeCodes;
+import lk.lakderana.hms.util.constant.Constants;
 import lk.lakderana.hms.config.EntityValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
@@ -35,7 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
 
 @Slf4j
 @Service

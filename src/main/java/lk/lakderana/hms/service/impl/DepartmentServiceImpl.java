@@ -5,7 +5,7 @@ import lk.lakderana.hms.entity.TMsDepartment;
 import lk.lakderana.hms.mapper.DepartmentMapper;
 import lk.lakderana.hms.repository.DepartmentRepository;
 import lk.lakderana.hms.service.DepartmentService;
-import lk.lakderana.hms.util.Constants;
+import lk.lakderana.hms.util.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 

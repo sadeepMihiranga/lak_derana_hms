@@ -19,8 +19,8 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static lk.lakderana.hms.util.ResponseMessageKeys.*;
-import static lk.lakderana.hms.util.ResponseMessageKeys.KEY_CODE;
+import static lk.lakderana.hms.util.constant.ResponseMessageKeys.*;
+import static lk.lakderana.hms.util.constant.ResponseMessageKeys.KEY_CODE;
 
 /**
  * Class to generate corresponding HTTP responses based on exception.

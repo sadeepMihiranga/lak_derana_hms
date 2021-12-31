@@ -5,15 +5,12 @@ import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.CommonReferenceDTO;
 import lk.lakderana.hms.dto.FacilityDTO;
 import lk.lakderana.hms.dto.PaginatedEntity;
-import lk.lakderana.hms.dto.RoomDTO;
 import lk.lakderana.hms.entity.TMsFacility;
-import lk.lakderana.hms.entity.TMsRoom;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.FacilityMapper;
-import lk.lakderana.hms.mapper.RoomMapper;
 import lk.lakderana.hms.repository.FacilityRepository;
 import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.FacilityService;
@@ -26,8 +23,8 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
-import static lk.lakderana.hms.util.CommonReferenceTypeCodes.*;
-import static lk.lakderana.hms.util.Constants.*;
+import static lk.lakderana.hms.util.constant.CommonReferenceTypeCodes.*;
+import static lk.lakderana.hms.util.constant.Constants.*;
 
 @Slf4j
 @Service

@@ -1,6 +1,5 @@
 package lk.lakderana.hms.controller;
 
-import lk.lakderana.hms.dto.InquiryDTO;
 import lk.lakderana.hms.dto.ReservationDTO;
 import lk.lakderana.hms.response.SuccessResponse;
 import lk.lakderana.hms.response.SuccessResponseHandler;
@@ -30,5 +29,11 @@ public class ReservationController {
     @PostMapping
     public ResponseEntity<SuccessResponse> createReservation(@RequestBody ReservationDTO reservationDTO) {
         return SuccessResponseHandler.generateResponse(reservationService.createReservation(reservationDTO));
+    }
+
+    @PutMapping("/{reservationId}/cancel")
+    public ResponseEntity<SuccessResponse> cancelReservation(@PathVariable("reservationId") Long reservationId,
+                                                             @RequestBody ReservationDTO reservationDTO) {
+        return SuccessResponseHandler.generateResponse(reservationService.cancelReservation(reservationId, reservationDTO));
     }
 }

@@ -3,13 +3,12 @@ package lk.lakderana.hms.service.impl;
 import lk.lakderana.hms.dto.PartyContactDTO;
 import lk.lakderana.hms.entity.TMsParty;
 import lk.lakderana.hms.entity.TMsPartyContact;
-import lk.lakderana.hms.entity.TRfInquiry;
 import lk.lakderana.hms.exception.*;
 import lk.lakderana.hms.mapper.PartyContactMapper;
 import lk.lakderana.hms.repository.PartyContactRepository;
 import lk.lakderana.hms.repository.PartyRepository;
 import lk.lakderana.hms.service.PartyContactService;
-import lk.lakderana.hms.util.Constants;
+import lk.lakderana.hms.util.constant.Constants;
 import lk.lakderana.hms.config.EntityValidator;
 import lombok.extern.slf4j.Slf4j;
 import org.assertj.core.util.Strings;
@@ -21,7 +20,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static lk.lakderana.hms.util.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
 
 @Slf4j
 @Service

@@ -42,4 +42,7 @@ public class TMsReservation extends AuditModel {
     @JoinColumn(name = "RESV_BRANCH_ID")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TRfBranch branch;
+
+    @Column(name = "RESV_CANCELLATION_REASON")
+    private String resvCancellationReasons;
 }

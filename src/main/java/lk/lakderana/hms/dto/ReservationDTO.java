@@ -34,4 +34,5 @@ public class ReservationDTO implements Paginated {
     private String createdUserCode;
     private LocalDateTime lastUpdatedDate;
     private String lastUpdatedUserCode;
+    private String cancellationReasons;
 }

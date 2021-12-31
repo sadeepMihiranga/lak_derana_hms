@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static lk.lakderana.hms.util.Constants.REQUEST_PARTY_CODE;
-import static lk.lakderana.hms.util.Constants.REQUEST_BRANCHES;
-import static lk.lakderana.hms.util.ResponseMessageKeys.*;
+import static lk.lakderana.hms.util.constant.Constants.REQUEST_PARTY_CODE;
+import static lk.lakderana.hms.util.constant.Constants.REQUEST_BRANCHES;
+import static lk.lakderana.hms.util.constant.ResponseMessageKeys.*;
 
 @Slf4j
 @Component

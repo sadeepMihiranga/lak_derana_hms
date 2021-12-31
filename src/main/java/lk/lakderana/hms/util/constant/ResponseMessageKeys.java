@@ -1,8 +1,8 @@
-package lk.lakderana.hms.util;
+package lk.lakderana.hms.util.constant;
 
 public class ResponseMessageKeys {
 
-    private static final String DEFAULT_KEY_PATH = "path";
+    public static final String DEFAULT_KEY_PATH = "path";
     public static final String KEY_STATUS = "status";
     public static final String KEY_CODE = "code";
     public static final String KEY_DESCRIPTION = "description";

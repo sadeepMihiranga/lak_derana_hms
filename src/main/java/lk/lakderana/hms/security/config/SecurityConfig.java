@@ -21,7 +21,7 @@ import org.springframework.web.context.request.WebRequest;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import static lk.lakderana.hms.util.ResponseMessageKeys.*;
+import static lk.lakderana.hms.util.constant.ResponseMessageKeys.*;
 
 @Configuration
 @EnableWebSecurity
