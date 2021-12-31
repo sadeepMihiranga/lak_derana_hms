@@ -114,6 +114,21 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
         return true;
     }
 
+    @Override
+    public List<FacilityDTO> getAllFacilities() {
+
+        final List<TMsFacility> tMsFacilityList = facilityRepository
+                .findAllByFacltStatusAndBranch_BrnhIdIn(STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        List<FacilityDTO> facilityDTOList = new ArrayList<>();
+
+        tMsFacilityList.forEach(tMsFacility -> {
+            facilityDTOList.add(FacilityMapper.INSTANCE.entityToDTO(tMsFacility));
+        });
+
+        return facilityDTOList;
+    }
+
     private TMsFacility validateByFacilityId(Long facilityId) {
 
         if(facilityId == null)

@@ -27,13 +27,15 @@ public class DropDownServiceImpl implements DropDownService {
     private static final String EMPLOYEES = "EMPLY";
     private static final String ROOM_TYPES = "ROMTP";
     private static final String ROOM_CATEGORIES = "RMCAT";
-    private static final String FACILITIES = "FCLTP";
+    private static final String FACILITY_TYPES = "FCLTP";
+    private static final String FACILITIES = "FCLTY";
     private static final String MEASUREMENTS_UNITS = "UOFMS";
 
     private final BranchService branchService;
     private final DepartmentService departmentService;
     private final PartyService partyService;
     private final CommonReferenceService commonReferenceService;
+    private final FacilityService facilityService;
 
     private final FunctionRepository functionRepository;
     private final RoleRepository roleRepository;
@@ -42,12 +44,14 @@ public class DropDownServiceImpl implements DropDownService {
                                DepartmentService departmentService,
                                PartyService partyService,
                                CommonReferenceService commonReferenceService,
+                               FacilityService facilityService,
                                FunctionRepository functionRepository,
                                RoleRepository roleRepository) {
         this.branchService = branchService;
         this.departmentService = departmentService;
         this.partyService = partyService;
         this.commonReferenceService = commonReferenceService;
+        this.facilityService = facilityService;
         this.functionRepository = functionRepository;
         this.roleRepository = roleRepository;
     }
@@ -66,6 +70,7 @@ public class DropDownServiceImpl implements DropDownService {
         dropDownCodes.put("ROOM_TYPES", ROOM_TYPES);
         dropDownCodes.put("ROOM_CATEGORIES", ROOM_CATEGORIES);
         dropDownCodes.put("FACILITIES", FACILITIES);
+        dropDownCodes.put("FACILITY_TYPES", FACILITY_TYPES);
         dropDownCodes.put("MEASUREMENTS_UNITS", MEASUREMENTS_UNITS);
 
         return dropDownCodes;
@@ -142,14 +147,24 @@ public class DropDownServiceImpl implements DropDownService {
                     ));
                 });
                 break;
+            case FACILITIES :
+                List<DropDownDTO> facilityList = downDTOList;
+                facilityService.getAllFacilities().forEach(facilityDTO -> {
+                    facilityList.add(new DropDownDTO(
+                            facilityDTO.getFacilityId().toString(),
+                            facilityDTO.getFacilityName(),
+                            null,
+                            facilityDTO.getStatus()));
+                });
+                break;
             case ROOM_TYPES :
                 downDTOList = populateFromCommonReference(ROOM_TYPES);
                 break;
             case ROOM_CATEGORIES :
                 downDTOList = populateFromCommonReference(ROOM_CATEGORIES);
                 break;
-            case FACILITIES :
-                downDTOList = populateFromCommonReference(FACILITIES);
+            case FACILITY_TYPES :
+                downDTOList = populateFromCommonReference(FACILITY_TYPES);
                 break;
             case MEASUREMENTS_UNITS :
                 downDTOList = populateFromCommonReference(MEASUREMENTS_UNITS);

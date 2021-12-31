@@ -3,6 +3,8 @@ package lk.lakderana.hms.service;
 import lk.lakderana.hms.dto.FacilityDTO;
 import lk.lakderana.hms.dto.PaginatedEntity;
 
+import java.util.List;
+
 public interface FacilityService {
 
     FacilityDTO createFacility(FacilityDTO facilityDTO);
@@ -12,4 +14,6 @@ public interface FacilityService {
     FacilityDTO updateFacility(Long facilityId, FacilityDTO facilityDTO);
 
     Boolean removeFacility(Long facilityId);
+
+    List<FacilityDTO> getAllFacilities();
 }

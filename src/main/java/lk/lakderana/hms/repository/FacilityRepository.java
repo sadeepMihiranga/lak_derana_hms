@@ -22,4 +22,6 @@ public interface FacilityRepository extends JpaRepository<TMsFacility, Long> {
                                      Pageable pageable);
 
     TMsFacility findByFcltIdAndBranch_BrnhIdIn(Long fcltId, List<Long> brnhIdList);
+
+    List<TMsFacility> findAllByFacltStatusAndBranch_BrnhIdIn(Short facltStatus, List<Long> brnhIdList);
 }
