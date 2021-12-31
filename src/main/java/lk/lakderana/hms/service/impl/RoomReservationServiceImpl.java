@@ -15,6 +15,7 @@ import lk.lakderana.hms.repository.ReservationRepository;
 import lk.lakderana.hms.repository.RoomRepository;
 import lk.lakderana.hms.repository.RoomReservationRepository;
 import lk.lakderana.hms.service.RoomReservationService;
+import lk.lakderana.hms.util.constant.status.RoomStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -56,6 +57,13 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
         if(tMsRoom == null)
             throw new DataNotFoundException("Room not found for the Id " + roomDTO.getRoomId());
 
+        if(tMsRoom.getRoomStatus() == RoomStatus.RESERVED.getShortValue())
+            throw new OperationException("Room " + tMsRoom.getRoomNo() + " is already Reserved");
+
+        /** update room as reserved one */
+        tMsRoom.setRoomStatus(RoomStatus.RESERVED.getShortValue());
+        roomRepository.save(tMsRoom);
+
         TTrRoomReservation tTrRoomReservation = new TTrRoomReservation();
 
         tTrRoomReservation.setRoom(tMsRoom);
@@ -80,6 +88,11 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
         tTrRoomReservationList.forEach(tTrRoomReservation -> {
 
             tTrRoomReservation.setRoreStatus(STATUS_INACTIVE.getShortValue());
+
+            /** release particular room */
+            TMsRoom room = tTrRoomReservation.getRoom();
+            room.setRoomStatus(RoomStatus.READY_FOR_BOOKING.getShortValue());
+            roomRepository.save(room);
 
             persistEntity(tTrRoomReservation);
         });
