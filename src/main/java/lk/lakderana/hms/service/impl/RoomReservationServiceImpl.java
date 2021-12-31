@@ -19,7 +19,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.constant.Constants.STATUS_INACTIVE;
 
 @Slf4j
 @Service
@@ -64,6 +67,22 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
                 createdRoomReservation.getRoreId(),
                 RoomMapper.INSTANCE.entityToDTO(tMsRoom),
                 createdRoomReservation.getRoreStatus());
+    }
+
+    @Override
+    public Boolean cancelRoomReservationByReservation(Long reservationId) {
+
+        final List<TTrRoomReservation> tTrRoomReservationList = roomReservationRepository
+                .findAllByReservation_ResvIdAndRoreStatusAndBranch_BrnhIdIn(reservationId, STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        tTrRoomReservationList.forEach(tTrRoomReservation -> {
+
+            tTrRoomReservation.setRoreStatus(STATUS_INACTIVE.getShortValue());
+
+            persistEntity(tTrRoomReservation);
+        });
+
+        return true;
     }
 
     private TTrRoomReservation persistEntity(TTrRoomReservation tTrRoomReservation) {

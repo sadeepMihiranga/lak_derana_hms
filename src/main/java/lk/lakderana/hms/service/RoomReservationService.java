@@ -6,4 +6,6 @@ import lk.lakderana.hms.dto.RoomReservationDTO;
 public interface RoomReservationService {
 
     RoomReservationDTO reserveRoom(Long reservationId, RoomDTO roomDTO);
+
+    Boolean cancelRoomReservationByReservation(Long reservationId);
 }

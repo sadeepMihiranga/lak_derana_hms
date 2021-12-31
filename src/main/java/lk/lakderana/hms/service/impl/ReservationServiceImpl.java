@@ -130,12 +130,20 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         return createdReservation;
     }
 
+    @Transactional
     @Override
     public Long cancelReservation(Long reservationId, ReservationDTO reservationDTO) {
 
         TMsReservation tMsReservation = validateReservationById(reservationId);
         tMsReservation.setResvStatus(CANCELLED.getShortValue());
         tMsReservation.setResvCancellationReasons(reservationDTO.getCancellationReasons());
+
+        final Boolean isRoomReservationCanceled = roomReservationService.cancelRoomReservationByReservation(reservationId);
+
+        final Boolean isFacilityReservationCanceled = facilityReservationService.cancelFacilityReservationByReservation(reservationId);
+
+        if(!isRoomReservationCanceled || !isFacilityReservationCanceled)
+            throw new OperationException("Error while canceling Room or Facility Reservation");
 
         //TODO : need to check pending payments
 
