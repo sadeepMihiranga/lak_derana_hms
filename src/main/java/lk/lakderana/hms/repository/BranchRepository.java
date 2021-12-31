@@ -5,7 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
-public interface BranchRepository extends JpaRepository<TRfBranch, String> {
+public interface BranchRepository extends JpaRepository<TRfBranch, Long> {
 
     TRfBranch findByBrnhIdAndBrnhStatus(Long brnhId, Short brnhStatus);
 
