@@ -11,16 +11,18 @@ import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.ReservationMapper;
-import lk.lakderana.hms.repository.InquiryRepository;
-import lk.lakderana.hms.repository.ReservationRepository;
+import lk.lakderana.hms.repository.*;
+import lk.lakderana.hms.service.FacilityReservationService;
 import lk.lakderana.hms.service.InquiryService;
 import lk.lakderana.hms.service.ReservationService;
+import lk.lakderana.hms.service.RoomReservationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,14 +34,20 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
     private final ReservationRepository reservationRepository;
     private final InquiryService inquiryService;
+    private final RoomReservationService roomReservationService;
+    private final FacilityReservationService facilityReservationService;
 
     private final InquiryRepository inquiryRepository;
 
     public ReservationServiceImpl(ReservationRepository reservationRepository,
                                   InquiryService inquiryService,
+                                  RoomReservationService roomReservationService,
+                                  FacilityReservationService facilityReservationService,
                                   InquiryRepository inquiryRepository) {
         this.reservationRepository = reservationRepository;
         this.inquiryService = inquiryService;
+        this.roomReservationService = roomReservationService;
+        this.facilityReservationService = facilityReservationService;
         this.inquiryRepository = inquiryRepository;
     }
 
@@ -76,6 +84,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         return paginatedReservationList;
     }
 
+    @Transactional
     @Override
     public ReservationDTO createReservation(ReservationDTO reservationDTO) {
 
@@ -92,6 +101,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
             tMsReservation = ReservationMapper.INSTANCE.dtoToEntity(reservationDTO);
             tMsReservation.setInquiry(tRfInquiry);
+
         } else {
             InquiryDTO inquiryDTO = new InquiryDTO();
             inquiryDTO.setCustomerName(reservationDTO.getCustomerName());
@@ -107,7 +117,17 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         }
         tMsReservation.setResvStatus(CONFIRMED.getShortValue());
 
-        return ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
+        final ReservationDTO createdReservation = ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
+
+        reservationDTO.getRoomList().forEach(roomDTO -> {
+            roomReservationService.reserveRoom(createdReservation.getReservationId(), roomDTO);
+        });
+
+        reservationDTO.getFacilityList().forEach(facilityDTO -> {
+            facilityReservationService.reserveFacility(createdReservation.getReservationId(), facilityDTO);
+        });
+
+        return createdReservation;
     }
 
     @Override

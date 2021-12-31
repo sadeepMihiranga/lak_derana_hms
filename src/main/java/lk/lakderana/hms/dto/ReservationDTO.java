@@ -8,6 +8,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -35,4 +36,6 @@ public class ReservationDTO implements Paginated {
     private LocalDateTime lastUpdatedDate;
     private String lastUpdatedUserCode;
     private String cancellationReasons;
+    private List<RoomDTO> roomList;
+    private List<FacilityDTO> facilityList;
 }

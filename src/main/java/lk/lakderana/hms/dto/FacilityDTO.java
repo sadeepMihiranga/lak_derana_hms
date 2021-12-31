@@ -24,4 +24,5 @@ public class FacilityDTO implements Paginated {
     private Short status;
     private Long branchId;
     private String branchName;
+    private BigDecimal quantity;
 }
