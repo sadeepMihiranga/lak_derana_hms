@@ -75,6 +75,9 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
             ReservationDTO reservationDTO = ReservationMapper.INSTANCE.entityToDTO(tMsReservation);
 
             reservationList.add(reservationDTO);
+
+            reservationDTO.setRoomReservationList(roomReservationService.getRoomReservationsByReservation(reservationDTO.getReservationId()));
+            reservationDTO.setFacilityReservationList(facilityReservationService.getFacilityReservationsByReservation(reservationDTO.getReservationId()));
         }
 
         paginatedReservationList.setTotalNoOfPages(tMsReservationPage.getTotalPages());
@@ -119,12 +122,12 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         final ReservationDTO createdReservation = ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
 
-        reservationDTO.getRoomList().forEach(roomDTO -> {
-            roomReservationService.reserveRoom(createdReservation.getReservationId(), roomDTO);
+        reservationDTO.getRoomReservationList().forEach(roomReservationDTO -> {
+            roomReservationService.reserveRoom(createdReservation.getReservationId(), roomReservationDTO.getRoom());
         });
 
-        reservationDTO.getFacilityList().forEach(facilityDTO -> {
-            facilityReservationService.reserveFacility(createdReservation.getReservationId(), facilityDTO);
+        reservationDTO.getFacilityReservationList().forEach(facilityReservationDTO -> {
+            facilityReservationService.reserveFacility(createdReservation.getReservationId(), facilityReservationDTO.getFacility());
         });
 
         return createdReservation;

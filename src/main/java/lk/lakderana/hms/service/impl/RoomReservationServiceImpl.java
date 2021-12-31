@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
@@ -83,6 +85,28 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
         });
 
         return true;
+    }
+
+    @Override
+    public List<RoomReservationDTO> getRoomReservationsByReservation(Long reservationId) {
+
+        final List<TTrRoomReservation> tTrRoomReservationList = roomReservationRepository
+                .findAllByReservation_ResvIdAndRoreStatusAndBranch_BrnhIdIn(reservationId, STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        List<RoomReservationDTO> roomReservationDTOList = new ArrayList<>();
+
+        tTrRoomReservationList.forEach(tTrRoomReservation -> {
+
+            RoomReservationDTO roomReservationDTO = new RoomReservationDTO();
+
+            roomReservationDTO.setRoomReservationId(tTrRoomReservation.getRoreId());
+            roomReservationDTO.setStatus(tTrRoomReservation.getRoreStatus());
+            roomReservationDTO.setRoom(RoomMapper.INSTANCE.entityToDTO(tTrRoomReservation.getRoom()));
+
+            roomReservationDTOList.add(roomReservationDTO);
+        });
+
+        return roomReservationDTOList;
     }
 
     private TTrRoomReservation persistEntity(TTrRoomReservation tTrRoomReservation) {

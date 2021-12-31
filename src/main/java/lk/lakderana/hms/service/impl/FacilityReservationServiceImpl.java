@@ -19,6 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
@@ -68,7 +71,8 @@ public class FacilityReservationServiceImpl extends EntityValidator implements F
         return new FacilityReservationDTO(
                 createdFacilityReservation.getFareId(),
                 FacilityMapper.INSTANCE.entityToDTO(tMsFacility),
-                createdFacilityReservation.getFareStatus());
+                createdFacilityReservation.getFareStatus(),
+                BigDecimal.valueOf(createdFacilityReservation.getFareQuantity()));
     }
 
     @Override
@@ -85,6 +89,28 @@ public class FacilityReservationServiceImpl extends EntityValidator implements F
         });
 
         return true;
+    }
+
+    @Override
+    public List<FacilityReservationDTO> getFacilityReservationsByReservation(Long reservationId) {
+
+        final List<TTrFacilityReservation> tTrFacilityReservationList = facilityReservationRepository
+                .findAllByReservation_ResvIdAndFareStatusAndBranch_BrnhIdIn(reservationId, STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        List<FacilityReservationDTO> facilityReservationDTOList = new ArrayList<>();
+
+        tTrFacilityReservationList.forEach(tTrFacilityReservation -> {
+
+            FacilityReservationDTO facilityReservationDTO = new FacilityReservationDTO();
+
+            facilityReservationDTO.setFacility(FacilityMapper.INSTANCE.entityToDTO(tTrFacilityReservation.getFacility()));
+            facilityReservationDTO.setFacilityReservationId(tTrFacilityReservation.getFareId());
+            facilityReservationDTO.setStatus(tTrFacilityReservation.getFareStatus());
+
+            facilityReservationDTOList.add(facilityReservationDTO);
+        });
+
+        return facilityReservationDTOList;
     }
 
     private TTrFacilityReservation persistEntity(TTrFacilityReservation tTrFacilityReservation) {
