@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface PartyContactService {
 
-    PartyContactDTO insertPartyContact(PartyContactDTO partyContactDTO);
+    PartyContactDTO insertPartyContact(PartyContactDTO partyContactDTO, Boolean isPartyValidated);
 
     PartyContactDTO updatePartyContactById(PartyContactDTO partyContactDTO);
 

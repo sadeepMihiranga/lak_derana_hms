@@ -35,11 +35,11 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         this.partyRepository = partyRepository;
     }
 
-    @Transactional
     @Override
-    public PartyContactDTO insertPartyContact(PartyContactDTO partyContactDTO) {
+    public PartyContactDTO insertPartyContact(PartyContactDTO partyContactDTO, Boolean isPartyValidated) {
 
         TMsPartyContact tMsPartyContact = null;
+        TMsParty tMsParty = null;
 
         if(Strings.isNullOrEmpty(partyContactDTO.getContactNumber()))
             throw new NoRequiredInfoException("Contact Number is required");
@@ -47,7 +47,8 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         if(Strings.isNullOrEmpty(partyContactDTO.getContactType()))
             throw new NoRequiredInfoException("Contact Type is required");
 
-        final TMsParty tMsParty = validatePartyCode(partyContactDTO.getPartyCode());
+        if(!isPartyValidated)
+            tMsParty = validatePartyCode(partyContactDTO.getPartyCode());
 
         final TMsPartyContact alreadyPartyContact = partyContactRepository
                 .findAllByParty_PrtyCodeAndPtcnContactTypeAndPtcnStatus(partyContactDTO.getPartyCode(),
@@ -60,7 +61,8 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
             tMsPartyContact = PartyContactMapper.INSTANCE.dtoToEntity(partyContactDTO);
 
             tMsPartyContact.setPtcnStatus(STATUS_ACTIVE.getShortValue());
-            tMsPartyContact.setParty(tMsParty);
+            if(!isPartyValidated)
+                tMsPartyContact.setParty(tMsParty);
         } catch (Exception e) {
             log.error("Error while creating a Party Contact {0} ", e.getMessage());
             throw new OperationException("Error while creating a Party Contact");
