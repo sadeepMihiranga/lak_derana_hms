@@ -58,6 +58,15 @@ public class FacilityReservationServiceImpl extends EntityValidator implements F
         if(tMsFacility == null)
             throw new DataNotFoundException("Facility not found for the Id " + facilityDTO.getFacilityId());
 
+        final double reservedCapacity = facilityReservationRepository
+                .findAllByFacility_FcltIdAndFareStatus(tMsFacility.getFcltId(), STATUS_ACTIVE.getShortValue())
+                .stream().map(TTrFacilityReservation::getFareQuantity).mapToDouble(Double::doubleValue).sum();
+
+        final double availableFacilityCapacity = tMsFacility.getFlctMaxCapacity() - reservedCapacity;
+
+        if(availableFacilityCapacity < facilityDTO.getQuantity().doubleValue())
+            throw new OperationException("Maximum Capacity Reached. Available Capacity is " + availableFacilityCapacity + " for the " + tMsFacility.getFcltName());
+
         TTrFacilityReservation tTrFacilityReservation = new TTrFacilityReservation();
 
         tTrFacilityReservation.setFacility(tMsFacility);

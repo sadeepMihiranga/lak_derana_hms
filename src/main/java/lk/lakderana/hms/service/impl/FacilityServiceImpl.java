@@ -130,7 +130,7 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
     public List<FacilityDTO> getAllFacilities() {
 
         final List<TMsFacility> tMsFacilityList = facilityRepository
-                .findAllByFacltStatusAndBranch_BrnhIdIn(STATUS_ACTIVE.getShortValue(), captureBranchIds());
+                .findAllByFcltStatusAndBranch_BrnhIdIn(STATUS_ACTIVE.getShortValue(), captureBranchIds());
 
         List<FacilityDTO> facilityDTOList = new ArrayList<>();
 

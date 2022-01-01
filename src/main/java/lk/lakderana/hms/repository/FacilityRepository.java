@@ -23,5 +23,5 @@ public interface FacilityRepository extends JpaRepository<TMsFacility, Long> {
 
     TMsFacility findByFcltIdAndBranch_BrnhIdIn(Long fcltId, List<Long> brnhIdList);
 
-    List<TMsFacility> findAllByFacltStatusAndBranch_BrnhIdIn(Short facltStatus, List<Long> brnhIdList);
+    List<TMsFacility> findAllByFcltStatusAndBranch_BrnhIdIn(Short facltStatus, List<Long> brnhIdList);
 }
