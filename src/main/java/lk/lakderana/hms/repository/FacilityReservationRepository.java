@@ -9,4 +9,6 @@ public interface FacilityReservationRepository extends JpaRepository<TTrFacility
 
     List<TTrFacilityReservation> findAllByReservation_ResvIdAndFareStatusAndBranch_BrnhIdIn(Long resvId, Short fareStatus,
                                                                                             List<Long> brnhIdList);
+
+    List<TTrFacilityReservation> findAllByFacility_FcltIdAndFareStatus(Long fcltId, Short fareStatus);
 }

@@ -6,12 +6,14 @@ import lk.lakderana.hms.dto.CommonReferenceDTO;
 import lk.lakderana.hms.dto.FacilityDTO;
 import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.entity.TMsFacility;
+import lk.lakderana.hms.entity.TTrFacilityReservation;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.FacilityMapper;
 import lk.lakderana.hms.repository.FacilityRepository;
+import lk.lakderana.hms.repository.FacilityReservationRepository;
 import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.FacilityService;
 import lombok.extern.slf4j.Slf4j;
@@ -33,11 +35,14 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
     private final CommonReferenceService commonReferenceService;
 
     private final FacilityRepository facilityRepository;
+    private final FacilityReservationRepository facilityReservationRepository;
 
     public FacilityServiceImpl(CommonReferenceService commonReferenceService,
-                               FacilityRepository facilityRepository) {
+                               FacilityRepository facilityRepository,
+                               FacilityReservationRepository facilityReservationRepository) {
         this.commonReferenceService = commonReferenceService;
         this.facilityRepository = facilityRepository;
+        this.facilityReservationRepository = facilityReservationRepository;
     }
 
     @Override
@@ -93,11 +98,12 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
 
         final TMsFacility tMsFacility = validateByFacilityId(facilityId);
 
-        tMsFacility.setFacltUom(facilityDTO.getUom());
+        tMsFacility.setFcltUom(facilityDTO.getUom());
         tMsFacility.setFcltDescription(facilityDTO.getDescription());
         tMsFacility.setFcltName(facilityDTO.getFacilityName());
         tMsFacility.setFcltPrice(facilityDTO.getPrice());
         tMsFacility.setFcltType(facilityDTO.getFacilityType());
+        tMsFacility.setFlctMaxCapacity(facilityDTO.getMaxCapacity());
 
         return FacilityMapper.INSTANCE.entityToDTO(persistEntity(tMsFacility));
     }
@@ -107,7 +113,13 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
 
         final TMsFacility tMsFacility = validateByFacilityId(facilityId);
 
-        tMsFacility.setFacltStatus(STATUS_INACTIVE.getShortValue());
+        final List<TTrFacilityReservation> tTrFacilityReservationList = facilityReservationRepository
+                .findAllByFacility_FcltIdAndFareStatus(facilityId, STATUS_ACTIVE.getShortValue());
+
+        if(!tTrFacilityReservationList.isEmpty())
+            throw new OperationException("Facility " + tMsFacility.getFcltName() + " is using for a Reservation");
+
+        tMsFacility.setFcltStatus(STATUS_INACTIVE.getShortValue());
 
         persistEntity(tMsFacility);
 
@@ -148,11 +160,16 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
             facilityDTO.setBranchName(tMsFacility.getBranch().getBrnhName());
 
         if(!Strings.isNullOrEmpty(facilityDTO.getFacilityType())) {
-            final CommonReferenceDTO commonReferenceDTO = commonReferenceService
+            final CommonReferenceDTO facilityTypeCommonReference = commonReferenceService
                     .getByCmrfCodeAndCmrtCode(FACILITY_TYPES.getValue(), facilityDTO.getFacilityType());
 
-            facilityDTO.setFacilityTypeName(commonReferenceDTO.getDescription());
+            facilityDTO.setFacilityTypeName(facilityTypeCommonReference.getDescription());
         }
+
+        final CommonReferenceDTO uomCommonReference = commonReferenceService
+                .getByCmrfCodeAndCmrtCode(MEASUREMENT_TYPES.getValue(), facilityDTO.getUom());
+
+        facilityDTO.setUomName(uomCommonReference.getDescription());
     }
 
     private void validateReferenceData(FacilityDTO facilityDTO) {

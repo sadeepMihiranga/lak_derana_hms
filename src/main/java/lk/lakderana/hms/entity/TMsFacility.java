@@ -33,12 +33,15 @@ public class TMsFacility extends AuditModel {
     private BigDecimal fcltPrice;
 
     @Column(name = "FLCT_UOM")
-    private String facltUom;
+    private String fcltUom;
 
     @Column(name = "FCLT_STATUS")
-    private Short facltStatus;
+    private Short fcltStatus;
 
     @JoinColumn(name = "FCLT_BRANCH_ID")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TRfBranch branch;
+
+    @Column(name = "FLCT_MAX_CAPACITY")
+    private Integer flctMaxCapacity;
 }
