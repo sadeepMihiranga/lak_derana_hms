@@ -119,7 +119,7 @@ public class DropDownServiceImpl implements DropDownService {
                 List<DropDownDTO> roleList = downDTOList;
                 roleRepository.findAll().forEach(tMsRole -> {
                     roleList.add(new DropDownDTO(
-                            tMsRole.getRoleId().toString(),
+                            tMsRole.getRoleName(),
                             tMsRole.getRoleName(),
                             tMsRole.getRoleDescription(),
                             tMsRole.getRoleStatus()));
