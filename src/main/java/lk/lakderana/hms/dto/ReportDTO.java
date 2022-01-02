@@ -1,7 +1,6 @@
 package lk.lakderana.hms.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lk.lakderana.hms.entity.TRfBranch;
 import lk.lakderana.hms.repository.BranchRepository;
 import lk.lakderana.hms.util.DateConversion;
 import lk.lakderana.hms.util.constant.status.InquiryStatus;
@@ -13,8 +12,6 @@ import org.assertj.core.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
-
-import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
 
 @Getter
 @Setter

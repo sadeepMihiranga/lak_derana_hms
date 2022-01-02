@@ -3,6 +3,8 @@ package lk.lakderana.hms.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
 import java.util.logging.Logger;
@@ -78,5 +80,12 @@ public final class DateConversion {
             }
         }
         return formattedDate;
+    }
+
+    public static LocalDateTime convertStringToLocalDateTime(String dateToConvert) {
+        if (dateToConvert == null)
+            return null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(STANDARD_DATE_FORMAT_WITH_TIME);
+        return LocalDateTime.parse(dateToConvert, formatter);
     }
 }

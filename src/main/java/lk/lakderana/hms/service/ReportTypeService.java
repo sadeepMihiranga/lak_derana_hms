@@ -7,4 +7,6 @@ import java.util.List;
 public interface ReportTypeService {
 
     List<ReportTypeDTO> getReportTypes();
+
+    ReportTypeDTO getByCode(String reportCode);
 }

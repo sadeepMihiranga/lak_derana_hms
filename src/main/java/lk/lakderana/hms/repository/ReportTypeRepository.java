@@ -8,4 +8,6 @@ import java.util.List;
 public interface ReportTypeRepository extends JpaRepository<TRfReportType, Long> {
 
     List<TRfReportType> findAllByRptpStatus(Short rptpStatus);
+
+    TRfReportType findByRptpCode(String rptpCode);
 }
