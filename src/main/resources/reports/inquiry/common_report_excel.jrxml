@@ -1,0 +1,280 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.17.0.final using JasperReports Library version 6.17.0-6d93193241dd8cc42629e188b94f9e0bc5722efd  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="common_report_excel" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" isIgnorePagination="true" uuid="1e0e9222-665d-4411-94c2-5e1dc10d0f25">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<topPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<leftPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<bottomPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<rightPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+		</box>
+	</style>
+	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<topPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<leftPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<bottomPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<rightPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+		</box>
+	</style>
+	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<topPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<leftPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<bottomPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+			<rightPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.24705882)"/>
+		</box>
+	</style>
+	<style name="Table 1_TH" mode="Opaque" backcolor="#FFFFFF">
+		<box>
+			<pen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.30980393)"/>
+			<topPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.30980393)"/>
+			<leftPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.30980393)"/>
+			<bottomPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.30980393)"/>
+			<rightPen lineWidth="0.5" lineColor="rgba(0, 0, 0, 0.30980393)"/>
+		</box>
+	</style>
+	<subDataset name="commonDataset" uuid="8e641a25-55be-4868-8a4f-024c9d7e7067">
+		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="rowNumber" class="java.lang.String"/>
+		<field name="partyCode" class="java.lang.String"/>
+		<field name="inquiryStatus" class="java.lang.String"/>
+		<field name="customerName" class="java.lang.String"/>
+		<field name="customerContactNo" class="java.lang.String"/>
+	</subDataset>
+	<parameter name="REPORT_TYPE" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<field name="reportDatasource" class="net.sf.jasperreports.engine.data.JRBeanCollectionDataSource"/>
+	<field name="startDate" class="java.lang.String"/>
+	<field name="endDate" class="java.lang.String"/>
+	<field name="reportName" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="67" splitType="Stretch">
+			<printWhenExpression><![CDATA[!$P{REPORT_TYPE}.equals( "EXCEL" )]]></printWhenExpression>
+			<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+				<reportElement x="0" y="0" width="802" height="40" uuid="3a3466f7-90a3-4a11-b571-3990e8f9a51c">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textElement verticalAlignment="Middle">
+					<font fontName="Roboto" size="16"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{reportName}]]></textFieldExpression>
+			</textField>
+			<frame>
+				<reportElement positionType="Float" x="0" y="48" width="329" height="15" isRemoveLineWhenBlank="true" uuid="3e128566-5277-4e26-8d23-b8cb9d658058"/>
+				<staticText>
+					<reportElement x="0" y="0" width="60" height="15" isRemoveLineWhenBlank="true" uuid="c632be83-82bf-4d7f-804a-0040af6a4835">
+						<property name="com.jaspersoft.studio.unit.width" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Left" verticalAlignment="Middle">
+						<font fontName="Roboto" size="10" isBold="true"/>
+					</textElement>
+					<text><![CDATA[Period From   :]]></text>
+				</staticText>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="72" y="-1" width="70" height="16" forecolor="#55637C" uuid="e12e27bf-827f-45ee-9c06-72b4c60fa4d0"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Roboto" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="133" y="-1" width="20" height="16" uuid="5d4113e2-db56-4bae-a3b0-55a0c2c296d2"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Roboto" isBold="true"/>
+					</textElement>
+					<text><![CDATA[to]]></text>
+				</staticText>
+				<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+					<reportElement x="154" y="0" width="90" height="15" isRemoveLineWhenBlank="true" forecolor="#55637C" uuid="85eb8628-8f5e-4c78-a26d-8a912e29d2a0"/>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Roboto" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$F{endDate}]]></textFieldExpression>
+				</textField>
+			</frame>
+		</band>
+	</title>
+	<detail>
+		<band height="31">
+			<printWhenExpression><![CDATA[$F{reportName}.equals( "Inquiry Report" )]]></printWhenExpression>
+			<componentElement>
+				<reportElement x="0" y="1" width="802" height="30" forecolor="rgba(0, 0, 0, 0.31764707)" uuid="759e65e5-68a4-40a1-b125-2a39e4e511e6">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="commonDataset" uuid="0845e21b-2736-4eb8-9c35-48ace0bdae1b">
+						<dataSourceExpression><![CDATA[$F{reportDatasource}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="40" uuid="2a9dcb97-b241-4104-99bd-63b0e75002ad">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader height="15" rowSpan="1"/>
+						<jr:detailCell height="15">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="40" height="15" isRemoveLineWhenBlank="true" uuid="9ba7b189-3831-4776-955a-ce10ceffded2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{rowNumber}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="60" uuid="3a3983a1-15e1-4a66-b3b9-2c8e5990af6f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="60" height="15" forecolor="#000000" uuid="07ab4daa-79ee-4eff-a4c9-719aa1649815"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Roboto" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Branch]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<textField>
+								<reportElement x="0" y="0" width="60" height="15" uuid="639bc135-983d-4cdb-b219-9eaabdc8da88"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{partyCode}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="120" uuid="3a0aa029-88a3-4ef4-a6d9-cb42a2094011">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="120" height="15" forecolor="#000000" uuid="f311119f-8eaf-4236-b0f0-3638c1c20e8c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Errors Count]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="120" height="15" uuid="c1e0812e-0a1f-44f2-95e7-61d5d5885384"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{inquiryStatus}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="130" uuid="ee6eeb67-cb72-44fe-a870-ef50ee1ea9db">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="130" height="15" forecolor="#000000" uuid="b5e4fee8-f3bf-428c-88d2-9dcfe291e9ca"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Total Errors]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="130" height="15" uuid="d434761e-c26d-45c4-9cc4-aecb2dc19e0e"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{customerName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="90" uuid="6c8239fe-d216-4512-b419-2bee9b71840c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="90" height="15" forecolor="#000000" uuid="078ab256-158f-4642-869c-dfeb3b576a15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Persentage]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="90" height="15" uuid="a475faaa-c497-462e-b904-01a401cecb59"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{customerContactNo}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="18">
+			<printWhenExpression><![CDATA[!$P{REPORT_TYPE}.equals( "EXCEL" )]]></printWhenExpression>
+			<frame>
+				<reportElement x="1" y="2" width="200" height="15" uuid="04116204-eb93-4619-a10c-45217244196e">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<staticText>
+					<reportElement x="-1" y="1" width="81" height="15" forecolor="#141222" uuid="8e32e6e7-d744-4408-84de-15d25fec1a79">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Roboto" size="10"/>
+					</textElement>
+					<text><![CDATA[Download Date  :]]></text>
+				</staticText>
+				<textField pattern="dd MMM yyyy">
+					<reportElement x="81" y="1" width="100" height="15" forecolor="#141222" uuid="32eb3e13-0d50-44e5-9919-cb6c577aa937">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement verticalAlignment="Middle">
+						<font fontName="Roboto" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+				</textField>
+			</frame>
+			<frame>
+				<reportElement x="583" y="3" width="220" height="15" uuid="62a98911-c073-4168-9c5e-ad5c69af3f09">
+					<property name="com.jaspersoft.studio.unit.height" value="px"/>
+				</reportElement>
+				<textField>
+					<reportElement x="188" y="0" width="22" height="14" forecolor="#141222" uuid="43a00301-83b5-4637-b87a-f3bee1c81904">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Roboto" size="10" isBold="true"/>
+					</textElement>
+					<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="124" y="0" width="63" height="14" forecolor="#141222" uuid="caf9a678-1d00-4f42-9c35-df347d60ac18">
+						<property name="com.jaspersoft.studio.unit.height" value="px"/>
+					</reportElement>
+					<textElement textAlignment="Right" verticalAlignment="Middle">
+						<font fontName="Roboto" size="10"/>
+					</textElement>
+					<text><![CDATA[Page No :]]></text>
+				</staticText>
+			</frame>
+		</band>
+	</pageFooter>
+</jasperReport>

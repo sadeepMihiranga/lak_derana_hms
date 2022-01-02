@@ -32,4 +32,51 @@ public final class DateConversion {
         }
         return convertedDate;
     }
+
+    public static Date convertStringToDate(String dateToBeConverted, String pattern) {
+        Date date = null;
+        if (dateToBeConverted != null) {
+            try {
+                date = new SimpleDateFormat(pattern, Locale.ENGLISH).parse(dateToBeConverted);
+            } catch (Exception e) {
+                Logger.getLogger("Exception - Convert String to Date : ", e.toString());
+            }
+        }
+        return date;
+    }
+
+    public static Integer convertDateToInteger(Date date) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMdd");
+        int integerDate = Integer.parseInt(sdf.format(date));
+        return integerDate;
+    }
+
+    public static Date convertStringToDate(String dateToBeConverted) {
+        Date date = null;
+        if (dateToBeConverted != null) {
+            try {
+                date = new SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.ENGLISH).parse(dateToBeConverted);
+            } catch (Exception e) {
+                Logger.getLogger("Exception - Convert String to Date : ", e.toString());
+            }
+        }
+        return date;
+    }
+
+    public static String convertDateToString(Date date) {
+
+        String formattedDate;
+
+        if (date == null) {
+            return null;
+        } else {
+            try {
+                formattedDate = new SimpleDateFormat(STANDARD_DATE_FORMAT, Locale.ENGLISH).format(date);
+            } catch (Exception e) {
+                Logger.getLogger("Exception - Convert Date to String : ", e.toString());
+                return null;
+            }
+        }
+        return formattedDate;
+    }
 }
