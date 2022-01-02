@@ -31,11 +31,13 @@ public class ReportHandlerImpl extends EntityValidator implements ReportHandler 
 
 
         Query query = entityManager.createNativeQuery(
-                "SELECT CONCAT('#', row_number() OVER (ORDER BY \"INQR_DATE_TIME\")) AS \"rowNumber\", " +
-                        "\"INQR_CUSTOMER_CODE\" AS \"partyCode\", \"INQR_DATE_TIME\" AS \"inquiryDateTime\", " +
-                        "\"INQR_REMARKS\" AS \"remarks\", \"INQR_STATUS\" AS \"inquiryStatus\", " +
-                        "\"INQR_CUSTOMER_NAME\" AS \"customerName\", \"INQR_CONTACT_NO\" AS \"customerContactNo\"\n " +
-                        "FROM \"LAKDERANA_BASE\".\"T_MS_INQUIRY\"\n " +
+                "SELECT CONCAT('#', row_number() OVER (ORDER BY \"inq\".\"INQR_DATE_TIME\")) AS \"rowNumber\",\n " +
+                        "\"inq\".\"INQR_CUSTOMER_CODE\" AS \"partyCode\", \"inq\".\"INQR_DATE_TIME\" AS \"dateTime\",\n " +
+                        "\"inq\".\"INQR_REMARKS\" AS \"remarks\", \"inq\".\"INQR_STATUS\" AS \"inquiryStatus\",\n " +
+                        "\"inq\".\"INQR_CUSTOMER_NAME\" AS \"customerName\", \"inq\".\"INQR_CONTACT_NO\" AS \"customerContactNo\",\n " +
+                        "\"brnh\".\"BRNH_NAME\" AS \"transferredToBranchName\"\n " +
+                        "FROM \"LAKDERANA_BASE\".\"T_MS_INQUIRY\" \"inq\"\n " +
+                        "LEFT JOIN \"LAKDERANA_BASE\".\"T_RF_BRANCH\" \"brnh\" ON inq.\"INQR_TRANSFERRED_TO\" = \"brnh\".\"BRNH_ID\"\n " +
                         "WHERE \"CREATED_DATE\" BETWEEN :fromDate AND :toDate");
         query.setParameter("fromDate", fromDate);
         query.setParameter("toDate", toDate);

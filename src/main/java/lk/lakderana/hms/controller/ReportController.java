@@ -1,6 +1,7 @@
 package lk.lakderana.hms.controller;
 
 import lk.lakderana.hms.service.ReportService;
+import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
 import net.sf.jasperreports.engine.JasperExportManager;
@@ -19,6 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.jar.JarException;
 
+@Slf4j
 @CrossOrigin
 @RestController
 @RequestMapping("/api/report")
@@ -72,11 +74,9 @@ public class ReportController {
             jasperPrint.setPageHeight(595);
             JasperExportManager.exportReportToPdfStream(jasperPrint, out);
         } catch (JRException e) {
-            e.printStackTrace();
-            //log.warn("Error Filling Jasper Report : {} ", e.getMessage());
+            log.error("Error Filling Jasper Report : {} ", e.getMessage());
         } catch (IOException e) {
-            e.printStackTrace();
-            //log.warn("Error Filling Jasper Report : {} ", e.getMessage());
+            log.error("Error Filling Jasper Report : {} ", e.getMessage());
         }
         removeBlankPage(jasperPrint.getPages());
     }
