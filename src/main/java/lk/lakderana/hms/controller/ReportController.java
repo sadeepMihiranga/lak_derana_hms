@@ -39,8 +39,8 @@ public class ReportController {
         this.reportTypeService = reportTypeService;
     }
 
-    @GetMapping("/inquiry/print")
-    public void generateInquiryXlsReport(HttpServletResponse response,
+    @GetMapping("/print")
+    public void generateDetailedXlsReport(HttpServletResponse response,
                                          @RequestParam(name = "startDate") String startDate ,
                                          @RequestParam(name = "endDate") String endDate,
                                          @RequestParam(name = "reportType") String reportType,
@@ -48,7 +48,7 @@ public class ReportController {
                                          @RequestParam(name = "filterBy") String filterBy) throws IOException, JarException, ParseException, JRException {
         JasperPrint jasperPrint = null;
 
-        jasperPrint = reportService.generateInquiryReport(startDate, endDate, reportType, reportCode);
+        jasperPrint = reportService.generateDetailedCsvReport(startDate, endDate, reportType, reportCode);
 
         if (reportType.equals("EXCEL")) {
             response.setContentType("application/x-download");

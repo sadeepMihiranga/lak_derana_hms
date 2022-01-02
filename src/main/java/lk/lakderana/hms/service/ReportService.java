@@ -9,6 +9,6 @@ import java.text.ParseException;
 
 public interface ReportService {
 
-    JasperPrint generateInquiryReport(String startDate, String endDate, String reportType, String reportCode) throws IOException, JRException, ParseException;
+    JasperPrint generateDetailedCsvReport(String startDate, String endDate, String reportType, String reportCode) throws IOException, JRException, ParseException;
     ReportWrapperDTO getInquiryReport(String startDate, String endDate) throws ParseException;
 }

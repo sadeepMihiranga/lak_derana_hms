@@ -4,10 +4,12 @@ import lk.lakderana.hms.dto.ReportDTO;
 import lk.lakderana.hms.dto.ReportHistoryDTO;
 import lk.lakderana.hms.dto.ReportWrapperDTO;
 import lk.lakderana.hms.exception.DataNotFoundException;
+import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.service.ReportHandler;
 import lk.lakderana.hms.service.ReportHistoryService;
 import lk.lakderana.hms.service.ReportService;
 import lk.lakderana.hms.util.DateConversion;
+import lk.lakderana.hms.util.constant.ReportCodes;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
@@ -45,10 +47,16 @@ public class ReportServiceImpl implements ReportService {
     }
 
     @Override
-    public JasperPrint generateInquiryReport(String startDate, String endDate, String reportType, String reportCode)
+    public JasperPrint generateDetailedCsvReport(String startDate, String endDate, String reportType, String reportCode)
             throws IOException, JRException, ParseException {
 
-        ReportWrapperDTO reportWrapperDTO = getInquiryReport(startDate, endDate);
+        ReportWrapperDTO reportWrapperDTO = null;
+
+        if(reportCode.equals(ReportCodes.INQUIRY_DETAILED.getValue()))
+            reportWrapperDTO = getInquiryReport(startDate, endDate);
+
+        if(reportWrapperDTO == null)
+            throw new OperationException("Report Content not populated correctly");
 
         InputStream jasperReport = getReportTemplate(reportType);
         HashMap<String, Object> parameters = new HashMap<>();
@@ -59,7 +67,7 @@ public class ReportServiceImpl implements ReportService {
 
         removeBlankPage(print.getPages());
 
-        log.info("generate Inquiry Report, startDate:{}, endDate:{}", startDate, endDate);
+        log.info("generate Detailed Report, startDate:{}, endDate:{}", startDate, endDate);
 
         ReportHistoryDTO reportHistoryDTO = new ReportHistoryDTO();
         reportHistoryDTO.setReportType(reportCode);
