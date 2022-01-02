@@ -1,6 +1,9 @@
 package lk.lakderana.hms.controller;
 
+import lk.lakderana.hms.response.SuccessResponse;
+import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.service.ReportService;
+import lk.lakderana.hms.service.ReportTypeService;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRPrintPage;
@@ -10,6 +13,7 @@ import net.sf.jasperreports.engine.export.JRCsvExporter;
 import net.sf.jasperreports.export.SimpleCsvReportConfiguration;
 import net.sf.jasperreports.export.SimpleExporterInput;
 import net.sf.jasperreports.export.SimpleWriterExporterOutput;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +31,12 @@ import java.util.jar.JarException;
 public class ReportController {
 
     private final ReportService reportService;
+    private final ReportTypeService reportTypeService;
 
-    public ReportController(ReportService reportService) {
+    public ReportController(ReportService reportService,
+                            ReportTypeService reportTypeService) {
         this.reportService = reportService;
+        this.reportTypeService = reportTypeService;
     }
 
     @GetMapping("/inquiry/print")
@@ -51,6 +58,11 @@ public class ReportController {
         } else {
             //generatePDF(jasperPrint,response,String.format("attachment; filename=\"Branch Major Error Report.pdf\""));
         }
+    }
+
+    @GetMapping("/types")
+    public ResponseEntity<SuccessResponse> getReportTypes() {
+        return SuccessResponseHandler.generateResponse(reportTypeService.getReportTypes());
     }
 
     private void generateToExcel(HttpServletResponse response,JasperPrint jasperPrint, OutputStream out) throws JRException, IOException {
