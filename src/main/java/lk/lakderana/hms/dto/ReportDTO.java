@@ -19,12 +19,16 @@ public class ReportDTO {
     private String partyCode;
     private String inquiryDateTime;
     private String remarks;
-    private Short inquiryStatus;
+    private String inquiryStatus;
     private String customerName;
     private String customerContactNo;
     private String rowNumber;
 
     public void setInquiryDateTime(Date inquiryDateTime) {
         this.inquiryDateTime = DateConversion.convertDateToString(inquiryDateTime);
+    }
+
+    public void setInquiryStatus(Short inquiryStatus) {
+        this.inquiryStatus = inquiryStatus.toString();
     }
 }

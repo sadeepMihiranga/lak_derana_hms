@@ -1,7 +1,6 @@
 package lk.lakderana.hms.service.impl;
 
 import lk.lakderana.hms.config.EntityValidator;
-import lk.lakderana.hms.dto.InquiryDTO;
 import lk.lakderana.hms.dto.ReportDTO;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.service.ReportHandler;
