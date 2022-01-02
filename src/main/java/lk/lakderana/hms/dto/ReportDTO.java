@@ -2,10 +2,12 @@ package lk.lakderana.hms.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lk.lakderana.hms.util.DateConversion;
+import lk.lakderana.hms.util.constant.status.InquiryStatus;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.assertj.core.util.Strings;
 
 import java.util.Date;
 
@@ -29,6 +31,10 @@ public class ReportDTO {
     }
 
     public void setInquiryStatus(Short inquiryStatus) {
-        this.inquiryStatus = inquiryStatus.toString();
+        this.inquiryStatus = InquiryStatus.getNameByCode(inquiryStatus).name();
+    }
+
+    public void setPartyCode(String partyCode) {
+        this.partyCode = Strings.isNullOrEmpty(partyCode) ? "-" : partyCode;
     }
 }

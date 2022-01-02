@@ -1,5 +1,7 @@
 package lk.lakderana.hms.util.constant.status;
 
+import lombok.NoArgsConstructor;
+
 public enum InquiryStatus {
 
     CREATED((short) 1),
@@ -15,5 +17,15 @@ public enum InquiryStatus {
 
     public short getShortValue() {
         return shortValue;
+    }
+
+    public static InquiryStatus getNameByCode(short status) {
+
+        for(InquiryStatus inquiryStatus : values()) {
+            if(status == inquiryStatus.getShortValue())
+                return inquiryStatus;
+        }
+
+        return null;
     }
 }
