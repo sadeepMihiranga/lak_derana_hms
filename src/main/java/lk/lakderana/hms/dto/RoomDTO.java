@@ -23,6 +23,8 @@ public class RoomDTO implements Paginated {
     private String roomCategory;
     private String roomCategoryName;
     private BigDecimal roomPrice;
+    private String roomBedType;
+    private String roomBedTypeName;
     private Short status;
     private Long branchId;
     private String branchName;

@@ -5,11 +5,13 @@ import lk.lakderana.hms.dto.RoomDTO;
 
 public interface RoomService {
 
-    PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, Integer page, Integer size);
+    PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, Short status, Integer page, Integer size);
 
     RoomDTO createRoom(RoomDTO roomDTO);
 
     RoomDTO updateRoom(Long roomId, RoomDTO roomDTO);
+
+    Boolean inactiveRoom(Long roomId);
 
     Boolean removeRoom(Long roomId);
 }

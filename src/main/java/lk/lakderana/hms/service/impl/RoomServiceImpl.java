@@ -15,6 +15,7 @@ import lk.lakderana.hms.repository.NumberGeneratorRepository;
 import lk.lakderana.hms.repository.RoomRepository;
 import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.RoomService;
+import lk.lakderana.hms.util.constant.status.RoomStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +47,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
     }
 
     @Override
-    public PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, Integer page, Integer size) {
+    public PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, Short status, Integer page, Integer size) {
 
         PaginatedEntity paginatedRoomList = null;
         List<RoomDTO> roomList = null;
@@ -54,7 +55,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         validatePaginateIndexes(page, size);
 
         Page<TMsRoom> tMsRoomPage = roomRepository
-                .searchRooms(roomType, roomCategory, captureBranchIds(), PageRequest.of(page - 1, size));
+                .searchRooms(roomType, roomCategory, captureBranchIds(), status, PageRequest.of(page - 1, size));
 
         if (tMsRoomPage.getSize() == 0)
             return null;
@@ -106,8 +107,25 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         tMsRoom.setRoomType(roomDTO.getRoomType());
         tMsRoom.setRoomPrice(roomDTO.getRoomPrice());
         tMsRoom.setRoomNo(roomDTO.getRoomNo());
+        tMsRoom.setRoomStatus(roomDTO.getStatus());
 
         return RoomMapper.INSTANCE.entityToDTO(persistEntity(tMsRoom));
+    }
+
+    @Override
+    public Boolean inactiveRoom(Long roomId) {
+
+        TMsRoom tMsRoom = validateRoomId(roomId);
+
+        if(tMsRoom.getRoomStatus() == RoomStatus.RESERVED.getShortValue()
+                || tMsRoom.getRoomStatus() == RoomStatus.IN_USE.getShortValue()) {
+            throw new OperationException("Cannot deactivate the Room "+ tMsRoom.getRoomNo() +". Room is in Use");
+        }
+
+        tMsRoom.setRoomStatus(STATUS_INACTIVE.getShortValue());
+        persistEntity(tMsRoom);
+
+        return true;
     }
 
     @Override
@@ -115,7 +133,12 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
 
         TMsRoom tMsRoom = validateRoomId(roomId);
 
-        tMsRoom.setRoomStatus(STATUS_INACTIVE.getShortValue());
+        if(tMsRoom.getRoomStatus() == RoomStatus.RESERVED.getShortValue()
+                || tMsRoom.getRoomStatus() == RoomStatus.IN_USE.getShortValue()) {
+            throw new OperationException("Cannot remove the Room "+ tMsRoom.getRoomNo() +". Room is in Use");
+        }
+
+        tMsRoom.setRoomStatus(RoomStatus.REMOVED.getShortValue());
         persistEntity(tMsRoom);
 
         return true;
@@ -127,7 +150,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
             throw new NoRequiredInfoException("Room Id is required");
 
         final TMsRoom tMsRoom = roomRepository
-                .getByRoomIdAndBranch_BrnhIdIn(roomId, captureBranchIds());
+                .getByRoomIdAndBranch_BrnhIdInAndRoomStatusNot(roomId, captureBranchIds(), RoomStatus.REMOVED.getShortValue());
 
         if(tMsRoom == null)
             throw new DataNotFoundException("Room not found for Id " + roomId);
@@ -142,6 +165,9 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
 
         commonReferenceService
                 .getByCmrfCodeAndCmrtCode(ROOM_CATEGORY_TYPES.getValue(), roomDTO.getRoomCategory());
+
+        commonReferenceService
+                .getByCmrfCodeAndCmrtCode(ROOM_BED_TYPES.getValue(), roomDTO.getRoomBedType());
     }
 
     private void setReferenceData(TMsRoom tMsRoom, RoomDTO roomDTO) {
@@ -161,6 +187,13 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
                     .getByCmrfCodeAndCmrtCode(ROOM_CATEGORY_TYPES.getValue(), roomDTO.getRoomCategory());
 
             roomDTO.setRoomCategoryName(commonReferenceDTO.getDescription());
+        }
+
+        if(!Strings.isNullOrEmpty(roomDTO.getRoomBedType())) {
+            final CommonReferenceDTO commonReferenceDTO = commonReferenceService
+                    .getByCmrfCodeAndCmrtCode(ROOM_BED_TYPES.getValue(), roomDTO.getRoomBedType());
+
+            roomDTO.setRoomBedTypeName(commonReferenceDTO.getDescription());
         }
     }
 

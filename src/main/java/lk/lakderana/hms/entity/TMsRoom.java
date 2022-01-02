@@ -35,6 +35,9 @@ public class TMsRoom extends AuditModel {
     @Column(name = "ROOM_PRICE")
     private BigDecimal roomPrice;
 
+    @Column(name = "ROOM_BED_TYPE")
+    private String roomBedType;
+
     @Column(name = "ROOM_STATUS")
     private Short roomStatus;
 

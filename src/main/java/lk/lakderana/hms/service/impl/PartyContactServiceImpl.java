@@ -80,6 +80,9 @@ public class PartyContactServiceImpl extends EntityValidator implements PartyCon
         final TMsPartyContact tMsPartyContact = partyContactRepository
                 .findByPtcnIdAndPtcnStatus(partyContactDTO.getContactId(), STATUS_ACTIVE.getShortValue());
 
+        if(tMsPartyContact == null)
+            throw new DataNotFoundException("Contact not found for the Id " + partyContactDTO.getContactId());
+
         tMsPartyContact.setPtcnContactNumber(partyContactDTO.getContactNumber());
 
         return PartyContactMapper.INSTANCE.entityToDTO(persistEntity(tMsPartyContact));

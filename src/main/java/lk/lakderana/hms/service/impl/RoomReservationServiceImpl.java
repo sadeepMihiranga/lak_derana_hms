@@ -52,7 +52,8 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
         if(roomDTO.getRoomId() == null)
             throw new NoRequiredInfoException("Room Id is required");
 
-        final TMsRoom tMsRoom = roomRepository.getByRoomIdAndBranch_BrnhIdIn(roomDTO.getRoomId(), captureBranchIds());
+        final TMsRoom tMsRoom = roomRepository
+                .getByRoomIdAndBranch_BrnhIdInAndRoomStatusNot(roomDTO.getRoomId(), captureBranchIds(), RoomStatus.REMOVED.getShortValue());
 
         if(tMsRoom == null)
             throw new DataNotFoundException("Room not found for the Id " + roomDTO.getRoomId());

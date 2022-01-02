@@ -21,9 +21,10 @@ public class RoomController {
     @GetMapping("/search")
     public ResponseEntity<SuccessResponse> getPaginatedUsers(@RequestParam(name = "roomType", required = false) String roomType,
                                                              @RequestParam(name = "roomCategory", required = false) String roomCategory,
+                                                             @RequestParam(name = "status", required = false) Short status,
                                                              @RequestParam(name = "page", required = true) Integer page,
                                                              @RequestParam(name = "size", required = true) Integer size) {
-        return SuccessResponseHandler.generateResponse(roomService.roomPaginatedSearch(roomType, roomCategory, page, size));
+        return SuccessResponseHandler.generateResponse(roomService.roomPaginatedSearch(roomType, roomCategory, status, page, size));
     }
 
     @PostMapping
@@ -37,6 +38,11 @@ public class RoomController {
     }
 
     @DeleteMapping("/{roomId}")
+    public ResponseEntity<SuccessResponse> inactiveRoom(@PathVariable("roomId") Long roomId) {
+        return SuccessResponseHandler.generateResponse(roomService.inactiveRoom(roomId));
+    }
+
+    @DeleteMapping("/{roomId}/remove")
     public ResponseEntity<SuccessResponse> removeRoom(@PathVariable("roomId") Long roomId) {
         return SuccessResponseHandler.generateResponse(roomService.removeRoom(roomId));
     }

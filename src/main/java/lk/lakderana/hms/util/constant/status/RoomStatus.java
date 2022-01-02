@@ -6,7 +6,8 @@ public enum RoomStatus {
     READY_FOR_BOOKING((short) 1),
     RESERVED((short) 2),
     IN_USE((short) 3),
-    ON_MAINTENANCE((short) 4);
+    ON_MAINTENANCE((short) 4),
+    REMOVED((short) 5);
 
     private short shortValue;
 
