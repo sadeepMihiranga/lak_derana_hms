@@ -44,4 +44,7 @@ public class TRfInquiry extends AuditModel {
 
     @Column(name = "INQR_TRANSFERRED_FROM")
     private Long inqrTransferredFrom;
+
+    @Column(name = "INQR_TRANSFERRED_TO")
+    private Long inqrTransferredTo;
 }

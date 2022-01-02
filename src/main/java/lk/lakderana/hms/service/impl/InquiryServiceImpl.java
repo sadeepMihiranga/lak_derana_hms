@@ -127,6 +127,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
             throw new DataNotFoundException("Branch Not found for Id " + inquiryDTO.getBranchId());
 
         tRfInquiry.setInqrStatus(TRANSFERRED_TO_ANOTHER.getShortValue());
+        tRfInquiry.setInqrTransferredTo(inquiryDTO.getBranchId());
         inquiryRepository.save(tRfInquiry);
 
         InquiryDTO inquiryToTransfer = new InquiryDTO();
