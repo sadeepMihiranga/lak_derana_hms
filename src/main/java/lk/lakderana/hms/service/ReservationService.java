@@ -12,4 +12,6 @@ public interface ReservationService {
     Long cancelReservation(Long reservationId, ReservationDTO reservationDTO);
 
     ReservationDTO updateReservation(Long reservationId, ReservationDTO reservationDTO);
+
+    ReservationDTO getReservationById(Long reservationId);
 }

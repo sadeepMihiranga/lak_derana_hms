@@ -12,10 +12,7 @@ import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.ReservationMapper;
 import lk.lakderana.hms.repository.*;
-import lk.lakderana.hms.service.FacilityReservationService;
-import lk.lakderana.hms.service.InquiryService;
-import lk.lakderana.hms.service.ReservationService;
-import lk.lakderana.hms.service.RoomReservationService;
+import lk.lakderana.hms.service.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -36,6 +33,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
     private final InquiryService inquiryService;
     private final RoomReservationService roomReservationService;
     private final FacilityReservationService facilityReservationService;
+    private final ItemReservationService itemReservationService;
 
     private final InquiryRepository inquiryRepository;
 
@@ -43,11 +41,13 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
                                   InquiryService inquiryService,
                                   RoomReservationService roomReservationService,
                                   FacilityReservationService facilityReservationService,
+                                  ItemReservationService itemReservationService,
                                   InquiryRepository inquiryRepository) {
         this.reservationRepository = reservationRepository;
         this.inquiryService = inquiryService;
         this.roomReservationService = roomReservationService;
         this.facilityReservationService = facilityReservationService;
+        this.itemReservationService = itemReservationService;
         this.inquiryRepository = inquiryRepository;
     }
 
@@ -76,8 +76,8 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
             reservationList.add(reservationDTO);
 
-            reservationDTO.setRoomReservationList(roomReservationService.getRoomReservationsByReservation(reservationDTO.getReservationId()));
-            reservationDTO.setFacilityReservationList(facilityReservationService.getFacilityReservationsByReservation(reservationDTO.getReservationId()));
+            collectReservationReferenceData(reservationDTO);
+
         }
 
         paginatedReservationList.setTotalNoOfPages(tMsReservationPage.getTotalPages());
@@ -130,6 +130,10 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
             facilityReservationService.reserveFacility(createdReservation.getReservationId(), facilityReservationDTO.getFacility());
         });
 
+        reservationDTO.getItemReservationList().forEach(itemReservationDTO -> {
+            itemReservationService.reserveItem(createdReservation.getReservationId(), itemReservationDTO.getItem());
+        });
+
         return createdReservation;
     }
 
@@ -145,7 +149,9 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         final Boolean isFacilityReservationCanceled = facilityReservationService.cancelFacilityReservationByReservation(reservationId);
 
-        if(!isRoomReservationCanceled || !isFacilityReservationCanceled)
+        final Boolean isItemsReservationCanceled = itemReservationService.cancelItemReservationsByReservation(reservationId);
+
+        if(!isRoomReservationCanceled || !isFacilityReservationCanceled || isItemsReservationCanceled)
             throw new OperationException("Error while canceling Room or Facility Reservation");
 
         //TODO : need to check pending payments
@@ -159,6 +165,26 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         TMsReservation tMsReservation = validateReservationById(reservationId);
 
         return null;
+    }
+
+    @Override
+    public ReservationDTO getReservationById(Long reservationId) {
+
+        final TMsReservation tMsReservation = validateReservationById(reservationId);
+
+        final ReservationDTO reservationDTO = ReservationMapper.INSTANCE.entityToDTO(tMsReservation);
+        collectReservationReferenceData(reservationDTO);
+
+        return reservationDTO;
+    }
+
+    private void collectReservationReferenceData(ReservationDTO reservationDTO) {
+        reservationDTO.setRoomReservationList(
+                roomReservationService.getRoomReservationsByReservation(reservationDTO.getReservationId()));
+        reservationDTO.setFacilityReservationList(
+                facilityReservationService.getFacilityReservationsByReservation(reservationDTO.getReservationId()));
+        reservationDTO.setItemReservationList(
+                itemReservationService.getItemReservationsByReservation(reservationDTO.getReservationId()));
     }
 
     private TMsReservation validateReservationById(Long reservationId) {

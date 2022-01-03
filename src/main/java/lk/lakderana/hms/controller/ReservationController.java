@@ -36,4 +36,9 @@ public class ReservationController {
                                                              @RequestBody ReservationDTO reservationDTO) {
         return SuccessResponseHandler.generateResponse(reservationService.cancelReservation(reservationId, reservationDTO));
     }
+
+    @GetMapping("/{reservationId}")
+    public ResponseEntity<SuccessResponse> getReservationById(@PathVariable("reservationId") Long reservationId) {
+        return SuccessResponseHandler.generateResponse(reservationService.getReservationById(reservationId));
+    }
 }

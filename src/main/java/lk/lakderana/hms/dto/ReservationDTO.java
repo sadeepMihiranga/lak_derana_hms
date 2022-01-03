@@ -38,4 +38,5 @@ public class ReservationDTO implements Paginated {
     private String cancellationReasons;
     private List<RoomReservationDTO> roomReservationList;
     private List<FacilityReservationDTO> facilityReservationList;
+    private List<ItemReservationDTO> itemReservationList;
 }
