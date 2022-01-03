@@ -10,4 +10,6 @@ public interface ReportTypeRepository extends JpaRepository<TRfReportType, Long>
     List<TRfReportType> findAllByRptpStatus(Short rptpStatus);
 
     TRfReportType findByRptpCode(String rptpCode);
+
+    TRfReportType findByRptpIdAndRptpStatus(Long rptpId, Short rptpStatus);
 }

@@ -49,6 +49,11 @@ public class ReportController {
         return SuccessResponseHandler.generateResponse(reportTypeService.getReportTypes());
     }
 
+    @GetMapping(path = "/types/{reportTypeId}")
+    public ResponseEntity<SuccessResponse> getReportTypeById(@PathVariable("reportTypeId") Long reportTypeId) {
+        return SuccessResponseHandler.generateResponse(reportTypeService.getByReportId(reportTypeId));
+    }
+
     @GetMapping(path = "/history/search")
     public ResponseEntity<SuccessResponse> reportHistoryPaginatedSearch(
             @RequestParam(name = "reportTypeCode", required = false) String reportTypeCode,

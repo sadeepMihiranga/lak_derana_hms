@@ -9,4 +9,6 @@ public interface ReportTypeService {
     List<ReportTypeDTO> getReportTypes();
 
     ReportTypeDTO getByCode(String reportCode);
+
+    ReportTypeDTO getByReportId(Long reportTypeId);
 }

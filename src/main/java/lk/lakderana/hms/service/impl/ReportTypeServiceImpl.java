@@ -54,4 +54,19 @@ public class ReportTypeServiceImpl implements ReportTypeService {
 
         return ReportTypeMapper.INSTANCE.entityToDTO(tRfReportType);
     }
+
+    @Override
+    public ReportTypeDTO getByReportId(Long reportTypeId) {
+
+        if(reportTypeId == null)
+            throw new NoRequiredInfoException("Report Type Id is Required");
+
+        final TRfReportType tRfReportType = reportTypeRepository
+                .findByRptpIdAndRptpStatus(reportTypeId, Constants.STATUS_ACTIVE.getShortValue());
+
+        if(tRfReportType == null)
+            throw new DataNotFoundException("Report Type not found for Id " + reportTypeId);
+
+        return ReportTypeMapper.INSTANCE.entityToDTO(tRfReportType);
+    }
 }
