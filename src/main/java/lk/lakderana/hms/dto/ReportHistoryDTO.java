@@ -23,6 +23,7 @@ public class ReportHistoryDTO implements Paginated {
     private LocalDateTime toDate;
     private LocalDateTime createdDate;
     private String createdUserCode;
+    private String createdUserName;
     private LocalDateTime lastUpdatedDate;
     private String lastUpdatedUserCode;
     private Long branchId;

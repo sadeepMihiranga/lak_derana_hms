@@ -1,10 +1,7 @@
 package lk.lakderana.hms.service.impl;
 
 import lk.lakderana.hms.config.EntityValidator;
-import lk.lakderana.hms.dto.PaginatedEntity;
-import lk.lakderana.hms.dto.ReportHistoryDTO;
-import lk.lakderana.hms.dto.ReportTypeDTO;
-import lk.lakderana.hms.dto.ReportWrapperDTO;
+import lk.lakderana.hms.dto.*;
 import lk.lakderana.hms.entity.TTrReportHistory;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
@@ -13,6 +10,7 @@ import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.ReportHistoryMapper;
 import lk.lakderana.hms.mapper.ReportTypeMapper;
 import lk.lakderana.hms.repository.ReportHistoryRepository;
+import lk.lakderana.hms.service.PartyService;
 import lk.lakderana.hms.service.ReportHistoryService;
 import lk.lakderana.hms.service.ReportService;
 import lk.lakderana.hms.service.ReportTypeService;
@@ -41,13 +39,16 @@ public class ReportHistoryServiceImpl extends EntityValidator implements ReportH
 
     private final ReportTypeService reportTypeService;
     private final ReportService reportService;
+    private final PartyService partyService;
 
     public ReportHistoryServiceImpl(ReportHistoryRepository reportHistoryRepository,
                                     ReportTypeService reportTypeService,
-                                    @Lazy ReportService reportService) {
+                                    @Lazy ReportService reportService,
+                                    PartyService partyService) {
         this.reportHistoryRepository = reportHistoryRepository;
         this.reportTypeService = reportTypeService;
         this.reportService = reportService;
+        this.partyService = partyService;
     }
 
     @Override
@@ -88,7 +89,13 @@ public class ReportHistoryServiceImpl extends EntityValidator implements ReportH
         reportHistoryDTOList = new ArrayList<>();
 
         for (TTrReportHistory tTrReportHistory : tTrReportHistoryPage) {
-            reportHistoryDTOList.add(ReportHistoryMapper.INSTANCE.entityToDTO(tTrReportHistory));
+
+            final ReportHistoryDTO reportHistoryDTO = ReportHistoryMapper.INSTANCE.entityToDTO(tTrReportHistory);
+
+            final PartyDTO createdUserDTO = partyService.getPartyByPartyCode(reportHistoryDTO.getCreatedUserCode());
+            reportHistoryDTO.setCreatedUserName(createdUserDTO.getName());
+
+            reportHistoryDTOList.add(reportHistoryDTO);
         }
 
         paginatedReportHistoryList.setTotalNoOfPages(tTrReportHistoryPage.getTotalPages());
