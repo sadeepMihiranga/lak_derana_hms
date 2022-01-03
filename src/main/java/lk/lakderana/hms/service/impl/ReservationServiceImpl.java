@@ -77,7 +77,6 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
             reservationList.add(reservationDTO);
 
             collectReservationReferenceData(reservationDTO);
-
         }
 
         paginatedReservationList.setTotalNoOfPages(tMsReservationPage.getTotalPages());
@@ -122,17 +121,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         final ReservationDTO createdReservation = ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
 
-        reservationDTO.getRoomReservationList().forEach(roomReservationDTO -> {
-            roomReservationService.reserveRoom(createdReservation.getReservationId(), roomReservationDTO.getRoom());
-        });
-
-        reservationDTO.getFacilityReservationList().forEach(facilityReservationDTO -> {
-            facilityReservationService.reserveFacility(createdReservation.getReservationId(), facilityReservationDTO.getFacility());
-        });
-
-        reservationDTO.getItemReservationList().forEach(itemReservationDTO -> {
-            itemReservationService.reserveItem(createdReservation.getReservationId(), itemReservationDTO.getItem());
-        });
+        reserveRelatedReservationData(reservationDTO, createdReservation.getReservationId());
 
         return createdReservation;
     }
@@ -145,14 +134,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         tMsReservation.setResvStatus(CANCELLED.getShortValue());
         tMsReservation.setResvCancellationReasons(reservationDTO.getCancellationReasons());
 
-        final Boolean isRoomReservationCanceled = roomReservationService.cancelRoomReservationByReservation(reservationId);
-
-        final Boolean isFacilityReservationCanceled = facilityReservationService.cancelFacilityReservationByReservation(reservationId);
-
-        final Boolean isItemsReservationCanceled = itemReservationService.cancelItemReservationsByReservation(reservationId);
-
-        if(!isRoomReservationCanceled || !isFacilityReservationCanceled || isItemsReservationCanceled)
-            throw new OperationException("Error while canceling Room or Facility Reservation");
+        removeRelatedReservationData(reservationId);
 
         //TODO : need to check pending payments
 
@@ -164,7 +146,20 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         TMsReservation tMsReservation = validateReservationById(reservationId);
 
-        return null;
+        tMsReservation.setResvCheckInDateTime(reservationDTO.getCheckInDateTime());
+        tMsReservation.setResvCheckOutDateTime(reservationDTO.getCheckOutDateTime());
+        tMsReservation.setResvNoOfPersons(reservationDTO.getNoOfPersons());
+        tMsReservation.setResvRemarks(reservationDTO.getRemarks());
+
+        final ReservationDTO updatedReservation = ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
+
+        removeRelatedReservationData(reservationId);
+
+        reserveRelatedReservationData(reservationDTO, reservationId);
+
+        collectReservationReferenceData(updatedReservation);
+
+        return updatedReservation;
     }
 
     @Override
@@ -176,6 +171,29 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         collectReservationReferenceData(reservationDTO);
 
         return reservationDTO;
+    }
+
+    private void reserveRelatedReservationData(ReservationDTO reservationDTO, Long reservationId) {
+        reservationDTO.getRoomReservationList().forEach(roomReservationDTO -> {
+            roomReservationService.reserveRoom(reservationId, roomReservationDTO.getRoom());
+        });
+
+        reservationDTO.getFacilityReservationList().forEach(facilityReservationDTO -> {
+            facilityReservationService.reserveFacility(reservationId, facilityReservationDTO.getFacility());
+        });
+
+        reservationDTO.getItemReservationList().forEach(itemReservationDTO -> {
+            itemReservationService.reserveItem(reservationId, itemReservationDTO.getItem());
+        });
+    }
+
+    private void removeRelatedReservationData(Long reservationId) {
+        final Boolean isRoomReservationCanceled = roomReservationService.cancelRoomReservationByReservation(reservationId);
+        final Boolean isFacilityReservationCanceled = facilityReservationService.cancelFacilityReservationByReservation(reservationId);
+        final Boolean isItemsReservationCanceled = itemReservationService.cancelItemReservationsByReservation(reservationId);
+
+        if(!isRoomReservationCanceled || !isFacilityReservationCanceled || isItemsReservationCanceled)
+            throw new OperationException("Error while canceling Room, Facility or Item Reservation");
     }
 
     private void collectReservationReferenceData(ReservationDTO reservationDTO) {
