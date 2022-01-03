@@ -43,4 +43,9 @@ public class FacilityController {
     public ResponseEntity<SuccessResponse> removeFacility(@PathVariable("facilityId") Long facilityId) {
         return SuccessResponseHandler.generateResponse(facilityService.removeFacility(facilityId));
     }
+
+    @GetMapping("/{facilityId}")
+    public ResponseEntity<SuccessResponse> getFacilityById(@PathVariable("facilityId") Long facilityId) {
+        return SuccessResponseHandler.generateResponse(facilityService.getFacilityById(facilityId));
+    }
 }

@@ -149,7 +149,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
 
         final TMsRoom tMsRoom = validateRoomId(roomId);
 
-        final RoomDTO roomDTO = RoomMapper.INSTANCE.entityToDTO(validateRoomId(roomId));
+        RoomDTO roomDTO = RoomMapper.INSTANCE.entityToDTO(validateRoomId(roomId));
         setReferenceData(tMsRoom, roomDTO);
 
         return roomDTO;

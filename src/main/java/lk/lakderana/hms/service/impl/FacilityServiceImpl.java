@@ -141,6 +141,17 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
         return facilityDTOList;
     }
 
+    @Override
+    public FacilityDTO getFacilityById(Long facilityId) {
+
+        final TMsFacility tMsFacility = validateByFacilityId(facilityId);
+
+        FacilityDTO facilityDTO = FacilityMapper.INSTANCE.entityToDTO(tMsFacility);
+        setReferenceData(tMsFacility, facilityDTO);
+
+        return facilityDTO;
+    }
+
     private TMsFacility validateByFacilityId(Long facilityId) {
 
         if(facilityId == null)

@@ -16,4 +16,6 @@ public interface FacilityService {
     Boolean removeFacility(Long facilityId);
 
     List<FacilityDTO> getAllFacilities();
+
+    FacilityDTO getFacilityById(Long facilityId);
 }
