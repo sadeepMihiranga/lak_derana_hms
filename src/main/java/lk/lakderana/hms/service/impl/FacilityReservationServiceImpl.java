@@ -115,6 +115,7 @@ public class FacilityReservationServiceImpl extends EntityValidator implements F
             facilityReservationDTO.setFacility(FacilityMapper.INSTANCE.entityToDTO(tTrFacilityReservation.getFacility()));
             facilityReservationDTO.setFacilityReservationId(tTrFacilityReservation.getFareId());
             facilityReservationDTO.setStatus(tTrFacilityReservation.getFareStatus());
+            facilityReservationDTO.setQuantity(BigDecimal.valueOf(tTrFacilityReservation.getFareQuantity()));
 
             facilityReservationDTOList.add(facilityReservationDTO);
         });
