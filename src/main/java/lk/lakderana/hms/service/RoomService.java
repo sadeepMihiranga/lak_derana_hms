@@ -14,4 +14,6 @@ public interface RoomService {
     Boolean inactiveRoom(Long roomId);
 
     Boolean removeRoom(Long roomId);
+
+    RoomDTO getRoomById(Long roomId);
 }

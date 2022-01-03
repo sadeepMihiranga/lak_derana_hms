@@ -46,4 +46,9 @@ public class RoomController {
     public ResponseEntity<SuccessResponse> removeRoom(@PathVariable("roomId") Long roomId) {
         return SuccessResponseHandler.generateResponse(roomService.removeRoom(roomId));
     }
+
+    @GetMapping("/{roomId}")
+    public ResponseEntity<SuccessResponse> getRoomById(@PathVariable("roomId") Long roomId) {
+        return SuccessResponseHandler.generateResponse(roomService.getRoomById(roomId));
+    }
 }

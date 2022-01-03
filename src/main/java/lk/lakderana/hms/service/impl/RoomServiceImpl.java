@@ -144,6 +144,17 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         return true;
     }
 
+    @Override
+    public RoomDTO getRoomById(Long roomId) {
+
+        final TMsRoom tMsRoom = validateRoomId(roomId);
+
+        final RoomDTO roomDTO = RoomMapper.INSTANCE.entityToDTO(validateRoomId(roomId));
+        setReferenceData(tMsRoom, roomDTO);
+
+        return roomDTO;
+    }
+
     private TMsRoom validateRoomId(Long roomId) {
 
         if(roomId == null)
