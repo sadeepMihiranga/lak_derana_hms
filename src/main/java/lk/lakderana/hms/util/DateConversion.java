@@ -88,4 +88,11 @@ public final class DateConversion {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(STANDARD_DATE_FORMAT_WITH_TIME);
         return LocalDateTime.parse(dateToConvert, formatter);
     }
+
+    public static String convertLocalDateTimeToString(LocalDateTime dateToConvert) {
+        if (dateToConvert == null)
+            return null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(STANDARD_DATE_FORMAT_WITH_TIME);
+        return dateToConvert.format(formatter);
+    }
 }

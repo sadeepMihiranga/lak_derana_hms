@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ReportHistoryDTO {
+public class ReportHistoryDTO implements Paginated {
 
     private Long reportHistoryId;
     private String reportType;
@@ -25,4 +25,5 @@ public class ReportHistoryDTO {
     private String createdUserCode;
     private LocalDateTime lastUpdatedDate;
     private String lastUpdatedUserCode;
+    private Long branchId;
 }

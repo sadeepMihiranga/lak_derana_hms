@@ -1,7 +1,9 @@
 package lk.lakderana.hms.controller;
 
+import lk.lakderana.hms.dto.ReportWrapperDTO;
 import lk.lakderana.hms.response.SuccessResponse;
 import lk.lakderana.hms.response.SuccessResponseHandler;
+import lk.lakderana.hms.service.ReportHistoryService;
 import lk.lakderana.hms.service.ReportService;
 import lk.lakderana.hms.service.ReportTypeService;
 import lombok.extern.slf4j.Slf4j;
@@ -32,33 +34,14 @@ public class ReportController {
 
     private final ReportService reportService;
     private final ReportTypeService reportTypeService;
+    private final ReportHistoryService reportHistoryService;
 
     public ReportController(ReportService reportService,
-                            ReportTypeService reportTypeService) {
+                            ReportTypeService reportTypeService,
+                            ReportHistoryService reportHistoryService) {
         this.reportService = reportService;
         this.reportTypeService = reportTypeService;
-    }
-
-    @GetMapping("/print")
-    public void generateDetailedXlsReport(HttpServletResponse response,
-                                         @RequestParam(name = "startDate") String startDate ,
-                                         @RequestParam(name = "endDate") String endDate,
-                                         @RequestParam(name = "reportType") String reportType,
-                                         @RequestParam(name = "reportCode") String reportCode,
-                                         @RequestParam(name = "filterBy") String filterBy) throws IOException, JarException, ParseException, JRException {
-        JasperPrint jasperPrint = null;
-
-        jasperPrint = reportService.generateDetailedCsvReport(startDate, endDate, reportType, reportCode);
-
-        if (reportType.equals("EXCEL")) {
-            response.setContentType("application/x-download");
-            response.setHeader("Content-Disposition", String.format("attachment; filename=\"Enquiry Report "+startDate+" to "+endDate+".csv\""));
-
-            OutputStream out = response.getOutputStream();
-            generateToExcel(response, jasperPrint, out);
-        } else {
-            //generatePDF(jasperPrint,response,String.format("attachment; filename=\"Branch Major Error Report.pdf\""));
-        }
+        this.reportHistoryService = reportHistoryService;
     }
 
     @GetMapping("/types")
@@ -66,7 +49,57 @@ public class ReportController {
         return SuccessResponseHandler.generateResponse(reportTypeService.getReportTypes());
     }
 
-    private void generateToExcel(HttpServletResponse response,JasperPrint jasperPrint, OutputStream out) throws JRException, IOException {
+    @GetMapping(path = "/history/search")
+    public ResponseEntity<SuccessResponse> reportHistoryPaginatedSearch(
+            @RequestParam(name = "reportTypeCode", required = false) String reportTypeCode,
+            @RequestParam(name = "page", required = true) Integer page,
+            @RequestParam(name = "size", required = true) Integer size) {
+        return SuccessResponseHandler.generateResponse(reportHistoryService
+                .reportHistoryPaginatedSearch(reportTypeCode, page, size));
+    }
+
+    @DeleteMapping(path = "/history/{reportHistoryId}")
+    public ResponseEntity<SuccessResponse> removeReportHistory(@PathVariable("reportHistoryId") Long reportHistoryId) {
+        return SuccessResponseHandler.generateResponse(reportHistoryService.removeReportHistory(reportHistoryId));
+    }
+
+    @GetMapping(path = "/history/{reportHistoryId}/regenerate")
+    public void regenerateDetailedReportHistory(HttpServletResponse response,
+                                                @PathVariable("reportHistoryId") Long reportHistoryId) throws IOException, JRException, ParseException {
+
+        final ReportWrapperDTO detailedCsvReport = reportHistoryService.regenerateDetailedCsvReport(reportHistoryId);
+
+        response.setContentType("application/x-download");
+        response.setHeader("Content-Disposition",
+                String.format("attachment; filename=\""+detailedCsvReport.getReportFileNameWithExtension()+"\""));
+
+        generateToExcel(response, detailedCsvReport.getJasperPrint(), response.getOutputStream());
+    }
+
+    @GetMapping("/detailed")
+    public void generateDetailedXlsReport(HttpServletResponse response,
+                                          @RequestParam(name = "startDate") String startDate ,
+                                          @RequestParam(name = "endDate") String endDate,
+                                          @RequestParam(name = "reportType") String reportType,
+                                          @RequestParam(name = "reportCode") String reportCode,
+                                          @RequestParam(name = "filterBy") String filterBy) throws IOException, JarException, ParseException, JRException {
+
+        ReportWrapperDTO reportWrapperDTO = reportService.generateDetailedCsvReport(startDate, endDate, reportType, reportCode);
+
+        if (reportType.equals("EXCEL")) {
+
+            response.setContentType("application/x-download");
+            response.setHeader("Content-Disposition",
+                    String.format("attachment; filename=%s", "\"" + reportWrapperDTO.getReportFileNameWithExtension() + "\""));
+
+            OutputStream out = response.getOutputStream();
+            generateToExcel(response, reportWrapperDTO.getJasperPrint(), out);
+        } else {
+            //generatePDF(jasperPrint,response,String.format("attachment; filename=\"Branch Major Error Report.pdf\""));
+        }
+    }
+
+    private void generateToExcel(HttpServletResponse response, JasperPrint jasperPrint, OutputStream out) throws JRException, IOException {
         JRCsvExporter exporter = new JRCsvExporter();
         exporter.setExporterInput(new SimpleExporterInput(jasperPrint));
 

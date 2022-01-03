@@ -1,13 +1,12 @@
 package lk.lakderana.hms.service.impl;
 
-import lk.lakderana.hms.dto.ReportDTO;
-import lk.lakderana.hms.dto.ReportHistoryDTO;
-import lk.lakderana.hms.dto.ReportWrapperDTO;
+import lk.lakderana.hms.dto.*;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.service.ReportHandler;
 import lk.lakderana.hms.service.ReportHistoryService;
 import lk.lakderana.hms.service.ReportService;
+import lk.lakderana.hms.service.ReportTypeService;
 import lk.lakderana.hms.util.DateConversion;
 import lk.lakderana.hms.util.constant.ReportCodes;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +17,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
 import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 import org.assertj.core.util.Strings;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Service;
 
@@ -36,24 +36,29 @@ public class ReportServiceImpl implements ReportService {
     private final ResourceLoader resourceLoader;
 
     private final ReportHandler reportHandler;
+    private final ReportTypeService reportTypeService;
     private final ReportHistoryService reportHistoryService;
 
     public ReportServiceImpl(ResourceLoader resourceLoader,
                              ReportHandler reportHandler,
-                             ReportHistoryService reportHistoryService) {
+                             @Lazy ReportHistoryService reportHistoryService,
+                             ReportTypeService reportTypeService) {
         this.resourceLoader = resourceLoader;
         this.reportHandler = reportHandler;
         this.reportHistoryService = reportHistoryService;
+        this.reportTypeService = reportTypeService;
     }
 
     @Override
-    public JasperPrint generateDetailedCsvReport(String startDate, String endDate, String reportType, String reportCode)
+    public ReportWrapperDTO generateDetailedCsvReport(String startDate, String endDate, String reportType, String reportCode)
             throws IOException, JRException, ParseException {
 
-        ReportWrapperDTO reportWrapperDTO = null;
+        ReportContentWrapperDTO reportWrapperDTO = null;
+
+        final ReportTypeDTO reportTypeDTO = reportTypeService.getByCode(reportCode);
 
         if(reportCode.equals(ReportCodes.INQUIRY_DETAILED.getValue()))
-            reportWrapperDTO = getInquiryReport(startDate, endDate);
+            reportWrapperDTO = getDetailedReport(startDate, endDate, reportTypeDTO);
 
         if(reportWrapperDTO == null)
             throw new OperationException("Report Content not populated correctly");
@@ -61,7 +66,7 @@ public class ReportServiceImpl implements ReportService {
         InputStream jasperReport = getReportTemplate(reportType);
         HashMap<String, Object> parameters = new HashMap<>();
 
-        JRBeanArrayDataSource beanColDataSource = new JRBeanArrayDataSource(new ReportWrapperDTO[]{reportWrapperDTO});
+        JRBeanArrayDataSource beanColDataSource = new JRBeanArrayDataSource(new ReportContentWrapperDTO[]{reportWrapperDTO});
         parameters.put("REPORT_TYPE", reportType);
         JasperPrint print = JasperFillManager.fillReport(jasperReport, parameters, beanColDataSource);
 
@@ -76,11 +81,12 @@ public class ReportServiceImpl implements ReportService {
 
         reportHistoryService.createReportHistory(reportHistoryDTO);
 
-        return print;
+        final String reportFileNameWithExtension = reportTypeDTO.getDisplayName() + "_" + startDate + "_" + endDate + ".csv";
+
+        return new ReportWrapperDTO(print, reportFileNameWithExtension);
     }
 
-    @Override
-    public ReportWrapperDTO getInquiryReport(String startDate, String endDate) throws ParseException {
+    private ReportContentWrapperDTO getDetailedReport(String startDate, String endDate, ReportTypeDTO reportTypeDTO) throws ParseException {
 
         if (Strings.isNullOrEmpty(startDate)) {
             log.error("missing start date, startDate:{}", startDate);
@@ -92,13 +98,16 @@ public class ReportServiceImpl implements ReportService {
             throw new DataNotFoundException("End Date is Required.");
         }
 
-        ReportWrapperDTO reportWrapper = new ReportWrapperDTO();
+        ReportContentWrapperDTO reportWrapper = new ReportContentWrapperDTO();
 
-        List<ReportDTO> inquiryReportContent = reportHandler.getInquiryReportContent(
-                DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
-                DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+        if(reportTypeDTO.getReportTypeCode().equals(ReportCodes.INQUIRY_DETAILED.getValue())) {
+            List<ReportDTO> inquiryReportContent = reportHandler.getInquiryReportContent(
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
 
-        reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(inquiryReportContent, false));
+            reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(inquiryReportContent, false));
+        }
+
         reportWrapper.setStartDate(setReportHeadingDate(startDate));
         reportWrapper.setEndDate(setReportHeadingDate(endDate));
         reportWrapper.setReportName("Inquiry Report");
@@ -120,8 +129,8 @@ public class ReportServiceImpl implements ReportService {
         }
     }
 
-    private InputStream getReportTemplate(String filterBy) throws IOException {
-        if (filterBy.equals("EXCEL"))
+    private InputStream getReportTemplate(String reportType) throws IOException {
+        if (reportType.equals("EXCEL"))
             return resourceLoader.getResource("classpath:/reports/inquiry/common_report_excel.jasper").getInputStream();
         else
             return resourceLoader.getResource("classpath:common_report_excel.jasper").getInputStream();

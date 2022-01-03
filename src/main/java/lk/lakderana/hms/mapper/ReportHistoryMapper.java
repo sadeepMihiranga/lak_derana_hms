@@ -23,7 +23,8 @@ public interface ReportHistoryMapper {
             @Mapping(source = "createdDate", target = "createdDate"),
             @Mapping(source = "lastModDate", target = "lastUpdatedDate"),
             @Mapping(source = "createdUserCode", target = "createdUserCode"),
-            @Mapping(source = "lastModUserCode", target = "lastUpdatedUserCode")
+            @Mapping(source = "lastModUserCode", target = "lastUpdatedUserCode"),
+            @Mapping(source = "branch.brnhId", target = "branchId")
     })
     ReportHistoryDTO entityToDTO(TTrReportHistory entity);
 

@@ -32,4 +32,8 @@ public class TTrReportHistory extends AuditModel {
 
     @Column(name = "RPHT_TO_DATE")
     private LocalDateTime rphtToDate;
+
+    @JoinColumn(name = "RPHT_BRANH_ID")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private TRfBranch branch;
 }

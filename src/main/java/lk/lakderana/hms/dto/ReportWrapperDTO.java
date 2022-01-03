@@ -1,17 +1,15 @@
 package lk.lakderana.hms.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import lombok.*;
-import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import net.sf.jasperreports.engine.JasperPrint;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class ReportWrapperDTO {
 
-    private JRBeanCollectionDataSource reportDatasource;
-    private String startDate;
-    private String endDate;
-    private String reportName;
+    private JasperPrint jasperPrint;
+    private String reportFileNameWithExtension;
 }
