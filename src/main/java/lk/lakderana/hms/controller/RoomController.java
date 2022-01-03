@@ -19,7 +19,7 @@ public class RoomController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<SuccessResponse> getPaginatedUsers(@RequestParam(name = "roomType", required = false) String roomType,
+    public ResponseEntity<SuccessResponse> getPaginatedRooms(@RequestParam(name = "roomType", required = false) String roomType,
                                                              @RequestParam(name = "roomCategory", required = false) String roomCategory,
                                                              @RequestParam(name = "status", required = false) Short status,
                                                              @RequestParam(name = "page", required = true) Integer page,

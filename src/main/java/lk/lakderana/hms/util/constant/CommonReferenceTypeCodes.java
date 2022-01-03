@@ -9,7 +9,8 @@ public enum CommonReferenceTypeCodes {
     ROOM_CATEGORY_TYPES("RMCAT"),
     ROOM_BED_TYPES("RMBDT"),
     FACILITY_TYPES("FCLTP"),
-    MEASUREMENT_TYPES("UOFMS");
+    MEASUREMENT_TYPES("UOFMS"),
+    ITEM_TYPES("ITMTP");
 
     private String value;
     private short shortValue;
