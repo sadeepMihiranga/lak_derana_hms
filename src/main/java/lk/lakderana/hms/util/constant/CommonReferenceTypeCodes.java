@@ -10,7 +10,8 @@ public enum CommonReferenceTypeCodes {
     ROOM_BED_TYPES("RMBDT"),
     FACILITY_TYPES("FCLTP"),
     MEASUREMENT_TYPES("UOFMS"),
-    ITEM_TYPES("ITMTP");
+    ITEM_TYPES("ITMTP"),
+    PAYMENT_TYPES("PAYTP");
 
     private String value;
     private short shortValue;
