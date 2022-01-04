@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,6 +37,9 @@ public class ReservationDTO implements Paginated {
     private LocalDateTime lastUpdatedDate;
     private String lastUpdatedUserCode;
     private String cancellationReasons;
+    private BigDecimal advancedPayment;
+    private BigDecimal totalAmount;
+    private BigDecimal dueAmount;
     private List<RoomReservationDTO> roomReservationList;
     private List<FacilityReservationDTO> facilityReservationList;
     private List<ItemReservationDTO> itemReservationList;
