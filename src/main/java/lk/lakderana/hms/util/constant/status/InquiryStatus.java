@@ -1,6 +1,5 @@
 package lk.lakderana.hms.util.constant.status;
 
-import lombok.NoArgsConstructor;
 
 public enum InquiryStatus {
 

@@ -82,6 +82,23 @@ public final class DateConversion {
         return formattedDate;
     }
 
+    public static String convertDateToStringWithTime(Date date) {
+
+        String formattedDate;
+
+        if (date == null) {
+            return null;
+        } else {
+            try {
+                formattedDate = new SimpleDateFormat(STANDARD_DATE_FORMAT_WITH_TIME, Locale.ENGLISH).format(date);
+            } catch (Exception e) {
+                Logger.getLogger("Exception - Convert Date to String : ", e.toString());
+                return null;
+            }
+        }
+        return formattedDate;
+    }
+
     public static LocalDateTime convertStringToLocalDateTime(String dateToConvert) {
         if (dateToConvert == null)
             return null;

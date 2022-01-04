@@ -15,4 +15,12 @@ public enum ReservationStatus {
     public short getShortValue() {
         return shortValue;
     }
+
+    public static ReservationStatus getNameByCode(short status) {
+        for(ReservationStatus reservationStatus : values()) {
+            if(status == reservationStatus.getShortValue())
+                return reservationStatus;
+        }
+        return null;
+    }
 }

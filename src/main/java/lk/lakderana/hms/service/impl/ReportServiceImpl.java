@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import static lk.lakderana.hms.util.constant.ReportCodes.*;
+
 @Slf4j
 @Service
 public class ReportServiceImpl implements ReportService {
@@ -57,11 +59,7 @@ public class ReportServiceImpl implements ReportService {
 
         final ReportTypeDTO reportTypeDTO = reportTypeService.getByCode(reportCode);
 
-        if(reportCode.equals(ReportCodes.INQUIRY_DETAILED.getValue()))
-            reportWrapperDTO = getDetailedReport(startDate, endDate, reportTypeDTO);
-
-        if(reportWrapperDTO == null)
-            throw new OperationException("Report Content not populated correctly");
+        reportWrapperDTO = getDetailedReport(startDate, endDate, reportTypeDTO);
 
         InputStream jasperReport = getReportTemplate(reportType);
         HashMap<String, Object> parameters = new HashMap<>();
@@ -100,7 +98,7 @@ public class ReportServiceImpl implements ReportService {
 
         ReportContentWrapperDTO reportWrapper = new ReportContentWrapperDTO();
 
-        if(reportTypeDTO.getReportTypeCode().equals(ReportCodes.INQUIRY_DETAILED.getValue())) {
+        if(reportTypeDTO.getReportTypeCode().equals(INQUIRY_DETAILED.getValue())) {
             List<ReportDTO> inquiryReportContent = reportHandler.getInquiryReportContent(
                     DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
                     DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
@@ -108,9 +106,17 @@ public class ReportServiceImpl implements ReportService {
             reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(inquiryReportContent, false));
         }
 
+        if(reportTypeDTO.getReportTypeCode().equals(RESERVATION_DETAILED.getValue())) {
+            List<ReportDTO> reservationReportContent = reportHandler.getReservationReportContent(
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+
+            reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(reservationReportContent, false));
+        }
+
         reportWrapper.setStartDate(setReportHeadingDate(startDate));
         reportWrapper.setEndDate(setReportHeadingDate(endDate));
-        reportWrapper.setReportName("Inquiry Report");
+        reportWrapper.setReportName(reportTypeDTO.getDisplayName());
 
         log.info("get Inquiry Report, startDate:{}, endDate:{}", startDate, endDate);
         return reportWrapper;

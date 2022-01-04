@@ -45,6 +45,12 @@
 		</queryString>
 		<field name="rowNumber" class="java.lang.String"/>
 		<field name="partyCode" class="java.lang.String"/>
+		<field name="createdBy" class="java.lang.String"/>
+		<field name="createdDate" class="java.lang.String"/>
+		<field name="checkInDateTime" class="java.lang.String"/>
+		<field name="checkOutDateTime" class="java.lang.String"/>
+		<field name="noOfPersons" class="java.lang.String"/>
+		<field name="reservationStatus" class="java.lang.String"/>
 		<field name="inquiryStatus" class="java.lang.String"/>
 		<field name="customerName" class="java.lang.String"/>
 		<field name="customerContactNo" class="java.lang.String"/>
@@ -111,7 +117,7 @@
 	</title>
 	<detail>
 		<band height="31">
-			<printWhenExpression><![CDATA[$F{reportName}.equals( "Inquiry Report" )]]></printWhenExpression>
+			<printWhenExpression><![CDATA[$F{reportName}.equals( "Inquiry Detailed Report" )]]></printWhenExpression>
 			<componentElement>
 				<reportElement x="0" y="1" width="802" height="30" forecolor="rgba(0, 0, 0, 0.31764707)" uuid="759e65e5-68a4-40a1-b125-2a39e4e511e6">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
@@ -267,6 +273,191 @@
 									<font fontName="Roboto" size="9"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{transferredToBranchName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+		<band height="31">
+			<printWhenExpression><![CDATA[$F{reportName}.equals( "Reservation Detailed Report" )]]></printWhenExpression>
+			<componentElement>
+				<reportElement x="0" y="1" width="802" height="30" forecolor="rgba(0, 0, 0, 0.31764707)" uuid="759e65e5-68a4-40a1-b125-2a39e4e511e6">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="commonDataset" uuid="0845e21b-2736-4eb8-9c35-48ace0bdae1b">
+						<dataSourceExpression><![CDATA[$F{reportDatasource}]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="40" uuid="2a9dcb97-b241-4104-99bd-63b0e75002ad">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader height="15" rowSpan="1"/>
+						<jr:detailCell height="15">
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="40" height="15" isRemoveLineWhenBlank="true" uuid="9ba7b189-3831-4776-955a-ce10ceffded2"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{rowNumber}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="100" uuid="3a3983a1-15e1-4a66-b3b9-2c8e5990af6f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="100" height="15" forecolor="#000000" uuid="07ab4daa-79ee-4eff-a4c9-719aa1649815"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Roboto" size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[CheckIn DateTime]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<textField>
+								<reportElement x="0" y="0" width="100" height="15" uuid="639bc135-983d-4cdb-b219-9eaabdc8da88"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{checkInDateTime}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="100" uuid="3a3983a1-15e1-4a66-b3b9-2c8e5990af6f">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="100" height="15" forecolor="#000000" uuid="07ab4daa-79ee-4eff-a4c9-719aa1649815"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Roboto" size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[CheckOut DateTime]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<textField>
+								<reportElement x="0" y="0" width="100" height="15" uuid="639bc135-983d-4cdb-b219-9eaabdc8da88"/>
+								<textElement verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{checkOutDateTime}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="80" uuid="3a0aa029-88a3-4ef4-a6d9-cb42a2094011">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="80" height="15" forecolor="#000000" uuid="f311119f-8eaf-4236-b0f0-3638c1c20e8c"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[No of Persons]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="80" height="15" uuid="c1e0812e-0a1f-44f2-95e7-61d5d5885384"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{noOfPersons}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="100" uuid="ee6eeb67-cb72-44fe-a870-ef50ee1ea9db">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="100" height="15" forecolor="#000000" uuid="b5e4fee8-f3bf-428c-88d2-9dcfe291e9ca"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Reservation Status]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="100" height="15" uuid="d434761e-c26d-45c4-9cc4-aecb2dc19e0e"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{reservationStatus}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="120" uuid="6c8239fe-d216-4512-b419-2bee9b71840c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="120" height="15" forecolor="#000000" uuid="078ab256-158f-4642-869c-dfeb3b576a15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Created Date]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="120" height="15" uuid="a475faaa-c497-462e-b904-01a401cecb59"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{createdDate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="120" uuid="6c8239fe-d216-4512-b419-2bee9b71840c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="120" height="15" forecolor="#000000" uuid="078ab256-158f-4642-869c-dfeb3b576a15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Customer Name]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="120" height="15" uuid="a475faaa-c497-462e-b904-01a401cecb59"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{customerName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="80" uuid="6c8239fe-d216-4512-b419-2bee9b71840c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+						<jr:columnHeader height="15" rowSpan="1">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<staticText>
+								<reportElement x="0" y="0" width="80" height="15" forecolor="#000000" uuid="078ab256-158f-4642-869c-dfeb3b576a15"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9" isBold="true"/>
+								</textElement>
+								<text><![CDATA[Created By]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell height="15">
+							<property name="com.jaspersoft.studio.unit.height" value="px"/>
+							<textField textAdjust="StretchHeight" isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="80" height="15" uuid="a475faaa-c497-462e-b904-01a401cecb59"/>
+								<textElement textAlignment="Right" verticalAlignment="Middle">
+									<font fontName="Roboto" size="9"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{createdBy}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
 					</jr:column>

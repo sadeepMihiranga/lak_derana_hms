@@ -8,4 +8,6 @@ import java.util.List;
 public interface ReportHandler {
 
     List<ReportDTO> getInquiryReportContent(Date fromDate, Date toDate);
+
+    List<ReportDTO> getReservationReportContent(Date fromDate, Date toDate);
 }
