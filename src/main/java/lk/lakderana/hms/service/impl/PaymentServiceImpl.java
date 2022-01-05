@@ -1,11 +1,12 @@
 package lk.lakderana.hms.service.impl;
 
+import com.google.common.base.Strings;
 import lk.lakderana.hms.config.EntityValidator;
+import lk.lakderana.hms.dto.CommonReferenceDTO;
+import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.dto.PaymentDTO;
 import lk.lakderana.hms.entity.TMsReservation;
-import lk.lakderana.hms.entity.TMsRoom;
 import lk.lakderana.hms.entity.TTrPayment;
-import lk.lakderana.hms.entity.TTrRoomReservation;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
@@ -18,10 +19,13 @@ import lk.lakderana.hms.service.PaymentService;
 import lk.lakderana.hms.service.ReservationService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 import static lk.lakderana.hms.util.constant.CommonReferenceTypeCodes.PAYMENT_TYPES;
@@ -45,6 +49,38 @@ public class PaymentServiceImpl extends EntityValidator implements PaymentServic
         this.reservationRepository = reservationRepository;
         this.reservationService = reservationService;
         this.commonReferenceService = commonReferenceService;
+    }
+
+    @Override
+    public PaginatedEntity paymentPaginatedSearch(String paymentMethod, Long reservationId, Short status, Integer page, Integer size) {
+
+        PaginatedEntity paginatedPaymentList = null;
+        List<PaymentDTO> paymentList = null;
+
+        validatePaginateIndexes(page, size);
+
+        final Page<TTrPayment> tTrPaymentPage = paymentRepository
+                .searchPayments(paymentMethod, reservationId, captureBranchIds(), status, PageRequest.of(page - 1, size));
+
+        if (tTrPaymentPage.getSize() == 0)
+            return null;
+
+        paginatedPaymentList = new PaginatedEntity();
+        paymentList = new ArrayList<>();
+
+        for (TTrPayment tTrPayment : tTrPaymentPage) {
+
+            PaymentDTO paymentDTO = PaymentMapper.INSTANCE.entityToDTO(tTrPayment);
+            setReferenceData(paymentDTO);
+
+            paymentList.add(paymentDTO);
+        }
+
+        paginatedPaymentList.setTotalNoOfPages(tTrPaymentPage.getTotalPages());
+        paginatedPaymentList.setTotalNoOfRecords(tTrPaymentPage.getTotalElements());
+        paginatedPaymentList.setEntities(paymentList);
+
+        return paginatedPaymentList;
     }
 
     @Override
@@ -102,6 +138,15 @@ public class PaymentServiceImpl extends EntityValidator implements PaymentServic
         return totalPayedAmount;
     }
 
+    private void setReferenceData(PaymentDTO paymentDTO) {
+        if(!Strings.isNullOrEmpty(paymentDTO.getPaymentMethod())) {
+            final CommonReferenceDTO commonReferenceDTO = commonReferenceService
+                    .getByCmrfCodeAndCmrtCode(PAYMENT_TYPES.getValue(), paymentDTO.getPaymentMethod());
+
+            paymentDTO.setPaymentMethodName(commonReferenceDTO.getDescription());
+        }
+    }
+
     private void validateReservation(Long reservationId) {
         if(reservationId == null)
             throw new NoRequiredInfoException("Reservation Id is required " + reservationId);
@@ -116,7 +161,7 @@ public class PaymentServiceImpl extends EntityValidator implements PaymentServic
     private void validateReferenceData(PaymentDTO paymentDTO) {
 
         commonReferenceService
-                .getByCmrfCodeAndCmrtCode(PAYMENT_TYPES.getValue(), paymentDTO.getPaymentType());
+                .getByCmrfCodeAndCmrtCode(PAYMENT_TYPES.getValue(), paymentDTO.getPaymentMethod());
     }
 
     private TTrPayment persistEntity(TTrPayment tTrPayment) {

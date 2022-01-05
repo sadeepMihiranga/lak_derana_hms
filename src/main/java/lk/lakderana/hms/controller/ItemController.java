@@ -21,9 +21,10 @@ public class ItemController {
     @GetMapping("/search")
     public ResponseEntity<SuccessResponse> getPaginatedItems(@RequestParam(name = "itemName", required = false) String itemName,
                                                              @RequestParam(name = "itemTypeCode", required = false) String itemTypeCode,
+                                                             @RequestParam(name = "status", required = false) Short status,
                                                              @RequestParam(name = "page", required = true) Integer page,
                                                              @RequestParam(name = "size", required = true) Integer size) {
-        return SuccessResponseHandler.generateResponse(itemService.itemPaginatedSearch(itemName, itemTypeCode, page, size));
+        return SuccessResponseHandler.generateResponse(itemService.itemPaginatedSearch(itemName, itemTypeCode, status, page, size));
     }
 
     @GetMapping("/{itemId}")

@@ -14,10 +14,12 @@ public interface FacilityRepository extends JpaRepository<TMsFacility, Long> {
     @Query("SELECT t FROM TMsFacility t " +
             "WHERE UPPER(t.fcltType) LIKE CONCAT('%', UPPER(:fcltType), '%') " +
             "AND UPPER(t.fcltName) LIKE CONCAT('%', UPPER(:fcltName), '%') " +
+            "AND (:status IS NULL OR (:status IS NOT NULL AND t.fcltStatus = :status)) " +
             "AND t.branch.brnhId IN :branchIdList " +
             "ORDER BY t.lastModUserCode")
     Page<TMsFacility> searchFacility(@Param("fcltName") String fcltName,
                                      @Param("fcltType") String fcltType,
+                                     @Param("status") Short status,
                                      @Param("branchIdList") List<Long> branchIdList,
                                      Pageable pageable);
 

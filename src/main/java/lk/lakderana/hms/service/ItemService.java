@@ -13,5 +13,5 @@ public interface ItemService {
 
     ItemDTO updateItem(Long itemId, ItemDTO itemDTO);
 
-    PaginatedEntity itemPaginatedSearch(String name, String itemTypeCode, Integer page, Integer size);
+    PaginatedEntity itemPaginatedSearch(String name, String itemTypeCode, Short status, Integer page, Integer size);
 }

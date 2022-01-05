@@ -21,10 +21,11 @@ public class FacilityController {
     @GetMapping(path = "/search")
     public ResponseEntity<SuccessResponse> facilityPaginatedSearch(@RequestParam(name = "facilityType", required = false) String facilityType,
                                                                    @RequestParam(name = "facilityName", required = false) String facilityName,
+                                                                   @RequestParam(name = "status", required = false) Short status,
                                                                    @RequestParam(name = "page", required = true) Integer page,
                                                                    @RequestParam(name = "size", required = true) Integer size) {
         return SuccessResponseHandler.generateResponse(facilityService
-                .facilityPaginatedSearch(facilityName, facilityType, page, size));
+                .facilityPaginatedSearch(facilityName, facilityType, status, page, size));
     }
 
 

@@ -10,7 +10,7 @@ public interface InquiryService {
     InquiryDTO getInquiryById(Long inquiryId);
 
     PaginatedEntity inquiryPaginatedSearch(String customerName, String customerContactNo, String partyCode,
-                                           Integer page, Integer size);
+                                           Short status, Integer page, Integer size);
     /**
      * @param         inquiryDTO InquiryDTO - that contains - which inquiry to transfer , where to transfer
      * @implNote      Transfer an inquiry to another branch in the hotel chain

@@ -90,7 +90,7 @@ public class ItemServiceImpl extends EntityValidator implements ItemService {
     }
 
     @Override
-    public PaginatedEntity itemPaginatedSearch(String name, String itemTypeCode, Integer page, Integer size) {
+    public PaginatedEntity itemPaginatedSearch(String name, String itemTypeCode, Short status, Integer page, Integer size) {
 
         PaginatedEntity paginatedItemList = null;
         List<ItemDTO> itemList = null;
@@ -98,7 +98,7 @@ public class ItemServiceImpl extends EntityValidator implements ItemService {
         validatePaginateIndexes(page, size);
 
         final Page<TMsItem> tMsItemPage = itemRepository
-                .searchItems(name, itemTypeCode, captureBranchIds(), STATUS_ACTIVE.getShortValue(), PageRequest.of(page - 1, size));
+                .searchItems(name, itemTypeCode, captureBranchIds(), status, PageRequest.of(page - 1, size));
 
         if (tMsItemPage.getSize() == 0)
             return null;

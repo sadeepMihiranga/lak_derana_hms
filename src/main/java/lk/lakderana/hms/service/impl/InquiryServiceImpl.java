@@ -79,7 +79,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
 
     @Override
     public PaginatedEntity inquiryPaginatedSearch(String customerName, String customerContactNo, String partyCode,
-                                                  Integer page, Integer size) {
+                                                  Short status, Integer page, Integer size) {
 
         PaginatedEntity paginatedInquiryList = null;
         List<InquiryDTO> inquiryDTOList = null;
@@ -89,7 +89,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         partyCode = partyCode.isEmpty() ? null : partyCode;
 
         final Page<TRfInquiry> tRfInquiryPage = inquiryRepository
-                .getActiveInquiries(customerName, customerContactNo, partyCode, captureBranchIds(),
+                .getActiveInquiries(customerName, customerContactNo, partyCode, status, captureBranchIds(),
                         PageRequest.of(page - 1, size));
 
         if (tRfInquiryPage.getSize() == 0)

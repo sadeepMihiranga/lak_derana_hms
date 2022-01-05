@@ -18,7 +18,7 @@ public interface PaymentMapper {
             @Mapping(source = "reservation.resvId", target = "reservationId"),
             @Mapping(source = "pyatInvoiceId", target = "invoiceId"),
             @Mapping(source = "paytDescription", target = "description"),
-            @Mapping(source = "paytType", target = "paymentType"),
+            @Mapping(source = "paytType", target = "paymentMethod"),
             @Mapping(source = "paytAmount", target = "amount"),
             @Mapping(source = "paytStatus", target = "status"),
             @Mapping(source = "branch.brnhId", target = "branchId"),

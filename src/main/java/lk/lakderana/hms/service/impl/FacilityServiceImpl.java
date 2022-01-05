@@ -60,7 +60,7 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
     }
 
     @Override
-    public PaginatedEntity facilityPaginatedSearch(String facilityName, String facilityType, Integer page, Integer size) {
+    public PaginatedEntity facilityPaginatedSearch(String facilityName, String facilityType, Short status, Integer page, Integer size) {
 
         PaginatedEntity paginatedFacilityList = null;
         List<FacilityDTO> facilityList = null;
@@ -68,7 +68,7 @@ public class FacilityServiceImpl extends EntityValidator implements FacilityServ
         validatePaginateIndexes(page, size);
 
         Page<TMsFacility> tMsFacilityPage = facilityRepository
-                .searchFacility(facilityName, facilityType, captureBranchIds(), PageRequest.of(page - 1, size));
+                .searchFacility(facilityName, facilityType, status, captureBranchIds(), PageRequest.of(page - 1, size));
 
         if (tMsFacilityPage.getSize() == 0)
             return null;

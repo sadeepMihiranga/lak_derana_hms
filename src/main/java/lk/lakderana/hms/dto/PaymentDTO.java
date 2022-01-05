@@ -17,15 +17,16 @@ public class PaymentDTO implements Paginated {
     private Long invoiceId;
     private String invoiceNumber;
     private String description;
-    @NotBlank(message = "Payment Type is required")
-    private String paymentType;
+    @NotBlank(message = "Payment Method is required")
+    private String paymentMethod;
+    private String paymentMethodName;
     private BigDecimal amount;
     private Short status;
     private Long branchId;
     private String branchName;
 
     public PaymentDTO(String paymentType, BigDecimal amount) {
-        this.paymentType = paymentType;
+        this.paymentMethod = paymentType;
         this.amount = amount;
     }
 }
