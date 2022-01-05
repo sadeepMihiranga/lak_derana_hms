@@ -41,7 +41,7 @@ public class ReservationDTO implements Paginated {
     private BigDecimal advancePayment;
     private BigDecimal totalAmount;
     private BigDecimal dueAmount;
-    private BigDecimal payedAmount;
+    private BigDecimal paidAmount;
     private List<RoomReservationDTO> roomReservationList;
     private List<FacilityReservationDTO> facilityReservationList;
     private List<ItemReservationDTO> itemReservationList;

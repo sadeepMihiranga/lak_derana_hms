@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 
 import static lk.lakderana.hms.util.constant.CommonReferenceCodes.PARTY_CONTACT_MOBILE;
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
-import static lk.lakderana.hms.util.constant.status.InquiryStatus.CANCELED;
-import static lk.lakderana.hms.util.constant.status.InquiryStatus.TRANSFERRED_TO_ANOTHER;
+import static lk.lakderana.hms.util.constant.status.InquiryStatus.*;
 
 @Slf4j
 @Service
@@ -153,6 +152,18 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
         final TRfInquiry tRfInquiry = validateInquiryById(inquiryId, captureBranchIds());
 
         tRfInquiry.setInqrStatus(CANCELED.getShortValue());
+
+        persistEntity(tRfInquiry);
+
+        return true;
+    }
+
+    @Override
+    public Boolean reserveInquiryById(Long inquiryId) {
+
+        final TRfInquiry tRfInquiry = validateInquiryById(inquiryId, captureBranchIds());
+
+        tRfInquiry.setInqrStatus(RESERVED.getShortValue());
 
         persistEntity(tRfInquiry);
 

@@ -126,6 +126,9 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         }
         tMsReservation.setResvStatus(CONFIRMED.getShortValue());
 
+        /** update inquiry to reserved */
+        inquiryService.reserveInquiryById(reservationDTO.getInquiryId());
+
         final ReservationDTO createdReservation = ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
 
         reserveRelatedReservationData(reservationDTO, createdReservation.getReservationId());
@@ -232,7 +235,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
     private void collectPaymentDetails(ReservationDTO reservationDTO) {
         reservationDTO.setTotalAmount(calculateTotalReservationAmount(reservationDTO.getReservationId()));
-        reservationDTO.setPayedAmount(paymentService.calculatePayedAmountForAReservation(reservationDTO.getReservationId(), true));
+        reservationDTO.setPaidAmount(paymentService.calculatePayedAmountForAReservation(reservationDTO.getReservationId(), true));
         reservationDTO.setDueAmount(paymentService.calculateDueAmountForAReservation(reservationDTO.getReservationId(), true));
     }
 

@@ -20,5 +20,7 @@ public interface InquiryService {
 
     Boolean cancelInquiryById(Long inquiryId);
 
+    Boolean reserveInquiryById(Long inquiryId);
+
     InquiryDTO updateInquiry(Long inquiryId, InquiryDTO inquiryDTO);
 }

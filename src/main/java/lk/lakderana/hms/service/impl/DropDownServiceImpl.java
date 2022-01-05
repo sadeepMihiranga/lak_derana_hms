@@ -32,6 +32,7 @@ public class DropDownServiceImpl implements DropDownService {
     private static final String MEASUREMENTS_UNITS = "UOFMS";
     private static final String ITEM_TYPES = "ITMTP";
     private static final String PAYMENT_TYPES = "PAYTP";
+    private static final String BED_TYPES = "RMBDT";
 
     private final BranchService branchService;
     private final DepartmentService departmentService;
@@ -76,6 +77,7 @@ public class DropDownServiceImpl implements DropDownService {
         dropDownCodes.put("MEASUREMENTS_UNITS", MEASUREMENTS_UNITS);
         dropDownCodes.put("ITEM_TYPES", ITEM_TYPES);
         dropDownCodes.put("PAYMENT_TYPES", PAYMENT_TYPES);
+        dropDownCodes.put("BED_TYPES", BED_TYPES);
 
         return dropDownCodes;
     }
@@ -178,6 +180,9 @@ public class DropDownServiceImpl implements DropDownService {
                 break;
             case PAYMENT_TYPES :
                 downDTOList = populateFromCommonReference(PAYMENT_TYPES);
+                break;
+            case BED_TYPES :
+                downDTOList = populateFromCommonReference(BED_TYPES);
                 break;
             default:
                 throw new InvalidDataException("Requested Dropdown Code is invalid");
