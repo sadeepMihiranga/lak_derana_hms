@@ -3,8 +3,10 @@ package lk.lakderana.hms.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.Range;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 import java.math.BigDecimal;
 
 @Data
@@ -26,5 +28,7 @@ public class FacilityDTO implements Paginated {
     private Long branchId;
     private String branchName;
     private BigDecimal quantity;
+    @NotNull(message = "Facility Max Capacity is required")
+    @Range(min = 1)
     private Integer maxCapacity;
 }

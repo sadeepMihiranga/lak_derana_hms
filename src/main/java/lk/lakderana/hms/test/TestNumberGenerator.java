@@ -19,7 +19,7 @@ public class TestNumberGenerator {
     @Ignore
     @Test
     public void numberGeneratorTest() {
-        final String generateNumber = numberGeneratorRepository.generateNumber("RM", "Y", "#", "#",
+        final String generateNumber = numberGeneratorRepository.generateNumber("IN", "Y", "#", "#",
                 "#", "#", "#", "#");
 
         System.out.println(generateNumber);

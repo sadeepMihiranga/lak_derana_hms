@@ -20,6 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -121,6 +122,21 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
         });
 
         return roomReservationDTOList;
+    }
+
+    @Override
+    public BigDecimal calculateRoomReservationAmount(Long reservationId) {
+
+        BigDecimal totalRoomReservationAmount = BigDecimal.ZERO;
+
+        final List<TTrRoomReservation> tTrRoomReservationList = roomReservationRepository
+                .findAllByReservation_ResvIdAndRoreStatusAndBranch_BrnhIdIn(reservationId, STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        totalRoomReservationAmount = tTrRoomReservationList.stream().map(TTrRoomReservation::getRoom)
+                .map(TMsRoom::getRoomPrice)
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return totalRoomReservationAmount;
     }
 
     private TTrRoomReservation persistEntity(TTrRoomReservation tTrRoomReservation) {

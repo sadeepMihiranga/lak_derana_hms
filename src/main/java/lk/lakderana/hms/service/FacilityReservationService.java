@@ -3,6 +3,7 @@ package lk.lakderana.hms.service;
 import lk.lakderana.hms.dto.FacilityDTO;
 import lk.lakderana.hms.dto.FacilityReservationDTO;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface FacilityReservationService {
@@ -12,4 +13,6 @@ public interface FacilityReservationService {
     Boolean cancelFacilityReservationByReservation(Long reservationId);
 
     List<FacilityReservationDTO> getFacilityReservationsByReservation(Long reservationId);
+
+    BigDecimal calculateFacilityReservationAmount(Long reservationId);
 }

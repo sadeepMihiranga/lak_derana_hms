@@ -1,5 +1,6 @@
 package lk.lakderana.hms.test;
 
+import java.math.BigDecimal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,6 +20,21 @@ public class Test {
         boolean validPassword1 = isValidPassword(password2,regex1);
         // No upper case
         System.out.println("helloword#123 is valid password:" +validPassword1);*/
+
+        /*BigDecimal totalReservationAmount = BigDecimal.valueOf(20000);
+        BigDecimal dueAmountForAReservation = BigDecimal.valueOf(5000);
+
+        if(dueAmountForAReservation.compareTo(BigDecimal.ZERO) != 0)
+            System.out.println("has pay");
+        else
+            System.out.println("Not has pay");*/
+
+        BigDecimal test = new BigDecimal(0);
+        System.out.println(test);
+        test = test.add(new BigDecimal(30));
+        System.out.println(test);
+        test = test.add(new BigDecimal(45));
+        System.out.println(test);
     }
 
     public static boolean isValidPassword(String password,String regex)

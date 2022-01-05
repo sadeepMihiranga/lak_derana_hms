@@ -3,6 +3,8 @@ package lk.lakderana.hms.service;
 import lk.lakderana.hms.dto.PaginatedEntity;
 import lk.lakderana.hms.dto.ReservationDTO;
 
+import java.math.BigDecimal;
+
 public interface ReservationService {
 
     PaginatedEntity reservationPaginatedSearch(Short status, Integer noOfPersons, Integer page, Integer size);
@@ -14,4 +16,8 @@ public interface ReservationService {
     ReservationDTO updateReservation(Long reservationId, ReservationDTO reservationDTO);
 
     ReservationDTO getReservationById(Long reservationId);
+
+    BigDecimal calculateTotalReservationAmount(Long reservationId);
+
+    Boolean releaseReservation(Long reservationId);
 }

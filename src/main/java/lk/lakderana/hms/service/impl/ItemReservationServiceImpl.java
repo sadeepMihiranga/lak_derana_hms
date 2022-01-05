@@ -3,7 +3,9 @@ package lk.lakderana.hms.service.impl;
 import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.ItemDTO;
 import lk.lakderana.hms.dto.ItemReservationDTO;
+import lk.lakderana.hms.entity.TMsFacility;
 import lk.lakderana.hms.entity.TMsItem;
+import lk.lakderana.hms.entity.TTrFacilityReservation;
 import lk.lakderana.hms.entity.TTrItemReservation;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
@@ -120,6 +122,21 @@ public class ItemReservationServiceImpl extends EntityValidator implements ItemR
         });
 
         return true;
+    }
+
+    @Override
+    public BigDecimal calculateItemReservationAmount(Long reservationId) {
+
+        BigDecimal totalItemReservationAmount = BigDecimal.ZERO;
+
+        final List<TTrItemReservation> tTrItemReservationList = itemReservationRepository
+                .findAllByReservation_ResvIdAndItrsStatusAndBranch_BrnhIdIn(reservationId, STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        totalItemReservationAmount = tTrItemReservationList.stream()
+                .map(tTrItemReservation -> tTrItemReservation.getItem().getItemPrice().multiply(BigDecimal.valueOf(tTrItemReservation.getItrsQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return totalItemReservationAmount;
     }
 
     private TMsItem validateItemById(Long itemId) {

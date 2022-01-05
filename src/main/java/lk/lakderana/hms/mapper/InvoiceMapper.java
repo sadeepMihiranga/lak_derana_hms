@@ -21,7 +21,7 @@ public interface InvoiceMapper {
             @Mapping(source = "invcNetAmount", target = "netAmount"),
             @Mapping(source = "invcDiscountAmount", target = "discountAmount"),
             @Mapping(source = "invcTaxAmount", target = "taxAmount"),
-            @Mapping(source = "paytStatus", target = "status"),
+            @Mapping(source = "invcStatus", target = "status"),
             @Mapping(source = "branch.brnhId", target = "branchId"),
             @Mapping(source = "branch.brnhName", target = "branchName")
     })

@@ -8,7 +8,11 @@ public enum CommonReferenceCodes {
 
     /** party contact types */
     PARTY_CONTACT_MOBILE("CNMBL"),
-    PARTY_CONTACT_EMAIL("CNEML");
+    PARTY_CONTACT_EMAIL("CNEML"),
+
+    PAYMENT_CASH("PTCASH"),
+    PAYMENT_BANK_DEPOSIT("PTBDEP"),
+    PAYMENT_ONLINE_TRANSFER("PTONLN");
 
     private String value;
     private short shortValue;

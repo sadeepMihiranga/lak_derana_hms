@@ -4,7 +4,7 @@ public enum ReservationStatus {
 
     CANCELLED((short) 0),
     CONFIRMED((short) 1),
-    RELEASE((short) 2);
+    RELEASED((short) 2);
 
     private short shortValue;
 

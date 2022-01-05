@@ -4,7 +4,9 @@ import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.FacilityDTO;
 import lk.lakderana.hms.dto.FacilityReservationDTO;
 import lk.lakderana.hms.entity.TMsFacility;
+import lk.lakderana.hms.entity.TMsRoom;
 import lk.lakderana.hms.entity.TTrFacilityReservation;
+import lk.lakderana.hms.entity.TTrRoomReservation;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
@@ -121,6 +123,22 @@ public class FacilityReservationServiceImpl extends EntityValidator implements F
         });
 
         return facilityReservationDTOList;
+    }
+
+    @Override
+    public BigDecimal calculateFacilityReservationAmount(Long reservationId) {
+
+        BigDecimal totalFacilityReservationAmount = BigDecimal.ZERO;
+
+        final List<TTrFacilityReservation> tTrFacilityReservationList = facilityReservationRepository
+                .findAllByReservation_ResvIdAndFareStatusAndBranch_BrnhIdIn(reservationId, STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        totalFacilityReservationAmount = tTrFacilityReservationList.stream()
+                .map(tTrFacilityReservation -> tTrFacilityReservation.getFacility().getFcltPrice()
+                        .multiply(BigDecimal.valueOf(tTrFacilityReservation.getFareQuantity())))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        return totalFacilityReservationAmount;
     }
 
     private TTrFacilityReservation persistEntity(TTrFacilityReservation tTrFacilityReservation) {
