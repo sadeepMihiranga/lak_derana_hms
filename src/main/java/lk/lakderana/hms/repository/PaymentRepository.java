@@ -25,4 +25,6 @@ public interface PaymentRepository extends JpaRepository<TTrPayment, Long> {
                                     @Param("branchIdList") List<Long> branchIdList,
                                     @Param("status") Short status,
                                     Pageable pageable);
+
+    TTrPayment findByPaytIdAndPaytStatusAndBranch_BrnhIdIn(Long paytId, Short paytStatus, List<Long> brnhIdList);
 }

@@ -34,6 +34,9 @@ public class TTrPayment extends AuditModel {
     @Column(name = "PAYT_DESCRIPTION")
     private String paytDescription;
 
+    @Column(name = "PAYT_CANCEL_REASON")
+    private String paytCancelReason;
+
     @Column(name = "PAYT_TYPE")
     private String paytType;
 

@@ -17,6 +17,7 @@ public class PaymentDTO implements Paginated {
     private Long invoiceId;
     private String invoiceNumber;
     private String description;
+    private String cancelReason;
     @NotBlank(message = "Payment Method is required")
     private String paymentMethod;
     private String paymentMethodName;

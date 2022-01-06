@@ -14,4 +14,6 @@ public interface PaymentService {
     BigDecimal calculateDueAmountForAReservation(Long reservationId, Boolean isReservationValidated);
 
     BigDecimal calculatePayedAmountForAReservation(Long reservationId, Boolean isReservationValidated);
+
+    Boolean cancelPayment(Long paymentId, PaymentDTO paymentDTO);
 }

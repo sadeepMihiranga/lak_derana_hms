@@ -30,6 +30,7 @@ import java.util.List;
 
 import static lk.lakderana.hms.util.constant.CommonReferenceTypeCodes.PAYMENT_TYPES;
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
+import static lk.lakderana.hms.util.constant.Constants.STATUS_INACTIVE;
 
 @Slf4j
 @Service
@@ -95,6 +96,11 @@ public class PaymentServiceImpl extends EntityValidator implements PaymentServic
         if(paymentDTO.getAmount().compareTo(BigDecimal.ZERO) == 0)
             throw new OperationException("Payment Amount is not valid");
 
+        final BigDecimal dueAmount = calculateDueAmountForAReservation(reservationId, true);
+
+        if(paymentDTO.getAmount().compareTo(dueAmount) > 0)
+            throw new OperationException("Paying more than need. Excess amount : " + paymentDTO.getAmount().subtract(dueAmount));
+
         paymentDTO.setReservationId(reservationId);
         paymentDTO.setBranchId(captureBranchIds().get(0));
         paymentDTO.setStatus(STATUS_ACTIVE.getShortValue());
@@ -136,6 +142,36 @@ public class PaymentServiceImpl extends EntityValidator implements PaymentServic
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
 
         return totalPayedAmount;
+    }
+
+    @Override
+    public Boolean cancelPayment(Long paymentId, PaymentDTO paymentDTO) {
+
+        if(Strings.isNullOrEmpty(paymentDTO.getCancelReason()))
+            throw new NoRequiredInfoException("Payment Cancel Reason is required");
+
+        final TTrPayment tTrPayment = validatePaymentById(paymentId);
+
+        tTrPayment.setPaytStatus(STATUS_INACTIVE.getShortValue());
+        tTrPayment.setPaytCancelReason(paymentDTO.getCancelReason());
+
+        persistEntity(tTrPayment);
+
+        return true;
+    }
+
+    private TTrPayment validatePaymentById(Long paymentId) {
+
+        if(paymentId == null)
+            throw new NoRequiredInfoException("Payment Id is required " + paymentId);
+
+        final TTrPayment tTrPayment = paymentRepository
+                .findByPaytIdAndPaytStatusAndBranch_BrnhIdIn(paymentId, STATUS_ACTIVE.getShortValue(), captureBranchIds());
+
+        if(tTrPayment == null)
+            throw new DataNotFoundException("Payment not found for the Id " + paymentId);
+
+        return tTrPayment;
     }
 
     private void setReferenceData(PaymentDTO paymentDTO) {
