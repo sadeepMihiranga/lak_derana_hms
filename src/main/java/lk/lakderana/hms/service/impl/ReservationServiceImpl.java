@@ -1,10 +1,7 @@
 package lk.lakderana.hms.service.impl;
 
 import lk.lakderana.hms.config.EntityValidator;
-import lk.lakderana.hms.dto.InquiryDTO;
-import lk.lakderana.hms.dto.PaginatedEntity;
-import lk.lakderana.hms.dto.PaymentDTO;
-import lk.lakderana.hms.dto.ReservationDTO;
+import lk.lakderana.hms.dto.*;
 import lk.lakderana.hms.entity.TMsReservation;
 import lk.lakderana.hms.entity.TRfInquiry;
 import lk.lakderana.hms.exception.DataNotFoundException;
@@ -14,7 +11,10 @@ import lk.lakderana.hms.exception.TransactionConflictException;
 import lk.lakderana.hms.mapper.ReservationMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.service.*;
+import lk.lakderana.hms.util.constant.CommonReferenceCodes;
+import lk.lakderana.hms.util.constant.Constants;
 import lombok.extern.slf4j.Slf4j;
+import org.assertj.core.util.Strings;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -25,7 +25,9 @@ import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
+import static lk.lakderana.hms.util.constant.CommonReferenceCodes.*;
 import static lk.lakderana.hms.util.constant.status.ReservationStatus.*;
 
 @Slf4j
@@ -38,6 +40,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
     private final ItemReservationService itemReservationService;
     private final PaymentService paymentService;
     private final InvoiceService invoiceService;
+    private final PartyService partyService;
 
     private final ReservationRepository reservationRepository;
     private final InquiryRepository inquiryRepository;
@@ -48,7 +51,8 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
                                   FacilityReservationService facilityReservationService,
                                   ItemReservationService itemReservationService,
                                   @Lazy PaymentService paymentService,
-                                  InvoiceService invoiceService,
+                                  @Lazy InvoiceService invoiceService,
+                                  PartyService partyService, 
                                   InquiryRepository inquiryRepository) {
         this.reservationRepository = reservationRepository;
         this.inquiryService = inquiryService;
@@ -57,6 +61,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         this.itemReservationService = itemReservationService;
         this.paymentService = paymentService;
         this.invoiceService = invoiceService;
+        this.partyService = partyService;
         this.inquiryRepository = inquiryRepository;
     }
 
@@ -85,6 +90,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
             reservationList.add(reservationDTO);
 
+            collectCustomerInfo(tMsReservation, reservationDTO);
             collectReservationReferenceData(reservationDTO);
             collectPaymentDetails(reservationDTO);
         }
@@ -152,14 +158,15 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         removeRelatedReservationData(reservationId);
 
-        final BigDecimal dueAmountForAReservation = paymentService.calculateDueAmountForAReservation(reservationId, true);
+        final BigDecimal dueAmount = paymentService.calculateDueAmountForAReservation(reservationId, true);
 
-        if(dueAmountForAReservation.compareTo(BigDecimal.ZERO) == 0)
-            throw new OperationException("Settle Dues before canceling the Reservation. Due Amount : " + dueAmountForAReservation);
+        if(dueAmount.compareTo(BigDecimal.ZERO) == 0)
+            throw new OperationException("Settle Dues before canceling the Reservation. Due Amount : " + dueAmount);
 
         return persistEntity(tMsReservation).getResvId();
     }
 
+    @Transactional
     @Override
     public ReservationDTO updateReservation(Long reservationId, ReservationDTO reservationDTO) {
 
@@ -173,9 +180,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         final ReservationDTO updatedReservation = ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));
 
         removeRelatedReservationData(reservationId);
-
         reserveRelatedReservationData(reservationDTO, reservationId);
-
         collectReservationReferenceData(updatedReservation);
 
         return updatedReservation;
@@ -185,10 +190,11 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
     public ReservationDTO getReservationById(Long reservationId) {
 
         final TMsReservation tMsReservation = validateReservationById(reservationId);
+        
+        ReservationDTO reservationDTO = ReservationMapper.INSTANCE.entityToDTO(tMsReservation);
 
-        final ReservationDTO reservationDTO = ReservationMapper.INSTANCE.entityToDTO(tMsReservation);
+        collectCustomerInfo(tMsReservation, reservationDTO);
         collectReservationReferenceData(reservationDTO);
-
         collectPaymentDetails(reservationDTO);
 
         return reservationDTO;
@@ -226,6 +232,24 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         persistEntity(tMsReservation);
         return true;
+    }
+
+    private void collectCustomerInfo(TMsReservation tMsReservation, ReservationDTO reservationDTO) {
+        if(!Strings.isNullOrEmpty(tMsReservation.getInquiry().getInqrCustomerCode())) {
+            final PartyDTO partyDTO = partyService.getPartyByPartyCode(tMsReservation.getInquiry().getInqrCustomerCode());
+            reservationDTO.setCustomerName(partyDTO.getName());
+
+            List<String> contacts = partyDTO.getContactList().stream()
+                    .filter(partyContactDTO -> partyContactDTO.getContactType().equals(PARTY_CONTACT_MOBILE.getValue()))
+                    .map(PartyContactDTO::getContactNumber)
+                    .collect(Collectors.toList());
+
+            if(!contacts.isEmpty())
+                reservationDTO.setCustomerContactNo(contacts.get(0));
+        } else {
+            reservationDTO.setCustomerName(tMsReservation.getInquiry().getInqrCustomerName());
+            reservationDTO.setCustomerContactNo(tMsReservation.getInquiry().getInqrCustomerContactNo());
+        }
     }
 
     private void handlePayment(ReservationDTO reservationDTO) {
