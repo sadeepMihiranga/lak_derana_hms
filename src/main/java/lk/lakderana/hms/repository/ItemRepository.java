@@ -16,7 +16,7 @@ public interface ItemRepository extends JpaRepository<TMsItem, Long> {
             "AND UPPER(t.itemTypeCode) LIKE CONCAT('%', UPPER(:itemTypeCode), '%') " +
             "AND (:status IS NULL OR (:status IS NOT NULL AND t.itemStatus = :status)) " +
             "AND t.branch.brnhId IN :branchIdList " +
-            "ORDER BY t.lastModUserCode")
+            "ORDER BY t.lastModDate DESC")
     Page<TMsItem> searchItems(@Param("itemName") String itemName,
                               @Param("itemTypeCode") String itemTypeCode,
                               @Param("branchIdList") List<Long> branchIdList,

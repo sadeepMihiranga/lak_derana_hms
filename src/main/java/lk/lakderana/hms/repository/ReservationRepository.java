@@ -15,7 +15,7 @@ public interface ReservationRepository extends JpaRepository<TMsReservation, Lon
             "WHERE (:noOfPersons IS NULL OR (:noOfPersons IS NOT NULL AND t.resvNoOfPersons = :noOfPersons)) " +
             "AND (:status IS NULL OR (:status IS NOT NULL AND t.resvStatus = :status)) " +
             "AND t.branch.brnhId IN :branchIdList " +
-            "ORDER BY t.lastModUserCode")
+            "ORDER BY t.lastModDate DESC")
     Page<TMsReservation> searchReservations(@Param("noOfPersons") Integer noOfPersons,
                                             @Param("status") Short status,
                                             @Param("branchIdList") List<Long> branchIdList,

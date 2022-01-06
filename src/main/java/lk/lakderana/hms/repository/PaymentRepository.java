@@ -19,7 +19,7 @@ public interface PaymentRepository extends JpaRepository<TTrPayment, Long> {
             "AND (:reservationId IS NULL OR (:reservationId IS NOT NULL AND t.reservation.resvId = :reservationId)) " +
             "AND (:status IS NULL OR (:status IS NOT NULL AND t.paytStatus = :status)) " +
             "AND t.branch.brnhId IN :branchIdList " +
-            "ORDER BY t.lastModUserCode")
+            "ORDER BY t.lastModDate DESC")
     Page<TTrPayment> searchPayments(@Param("paymentMethod") String paymentMethod,
                                     @Param("reservationId") Long reservationId,
                                     @Param("branchIdList") List<Long> branchIdList,

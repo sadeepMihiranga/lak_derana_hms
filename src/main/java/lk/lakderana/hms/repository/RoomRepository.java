@@ -17,7 +17,7 @@ public interface RoomRepository extends JpaRepository<TMsRoom, Long> {
             "AND (:status IS NULL OR (:status IS NOT NULL AND t.roomStatus = :status)) " +
             "AND t.branch.brnhId IN :branchIdList " +
             "AND t.roomStatus <> 5 " +
-            "ORDER BY t.lastModUserCode")
+            "ORDER BY t.lastModDate DESC")
     Page<TMsRoom> searchRooms(@Param("roomType") String roomType,
                               @Param("roomCategory") String roomCategory,
                               @Param("branchIdList") List<Long> branchIdList,
