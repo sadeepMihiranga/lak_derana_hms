@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static lk.lakderana.hms.util.constant.CommonReferenceTypeCodes.*;
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
 
 @Slf4j
@@ -97,7 +98,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         if(partyDTO.getContactList() != null) {
             partyDTO.getContactList().forEach(partyContactDTO -> {
                 commonReferenceService
-                        .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.PARTY_CONTACT_TYPES.getValue(), partyContactDTO.getContactType());
+                        .getByCmrfCodeAndCmrtCode(PARTY_CONTACT_TYPES.getValue(), partyContactDTO.getContactType());
 
                 partyContactDTO.setPartyCode(createdParty.getPrtyCode());
 
@@ -146,6 +147,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         tMsParty.setPrtyNic(partyDTO.getNic());
         tMsParty.setPrtyPassport(partyDTO.getPassport());
         tMsParty.setPrtyManagedBy(partyDTO.getManagedBy());
+        tMsParty.setPrtyGender(partyDTO.getGender());
 
         tMsParty.setPrtyStatus(STATUS_ACTIVE.getShortValue());
 
@@ -164,7 +166,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
     private void populateAndValidatePartyReferenceDetailsOnPersist(TMsParty tMsParty, PartyDTO partyDTO) {
 
         commonReferenceService
-                .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.PARTY_TYPES.getValue(), partyDTO.getType());
+                .getByCmrfCodeAndCmrtCode(PARTY_TYPES.getValue(), partyDTO.getType());
 
         tMsParty.setDepartment(null);
         if(!Strings.isNullOrEmpty(partyDTO.getDepartmentCode())) {
@@ -181,6 +183,9 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
             tMsParty.setBranch(tRfBranch);
         }
+
+        commonReferenceService
+                .getByCmrfCodeAndCmrtCode(GENDER_TYPES.getValue(), partyDTO.getGender());
     }
 
     @Transactional
@@ -265,7 +270,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
 
         if(!Strings.isNullOrEmpty(partyDTO.getGender())) {
             final CommonReferenceDTO commonReferenceDTO = commonReferenceService
-                    .getByCmrfCodeAndCmrtCode(CommonReferenceTypeCodes.GENDER_TYPES.getValue(), partyDTO.getGender());
+                    .getByCmrfCodeAndCmrtCode(GENDER_TYPES.getValue(), partyDTO.getGender());
 
             partyDTO.setGenderName(commonReferenceDTO.getDescription());
         }
