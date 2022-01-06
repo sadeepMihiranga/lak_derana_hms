@@ -115,6 +115,9 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
             if(tRfInquiry == null)
                 throw new DataNotFoundException("An Inquiry not found for the id " + reservationDTO.getInquiryId());
 
+            if(Strings.isNullOrEmpty(tRfInquiry.getInqrCustomerCode()))
+                throw new OperationException("Please register the customer "+tRfInquiry.getInqrCustomerName()+" first");
+
             reservationDTO.setBranchId(captureBranchIds().get(0));
 
             tMsReservation = ReservationMapper.INSTANCE.dtoToEntity(reservationDTO);
@@ -211,7 +214,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         final BigDecimal facilityReservationAmount = facilityReservationService.calculateFacilityReservationAmount(reservationId);
         final BigDecimal itemReservationAmount = itemReservationService.calculateItemReservationAmount(reservationId);
 
-        totalReservationAmount = roomReservationAmount
+        totalReservationAmount = totalReservationAmount
                 .add(roomReservationAmount)
                 .add(facilityReservationAmount)
                 .add(itemReservationAmount);

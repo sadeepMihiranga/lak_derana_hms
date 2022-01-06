@@ -26,7 +26,6 @@ public class DropDownServiceImpl implements DropDownService {
     private static final String CUSTOMERS = "CUSTM";
     private static final String EMPLOYEES = "EMPLY";
     private static final String ROOM_TYPES = "ROMTP";
-    private static final String ROOM_CATEGORIES = "RMCAT";
     private static final String FACILITY_TYPES = "FCLTP";
     private static final String FACILITIES = "FCLTY";
     private static final String MEASUREMENTS_UNITS = "UOFMS";
@@ -71,7 +70,6 @@ public class DropDownServiceImpl implements DropDownService {
         dropDownCodes.put("CUSTOMERS", CUSTOMERS);
         dropDownCodes.put("EMPLOYEES", EMPLOYEES);
         dropDownCodes.put("ROOM_TYPES", ROOM_TYPES);
-        dropDownCodes.put("ROOM_CATEGORIES", ROOM_CATEGORIES);
         dropDownCodes.put("FACILITIES", FACILITIES);
         dropDownCodes.put("FACILITY_TYPES", FACILITY_TYPES);
         dropDownCodes.put("MEASUREMENTS_UNITS", MEASUREMENTS_UNITS);
@@ -165,9 +163,6 @@ public class DropDownServiceImpl implements DropDownService {
                 break;
             case ROOM_TYPES :
                 downDTOList = populateFromCommonReference(ROOM_TYPES);
-                break;
-            case ROOM_CATEGORIES :
-                downDTOList = populateFromCommonReference(ROOM_CATEGORIES);
                 break;
             case FACILITY_TYPES :
                 downDTOList = populateFromCommonReference(FACILITY_TYPES);

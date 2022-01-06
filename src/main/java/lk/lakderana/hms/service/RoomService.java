@@ -5,8 +5,7 @@ import lk.lakderana.hms.dto.RoomDTO;
 
 public interface RoomService {
 
-    PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, String roomNo,
-                                        Short status, Integer page, Integer size);
+    PaginatedEntity roomPaginatedSearch(String roomType, String roomNo, Short status, Integer page, Integer size);
 
     RoomDTO createRoom(RoomDTO roomDTO);
 

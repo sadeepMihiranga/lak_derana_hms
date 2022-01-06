@@ -26,9 +26,6 @@ public class TMsRoom extends AuditModel {
     @Column(name = "ROOM_NO")
     private String roomNo;
 
-    @Column(name = "ROOM_CATEGORY")
-    private String roomCategory;
-
     @Column(name = "ROOM_DESCRIPTION")
     private String roomDescription;
 

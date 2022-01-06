@@ -160,6 +160,18 @@ public class PaymentServiceImpl extends EntityValidator implements PaymentServic
         return true;
     }
 
+    @Override
+    public PaymentDTO getPaymentById(Long paymentId) {
+
+        final TTrPayment tTrPayment = validatePaymentById(paymentId);
+
+        PaymentDTO paymentDTO = PaymentMapper.INSTANCE.entityToDTO(tTrPayment);
+
+        setReferenceData(paymentDTO);
+
+        return paymentDTO;
+    }
+
     private TTrPayment validatePaymentById(Long paymentId) {
 
         if(paymentId == null)

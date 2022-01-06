@@ -19,9 +19,6 @@ public class RoomDTO implements Paginated {
     private String roomNo;
     private String roomDescription;
     private String roomTypeName;
-    @NotBlank(message = "Room Category is required")
-    private String roomCategory;
-    private String roomCategoryName;
     private BigDecimal roomPrice;
     private String roomBedType;
     private String roomBedTypeName;

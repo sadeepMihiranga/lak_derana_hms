@@ -47,7 +47,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
     }
 
     @Override
-    public PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, String roomNo,
+    public PaginatedEntity roomPaginatedSearch(String roomType, String roomNo,
                                                Short status, Integer page, Integer size) {
 
         PaginatedEntity paginatedRoomList = null;
@@ -58,7 +58,7 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         roomNo = roomNo.isEmpty() ? null : roomNo;
 
         Page<TMsRoom> tMsRoomPage = roomRepository
-                .searchRooms(roomType, roomCategory, roomNo, captureBranchIds(), status, PageRequest.of(page - 1, size));
+                .searchRooms(roomType, roomNo, captureBranchIds(), status, PageRequest.of(page - 1, size));
 
         if (tMsRoomPage.getSize() == 0)
             return null;
@@ -106,7 +106,6 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
         roomDTO.setBranchId(captureBranchIds().get(0));
         TMsRoom tMsRoom = validateRoomId(roomId);
 
-        tMsRoom.setRoomCategory(roomDTO.getRoomCategory());
         tMsRoom.setRoomType(roomDTO.getRoomType());
         tMsRoom.setRoomPrice(roomDTO.getRoomPrice());
         tMsRoom.setRoomNo(roomDTO.getRoomNo());
@@ -178,9 +177,6 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
                 .getByCmrfCodeAndCmrtCode(ROOM_TYPES.getValue(), roomDTO.getRoomType());
 
         commonReferenceService
-                .getByCmrfCodeAndCmrtCode(ROOM_CATEGORY_TYPES.getValue(), roomDTO.getRoomCategory());
-
-        commonReferenceService
                 .getByCmrfCodeAndCmrtCode(ROOM_BED_TYPES.getValue(), roomDTO.getRoomBedType());
     }
 
@@ -194,13 +190,6 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
                     .getByCmrfCodeAndCmrtCode(ROOM_TYPES.getValue(), roomDTO.getRoomType());
 
             roomDTO.setRoomTypeName(commonReferenceDTO.getDescription());
-        }
-
-        if(!Strings.isNullOrEmpty(roomDTO.getRoomCategory())) {
-            final CommonReferenceDTO commonReferenceDTO = commonReferenceService
-                    .getByCmrfCodeAndCmrtCode(ROOM_CATEGORY_TYPES.getValue(), roomDTO.getRoomCategory());
-
-            roomDTO.setRoomCategoryName(commonReferenceDTO.getDescription());
         }
 
         if(!Strings.isNullOrEmpty(roomDTO.getRoomBedType())) {

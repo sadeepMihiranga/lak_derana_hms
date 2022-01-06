@@ -20,12 +20,11 @@ public class RoomController {
 
     @GetMapping("/search")
     public ResponseEntity<SuccessResponse> getPaginatedRooms(@RequestParam(name = "roomType", required = false) String roomType,
-                                                             @RequestParam(name = "roomCategory", required = false) String roomCategory,
                                                              @RequestParam(name = "status", required = false) Short status,
                                                              @RequestParam(name = "roomNo", required = false) String roomNo,
                                                              @RequestParam(name = "page", required = true) Integer page,
                                                              @RequestParam(name = "size", required = true) Integer size) {
-        return SuccessResponseHandler.generateResponse(roomService.roomPaginatedSearch(roomType, roomCategory, roomNo, status, page, size));
+        return SuccessResponseHandler.generateResponse(roomService.roomPaginatedSearch(roomType, roomNo, status, page, size));
     }
 
     @PostMapping
