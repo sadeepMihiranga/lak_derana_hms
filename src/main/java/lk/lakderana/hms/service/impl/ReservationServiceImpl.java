@@ -37,6 +37,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
     private final FacilityReservationService facilityReservationService;
     private final ItemReservationService itemReservationService;
     private final PaymentService paymentService;
+    private final InvoiceService invoiceService;
 
     private final ReservationRepository reservationRepository;
     private final InquiryRepository inquiryRepository;
@@ -47,6 +48,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
                                   FacilityReservationService facilityReservationService,
                                   ItemReservationService itemReservationService,
                                   @Lazy PaymentService paymentService,
+                                  InvoiceService invoiceService,
                                   InquiryRepository inquiryRepository) {
         this.reservationRepository = reservationRepository;
         this.inquiryService = inquiryService;
@@ -54,6 +56,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         this.facilityReservationService = facilityReservationService;
         this.itemReservationService = itemReservationService;
         this.paymentService = paymentService;
+        this.invoiceService = invoiceService;
         this.inquiryRepository = inquiryRepository;
     }
 
@@ -216,10 +219,10 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         TMsReservation tMsReservation = validateReservationById(reservationId);
         tMsReservation.setResvStatus(RELEASED.getShortValue());
 
-        final BigDecimal dueAmountForAReservation = paymentService.calculateDueAmountForAReservation(reservationId, true);
+        final BigDecimal dueAmount = paymentService.calculateDueAmountForAReservation(reservationId, true);
 
-        if(dueAmountForAReservation.compareTo(BigDecimal.ZERO) == 0)
-            throw new OperationException("Please Settle Dues before releasing the Reservation. Due Amount : " + dueAmountForAReservation);
+        if(dueAmount.compareTo(BigDecimal.ZERO) == 0)
+            throw new OperationException("Please Settle Dues before releasing the Reservation. Due Amount : " + dueAmount);
 
         persistEntity(tMsReservation);
         return true;
