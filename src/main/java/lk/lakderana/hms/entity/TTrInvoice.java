@@ -20,6 +20,10 @@ public class TTrInvoice extends AuditModel {
     @Column(name = "INVC_ID")
     private Long invcId;
 
+    @JoinColumn(name = "INVC_RESERVATION_ID")
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    private TMsReservation reservation;
+
     @Column(name = "INVC_NUMBER")
     private String invcNumber;
 

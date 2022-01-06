@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -19,7 +20,12 @@ public class InvoiceDetDTO {
     private Long itemReservationId;
     private Integer reservedQuantity;
     private BigDecimal unitPrice;
+    private BigDecimal amount;
     private Short status;
-    private String branchId;
+    private Long branchId;
     private String branchName;
+    private ReservationDTO reservationDTO;
+    private List<RoomReservationDTO> roomReservationDTOList;
+    private List<FacilityReservationDTO> facilityReservationDTOList;
+    private List<ItemReservationDTO> itemReservationDTOList;
 }

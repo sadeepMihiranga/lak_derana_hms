@@ -12,7 +12,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="T_TR_INVOICE_DET")
-public class TTrInvoiceDet {
+public class TTrInvoiceDet extends AuditModel {
 
     @javax.persistence.Id
     @GeneratedValue(generator = "InvoiceDetSequence")
@@ -45,6 +45,9 @@ public class TTrInvoiceDet {
 
     @Column(name = "INDT_UNIT_PRICE")
     private BigDecimal indtUnitPrice;
+
+    @Column(name = "INDT_AMOUNT")
+    private BigDecimal indtAmount;
 
     @Column(name = "INDT_STATUS")
     private Short indtStatus;

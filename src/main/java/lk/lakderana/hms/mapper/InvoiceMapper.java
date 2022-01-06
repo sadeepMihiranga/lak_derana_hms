@@ -16,6 +16,7 @@ public interface InvoiceMapper {
     @Mappings({
             @Mapping(source = "invcId", target = "invoiceId"),
             @Mapping(source = "invcNumber", target = "invoiceNumber"),
+            @Mapping(source = "reservation.resvId", target = "reservationId"),
             @Mapping(source = "invcDescription", target = "description"),
             @Mapping(source = "invcGrossAmount", target = "grossAmount"),
             @Mapping(source = "invcNetAmount", target = "netAmount"),

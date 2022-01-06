@@ -4,5 +4,7 @@ import lk.lakderana.hms.dto.InvoiceDTO;
 
 public interface InvoiceService {
 
-    InvoiceDTO createInvoice(InvoiceDTO invoiceDTO);
+    InvoiceDTO createInvoice(Long reservationId, InvoiceDTO invoiceDTO);
+
+    InvoiceDTO getInvoiceDataByReservation(Long reservationId);
 }

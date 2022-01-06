@@ -22,6 +22,7 @@ public interface InvoiceDetMapper {
             @Mapping(source = "itemReservation.itrsId", target = "itemReservationId"),
             @Mapping(source = "indtReservedQuantity", target = "reservedQuantity"),
             @Mapping(source = "indtUnitPrice", target = "unitPrice"),
+            @Mapping(source = "indtAmount", target = "amount"),
             @Mapping(source = "indtStatus", target = "status"),
             @Mapping(source = "branch.brnhId", target = "branchId"),
             @Mapping(source = "branch.brnhName", target = "branchName")

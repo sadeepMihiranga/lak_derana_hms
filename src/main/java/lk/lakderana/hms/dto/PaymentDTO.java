@@ -14,7 +14,6 @@ public class PaymentDTO implements Paginated {
 
     private Long paymentId;
     private Long reservationId;
-    private Long invoiceId;
     private String invoiceNumber;
     private String description;
     private String cancelReason;

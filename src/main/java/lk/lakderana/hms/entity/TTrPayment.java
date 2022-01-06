@@ -24,13 +24,6 @@ public class TTrPayment extends AuditModel {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     private TMsReservation reservation;
 
-    /*@JoinColumn(name = "PAYT_INVOICE_ID")
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    private TTrInvoice invoice;*/
-
-    @Column(name = "PAYT_INVOICE_ID")
-    private Long pyatInvoiceId;
-
     @Column(name = "PAYT_DESCRIPTION")
     private String paytDescription;
 
