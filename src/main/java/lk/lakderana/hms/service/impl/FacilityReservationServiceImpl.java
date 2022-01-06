@@ -4,9 +4,7 @@ import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.FacilityDTO;
 import lk.lakderana.hms.dto.FacilityReservationDTO;
 import lk.lakderana.hms.entity.TMsFacility;
-import lk.lakderana.hms.entity.TMsRoom;
 import lk.lakderana.hms.entity.TTrFacilityReservation;
-import lk.lakderana.hms.entity.TTrRoomReservation;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
@@ -17,13 +15,13 @@ import lk.lakderana.hms.repository.FacilityRepository;
 import lk.lakderana.hms.repository.FacilityReservationRepository;
 import lk.lakderana.hms.repository.ReservationRepository;
 import lk.lakderana.hms.service.FacilityReservationService;
+import lk.lakderana.hms.service.FacilityService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
@@ -38,14 +36,18 @@ public class FacilityReservationServiceImpl extends EntityValidator implements F
     private final ReservationRepository reservationRepository;
     private final BranchRepository branchRepository;
 
+    private final FacilityService facilityService;
+
     public FacilityReservationServiceImpl(FacilityReservationRepository facilityReservationRepository,
                                           FacilityRepository facilityRepository,
                                           ReservationRepository reservationRepository,
-                                          BranchRepository branchRepository) {
+                                          BranchRepository branchRepository,
+                                          FacilityService facilityService) {
         this.facilityReservationRepository = facilityReservationRepository;
         this.facilityRepository = facilityRepository;
         this.reservationRepository = reservationRepository;
         this.branchRepository = branchRepository;
+        this.facilityService = facilityService;
     }
 
     @Override
@@ -114,7 +116,7 @@ public class FacilityReservationServiceImpl extends EntityValidator implements F
 
             FacilityReservationDTO facilityReservationDTO = new FacilityReservationDTO();
 
-            facilityReservationDTO.setFacility(FacilityMapper.INSTANCE.entityToDTO(tTrFacilityReservation.getFacility()));
+            facilityReservationDTO.setFacility(facilityService.getFacilityById(tTrFacilityReservation.getFacility().getFcltId()));
             facilityReservationDTO.setFacilityReservationId(tTrFacilityReservation.getFareId());
             facilityReservationDTO.setStatus(tTrFacilityReservation.getFareStatus());
             facilityReservationDTO.setQuantity(BigDecimal.valueOf(tTrFacilityReservation.getFareQuantity()));

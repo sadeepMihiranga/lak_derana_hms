@@ -145,6 +145,7 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         tMsParty.setPrtyName(partyDTO.getName());
         tMsParty.setPrtyNic(partyDTO.getNic());
         tMsParty.setPrtyPassport(partyDTO.getPassport());
+        tMsParty.setPrtyManagedBy(partyDTO.getManagedBy());
 
         tMsParty.setPrtyStatus(STATUS_ACTIVE.getShortValue());
 
@@ -270,6 +271,10 @@ public class PartyServiceImpl extends EntityValidator implements PartyService {
         }
 
         partyDTO.setContactList(partyContactService.getContactsByPartyCode(partyDTO.getPartyCode(), true));
+
+        if(!Strings.isNullOrEmpty(tMsParty.getPrtyManagedBy()))
+            partyDTO.setManagedByName(partyRepository
+                    .findByPrtyCodeAndPrtyStatus(tMsParty.getPrtyManagedBy(), STATUS_ACTIVE.getShortValue()).getPrtyName());
     }
 
     TMsParty validateByPartyCode(String partyCode) {

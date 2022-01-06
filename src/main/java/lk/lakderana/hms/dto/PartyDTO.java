@@ -33,7 +33,8 @@ public class PartyDTO implements Paginated {
     private String departmentCode;
     private String departmentName;
     private Long branchId;
-    private Long managedBy;
+    private String managedBy;
+    private String managedByName;
     private Short status;
     private LocalDateTime createdDate;
     private String createdUserCode;

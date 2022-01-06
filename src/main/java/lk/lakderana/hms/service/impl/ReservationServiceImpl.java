@@ -160,7 +160,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         final BigDecimal dueAmount = paymentService.calculateDueAmountForAReservation(reservationId, true);
 
-        if(dueAmount.compareTo(BigDecimal.ZERO) == 0)
+        if(dueAmount.compareTo(BigDecimal.ZERO) != 0)
             throw new OperationException("Settle Dues before canceling the Reservation. Due Amount : " + dueAmount);
 
         return persistEntity(tMsReservation).getResvId();
@@ -227,7 +227,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         final BigDecimal dueAmount = paymentService.calculateDueAmountForAReservation(reservationId, true);
 
-        if(dueAmount.compareTo(BigDecimal.ZERO) == 0)
+        if(dueAmount.compareTo(BigDecimal.ZERO) != 0)
             throw new OperationException("Please Settle Dues before releasing the Reservation. Due Amount : " + dueAmount);
 
         persistEntity(tMsReservation);
@@ -285,7 +285,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         final Boolean isFacilityReservationCanceled = facilityReservationService.cancelFacilityReservationByReservation(reservationId);
         final Boolean isItemsReservationCanceled = itemReservationService.cancelItemReservationsByReservation(reservationId);
 
-        if(!isRoomReservationCanceled || !isFacilityReservationCanceled || isItemsReservationCanceled)
+        if(!isRoomReservationCanceled || !isFacilityReservationCanceled || !isItemsReservationCanceled)
             throw new OperationException("Error while canceling Room, Facility or Item Reservation");
     }
 

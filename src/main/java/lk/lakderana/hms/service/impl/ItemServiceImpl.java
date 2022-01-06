@@ -14,6 +14,7 @@ import lk.lakderana.hms.mapper.ItemMapper;
 import lk.lakderana.hms.repository.ItemRepository;
 import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.ItemService;
+import lk.lakderana.hms.util.constant.CommonReferenceTypeCodes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -72,7 +73,10 @@ public class ItemServiceImpl extends EntityValidator implements ItemService {
 
         TMsItem tMsItem = validateItemId(itemId);
 
-        return ItemMapper.INSTANCE.entityToDTO(tMsItem);
+        final ItemDTO itemDTO = ItemMapper.INSTANCE.entityToDTO(tMsItem);
+        setReferenceData(tMsItem, itemDTO);
+
+        return itemDTO;
     }
 
     @Override

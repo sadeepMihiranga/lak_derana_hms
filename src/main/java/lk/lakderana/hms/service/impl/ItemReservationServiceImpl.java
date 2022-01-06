@@ -3,9 +3,7 @@ package lk.lakderana.hms.service.impl;
 import lk.lakderana.hms.config.EntityValidator;
 import lk.lakderana.hms.dto.ItemDTO;
 import lk.lakderana.hms.dto.ItemReservationDTO;
-import lk.lakderana.hms.entity.TMsFacility;
 import lk.lakderana.hms.entity.TMsItem;
-import lk.lakderana.hms.entity.TTrFacilityReservation;
 import lk.lakderana.hms.entity.TTrItemReservation;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
@@ -17,6 +15,7 @@ import lk.lakderana.hms.repository.ItemRepository;
 import lk.lakderana.hms.repository.ItemReservationRepository;
 import lk.lakderana.hms.repository.ReservationRepository;
 import lk.lakderana.hms.service.ItemReservationService;
+import lk.lakderana.hms.service.ItemService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
@@ -37,14 +36,18 @@ public class ItemReservationServiceImpl extends EntityValidator implements ItemR
     private final ReservationRepository reservationRepository;
     private final BranchRepository branchRepository;
 
+    private final ItemService itemService;
+
     public ItemReservationServiceImpl(ItemRepository itemRepository,
                                       ItemReservationRepository itemReservationRepository,
                                       ReservationRepository reservationRepository,
-                                      BranchRepository branchRepository) {
+                                      BranchRepository branchRepository,
+                                      ItemService itemService) {
         this.itemRepository = itemRepository;
         this.itemReservationRepository = itemReservationRepository;
         this.reservationRepository = reservationRepository;
         this.branchRepository = branchRepository;
+        this.itemService = itemService;
     }
 
     @Override
@@ -98,7 +101,7 @@ public class ItemReservationServiceImpl extends EntityValidator implements ItemR
             ItemReservationDTO itemReservationDTO = new ItemReservationDTO();
 
             itemReservationDTO.setItemReservationId(tTrItemReservation.getItrsId());
-            itemReservationDTO.setItem(ItemMapper.INSTANCE.entityToDTO(tTrItemReservation.getItem()));
+            itemReservationDTO.setItem(itemService.getItemById(tTrItemReservation.getItem().getItemId()));
             itemReservationDTO.setQuantity(BigDecimal.valueOf(tTrItemReservation.getItrsQuantity()));
             itemReservationDTO.setStatus(tTrItemReservation.getItrsStatus());
 

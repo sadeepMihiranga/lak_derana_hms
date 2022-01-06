@@ -63,7 +63,7 @@ public class TMsParty extends AuditModel {
     private TRfBranch branch;
 
     @Column(name = "PRTY_MANAGED_BY")
-    private Long prtyManagedBy;
+    private String prtyManagedBy;
 
     @Column(name = "PRTY_STATUS")
     private Short prtyStatus;

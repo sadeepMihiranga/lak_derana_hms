@@ -14,7 +14,9 @@ import lk.lakderana.hms.repository.BranchRepository;
 import lk.lakderana.hms.repository.ReservationRepository;
 import lk.lakderana.hms.repository.RoomRepository;
 import lk.lakderana.hms.repository.RoomReservationRepository;
+import lk.lakderana.hms.service.CommonReferenceService;
 import lk.lakderana.hms.service.RoomReservationService;
+import lk.lakderana.hms.service.RoomService;
 import lk.lakderana.hms.util.constant.status.RoomStatus;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
@@ -22,7 +24,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
@@ -37,14 +38,21 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
     private final ReservationRepository reservationRepository;
     private final BranchRepository branchRepository;
 
+    private final CommonReferenceService commonReferenceService;
+    private final RoomService roomService;
+
     public RoomReservationServiceImpl(RoomRepository roomRepository,
                                       RoomReservationRepository roomReservationRepository,
                                       ReservationRepository reservationRepository,
-                                      BranchRepository branchRepository) {
+                                      BranchRepository branchRepository,
+                                      CommonReferenceService commonReferenceService,
+                                      RoomService roomService) {
         this.roomRepository = roomRepository;
         this.roomReservationRepository = roomReservationRepository;
         this.reservationRepository = reservationRepository;
         this.branchRepository = branchRepository;
+        this.commonReferenceService = commonReferenceService;
+        this.roomService = roomService;
     }
 
     @Override
@@ -116,7 +124,7 @@ public class RoomReservationServiceImpl extends EntityValidator implements RoomR
 
             roomReservationDTO.setRoomReservationId(tTrRoomReservation.getRoreId());
             roomReservationDTO.setStatus(tTrRoomReservation.getRoreStatus());
-            roomReservationDTO.setRoom(RoomMapper.INSTANCE.entityToDTO(tTrRoomReservation.getRoom()));
+            roomReservationDTO.setRoom(roomService.getRoomById(tTrRoomReservation.getRoom().getRoomId()));
 
             roomReservationDTOList.add(roomReservationDTO);
         });

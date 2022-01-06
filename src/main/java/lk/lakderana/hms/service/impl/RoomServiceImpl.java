@@ -47,15 +47,18 @@ public class RoomServiceImpl extends EntityValidator implements RoomService {
     }
 
     @Override
-    public PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, Short status, Integer page, Integer size) {
+    public PaginatedEntity roomPaginatedSearch(String roomType, String roomCategory, String roomNo,
+                                               Short status, Integer page, Integer size) {
 
         PaginatedEntity paginatedRoomList = null;
         List<RoomDTO> roomList = null;
 
         validatePaginateIndexes(page, size);
 
+        roomNo = roomNo.isEmpty() ? null : roomNo;
+
         Page<TMsRoom> tMsRoomPage = roomRepository
-                .searchRooms(roomType, roomCategory, captureBranchIds(), status, PageRequest.of(page - 1, size));
+                .searchRooms(roomType, roomCategory, roomNo, captureBranchIds(), status, PageRequest.of(page - 1, size));
 
         if (tMsRoomPage.getSize() == 0)
             return null;

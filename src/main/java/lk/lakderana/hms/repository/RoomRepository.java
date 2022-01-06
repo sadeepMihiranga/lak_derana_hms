@@ -15,11 +15,13 @@ public interface RoomRepository extends JpaRepository<TMsRoom, Long> {
             "WHERE UPPER(t.roomType) LIKE CONCAT('%', UPPER(:roomType), '%') " +
             "AND UPPER(t.roomCategory) LIKE CONCAT('%', UPPER(:roomCategory), '%') " +
             "AND (:status IS NULL OR (:status IS NOT NULL AND t.roomStatus = :status)) " +
+            "AND (:roomNumber IS NULL OR (:roomNumber IS NOT NULL AND t.roomNo = :roomNumber)) " +
             "AND t.branch.brnhId IN :branchIdList " +
             "AND t.roomStatus <> 5 " +
             "ORDER BY t.lastModDate DESC")
     Page<TMsRoom> searchRooms(@Param("roomType") String roomType,
                               @Param("roomCategory") String roomCategory,
+                              @Param("roomNumber") String roomNumber,
                               @Param("branchIdList") List<Long> branchIdList,
                               @Param("status") Short status,
                               Pageable pageable);
