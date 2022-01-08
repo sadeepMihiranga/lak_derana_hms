@@ -16,7 +16,7 @@ public interface PartyRepository extends JpaRepository<TMsParty, Long> {
             "AND (:prtyType IS NULL OR (:prtyType IS NOT NULL AND t.prtyType = :prtyType)) " +
             "AND UPPER(t.prtyName) LIKE CONCAT('%', UPPER(:prtyName), '%') " +
             "AND t.branch.brnhId IN :branchIdList " +
-            "ORDER BY t.prtyName")
+            "ORDER BY t.lastModDate")
     Page<TMsParty> getActiveParties(@Param("prtyName") String name,
                                     @Param("prtyStatus") Short status,
                                     @Param("prtyType") String partyType,
