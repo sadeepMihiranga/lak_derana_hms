@@ -1,34 +1,43 @@
 package lk.lakderana.hms.service.impl;
 
 import lk.lakderana.hms.config.EntityValidator;
-import lk.lakderana.hms.dto.InvoiceDTO;
-import lk.lakderana.hms.dto.InvoiceDetDTO;
-import lk.lakderana.hms.dto.ReservationDTO;
-import lk.lakderana.hms.entity.TMsReservation;
-import lk.lakderana.hms.entity.TRfBranch;
-import lk.lakderana.hms.entity.TTrInvoice;
-import lk.lakderana.hms.entity.TTrInvoiceDet;
+import lk.lakderana.hms.dto.*;
+import lk.lakderana.hms.entity.*;
 import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
-import lk.lakderana.hms.mapper.InvoiceDetMapper;
 import lk.lakderana.hms.mapper.InvoiceMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.service.InvoiceService;
+import lk.lakderana.hms.service.PartyService;
 import lk.lakderana.hms.service.PaymentService;
 import lk.lakderana.hms.service.ReservationService;
+import lk.lakderana.hms.util.DateConversion;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.data.JRBeanArrayDataSource;
+import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.assertj.core.util.Strings;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.net.URL;
+import java.text.DecimalFormat;
+import java.time.Duration;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static lk.lakderana.hms.util.constant.Constants.STATUS_ACTIVE;
 
@@ -47,6 +56,7 @@ public class InvoiceServiceImpl extends EntityValidator implements InvoiceServic
 
     private final PaymentService paymentService;
     private final ReservationService reservationService;
+    private final PartyService partyService;
 
     public InvoiceServiceImpl(InvoiceRepository invoiceRepository,
                               InvoiceDetRepository invoiceDetRepository,
@@ -57,7 +67,8 @@ public class InvoiceServiceImpl extends EntityValidator implements InvoiceServic
                               FacilityReservationRepository facilityReservationRepository,
                               ItemReservationRepository itemReservationRepository,
                               PaymentService paymentService,
-                              @Lazy ReservationService reservationService) {
+                              @Lazy ReservationService reservationService, 
+                              PartyService partyService) {
         this.invoiceRepository = invoiceRepository;
         this.invoiceDetRepository = invoiceDetRepository;
         this.reservationRepository = reservationRepository;
@@ -68,6 +79,7 @@ public class InvoiceServiceImpl extends EntityValidator implements InvoiceServic
         this.itemReservationRepository = itemReservationRepository;
         this.paymentService = paymentService;
         this.reservationService = reservationService;
+        this.partyService = partyService;
     }
 
     @Transactional
@@ -104,8 +116,160 @@ public class InvoiceServiceImpl extends EntityValidator implements InvoiceServic
     }
 
     @Override
-    public InvoiceDTO getInvoiceDataByReservation(Long reservationId) {
-        return null;
+    public InvoicePrintDTO getInvoiceDataByReservation(Long reservationId) {
+
+        InvoicePrintDTO invoicePrintDTO = new InvoicePrintDTO();
+
+        final TMsReservation tMsReservation = validateReservationById(reservationId);
+
+        final TTrInvoice tTrInvoice = invoiceRepository
+                .findByReservation_ResvIdAndAndBranch_BrnhIdInAndInvcStatus(reservationId, captureBranchIds(), STATUS_ACTIVE.getShortValue());
+
+        InvoiceDTO invoiceDTO = InvoiceMapper.INSTANCE.entityToDTO(tTrInvoice);
+
+        final URL logoImage = this.getClass().getClassLoader().getResource("reports/images/lakderana_logo.png");
+
+        invoicePrintDTO.setLogoImage(logoImage);
+
+        invoicePrintDTO.setInvoiceNumber(invoiceDTO.getInvoiceNumber());
+        invoicePrintDTO.setCreatedDate(DateConversion.convertLocalDateTimeToString(invoiceDTO.getCreatedDate()));
+        invoicePrintDTO.setBranchName(invoiceDTO.getBranchName());
+        invoicePrintDTO.setCheckInDateTime(DateConversion.convertLocalDateTimeToString(tMsReservation.getResvCheckInDateTime()));
+        invoicePrintDTO.setCheckOutDateTime(DateConversion.convertLocalDateTimeToString(tMsReservation.getResvCheckOutDateTime()));
+        invoicePrintDTO.setNoOfAdults(tMsReservation.getResvNoOfAdults() == null ? "0" : tMsReservation.getResvNoOfAdults().toString());
+        invoicePrintDTO.setNoOfChildren(tMsReservation.getResvNoOfChildren() == null ? "0" : tMsReservation.getResvNoOfChildren().toString());
+
+        final long daysBetween = Duration.between(tMsReservation.getResvCheckInDateTime(), tMsReservation.getResvCheckOutDateTime()).toDays();
+        invoicePrintDTO.setNoOfDays(String.valueOf(daysBetween));
+
+        PartyDTO partyDTO = null;
+        if(!Strings.isNullOrEmpty(tMsReservation.getInquiry().getInqrCustomerCode())) {
+            partyDTO = partyService.getPartyByPartyCode(tMsReservation.getInquiry().getInqrCustomerCode());
+            invoicePrintDTO.setCustomerName(partyDTO.getName());
+        }
+        else
+            invoicePrintDTO.setCustomerName(tMsReservation.getInquiry().getInqrCustomerName());
+
+        final List<String> cnmbl = partyDTO.getContactList()
+                .stream()
+                .filter(partyContactDTO -> partyContactDTO.getContactType().equals("CNMBL"))
+                .map(partyContactDTO -> partyContactDTO.getContactNumber())
+                .collect(Collectors.toList());
+        if(!cnmbl.isEmpty())
+            invoicePrintDTO.setCustomerContactNo(cnmbl.get(0));
+        else
+            invoicePrintDTO.setCustomerContactNo(tMsReservation.getInquiry().getInqrCustomerContactNo());
+
+        if(partyDTO != null) {
+            invoicePrintDTO.setCustomerAddress(partyDTO.getAddress1() + ", " + partyDTO.getAddress2() + ", " + partyDTO.getAddress3());
+            invoicePrintDTO.setCustomerCode(partyDTO.getPartyCode());
+        } else {
+            invoicePrintDTO.setCustomerAddress("-");
+            invoicePrintDTO.setCustomerCode("-");
+        }
+
+        DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
+
+        invoicePrintDTO.setGrossAmount(decimalFormat.format(invoiceDTO.getGrossAmount()));
+        invoicePrintDTO.setTaxAmount(decimalFormat.format(invoiceDTO.getTaxAmount()));
+        invoicePrintDTO.setDiscountAmount(decimalFormat.format(invoiceDTO.getDiscountAmount()));
+        invoicePrintDTO.setNetAmount(decimalFormat.format(invoiceDTO.getNetAmount()));
+
+        List<InvoicePrintReservationInfoDTO> printReservationInfoDTOList = new ArrayList<>();
+
+        final List<TTrInvoiceDet> tTrInvoiceDetList = invoiceDetRepository
+                .findAllByReservation_ResvIdAndAndBranch_BrnhIdIn(reservationId, captureBranchIds());
+
+        tTrInvoiceDetList.forEach(tTrInvoiceDet -> {
+
+            InvoicePrintReservationInfoDTO invoicePrintReservationInfoDTO = new InvoicePrintReservationInfoDTO();
+
+            final TTrFacilityReservation facilityReservation = tTrInvoiceDet.getFacilityReservation();
+
+            if(facilityReservation != null) {
+                invoicePrintReservationInfoDTO.setItem(facilityReservation.getFacility().getFcltName());
+                invoicePrintReservationInfoDTO.setQuantity(facilityReservation.getFareQuantity().toString());
+                invoicePrintReservationInfoDTO.setUnitPrice(decimalFormat.format(facilityReservation.getFacility().getFcltPrice()));
+                invoicePrintReservationInfoDTO.setAmount(decimalFormat.format(facilityReservation.getFacility().getFcltPrice()
+                        .multiply(BigDecimal.valueOf(facilityReservation.getFareQuantity()))));
+                invoicePrintReservationInfoDTO.setItemReservedDateTime(DateConversion.convertDateToStringWithTime(facilityReservation.getCreatedDate()));
+
+                printReservationInfoDTOList.add(invoicePrintReservationInfoDTO);
+            }
+
+            final TTrRoomReservation roomReservation = tTrInvoiceDet.getRoomReservation();
+
+            if(roomReservation != null) {
+                invoicePrintReservationInfoDTO.setItem(roomReservation.getRoom().getRoomNo());
+                invoicePrintReservationInfoDTO.setQuantity("1");
+                invoicePrintReservationInfoDTO.setUnitPrice(decimalFormat.format(roomReservation.getRoom().getRoomPrice()));
+                invoicePrintReservationInfoDTO.setAmount(decimalFormat.format(roomReservation.getRoom().getRoomPrice()
+                        .multiply(BigDecimal.valueOf(1))));
+                invoicePrintReservationInfoDTO.setItemReservedDateTime(DateConversion.convertDateToStringWithTime(roomReservation.getCreatedDate()));
+
+                printReservationInfoDTOList.add(invoicePrintReservationInfoDTO);
+            }
+
+            final TTrItemReservation itemReservation = tTrInvoiceDet.getItemReservation();
+
+            if(itemReservation != null) {
+                invoicePrintReservationInfoDTO.setItem(itemReservation.getItem().getItemName());
+                invoicePrintReservationInfoDTO.setQuantity(itemReservation.getItrsQuantity().toString());
+                invoicePrintReservationInfoDTO.setUnitPrice(decimalFormat.format(itemReservation.getItem().getItemPrice()));
+                invoicePrintReservationInfoDTO.setAmount(decimalFormat.format(itemReservation.getItem().getItemPrice()
+                        .multiply(BigDecimal.valueOf(itemReservation.getItrsQuantity()))));
+                invoicePrintReservationInfoDTO.setItemReservedDateTime(DateConversion.convertDateToStringWithTime(itemReservation.getCreatedDate()));
+
+                printReservationInfoDTOList.add(invoicePrintReservationInfoDTO);
+            }
+        });
+
+        invoicePrintDTO.setReservationDetailsDataSource(new JRBeanCollectionDataSource(printReservationInfoDTOList));
+
+        return invoicePrintDTO;
+    }
+
+    @Override
+    public JasperPrint generateInvoicePrint(Long reservationId) throws IOException {
+        InputStream input = null;
+        try {
+            input = Objects.requireNonNull(this.getClass().getClassLoader().getResource("reports/invoice/invoice.jrxml")).openStream();
+
+            InvoicePrintDTO invoicePrintDTO = getInvoiceDataByReservation(reservationId);
+
+            JasperDesign design = null;
+            try {
+                design = JRXmlLoader.load(input);
+            } catch (JRException e) {
+                throw new OperationException("Cannot Load the Jasper Template.");
+            }
+            JasperReport report = null;
+            try {
+                report = JasperCompileManager.compileReport(design);
+            } catch (JRException e) {
+                throw new OperationException("Cannot Compile the Jasper Template.");
+            }
+            JRBeanArrayDataSource beanColDataSource = new JRBeanArrayDataSource(new InvoicePrintDTO[]{invoicePrintDTO});
+            JasperPrint print = null;
+            try {
+                print = JasperFillManager.fillReport(report, new HashMap(), beanColDataSource);
+            } catch (JRException e) {
+                log.error("" + e);
+                throw new OperationException("Cannot Fill the Jasper Template.");
+            }
+            removeBlankPage(print.getPages());
+            return print;
+
+        } catch (IOException e) {
+            throw new OperationException("Cannot Find the Jasper Template.");
+        } finally {
+            if (input != null)
+                input.close();
+        }
+    }
+
+    private void removeBlankPage(List<JRPrintPage> pages) {
+        pages.removeIf(page -> page.getElements().isEmpty());
     }
 
     private void insertToInvoiceDet(Long reservationId, TTrInvoice createdInvoice) {

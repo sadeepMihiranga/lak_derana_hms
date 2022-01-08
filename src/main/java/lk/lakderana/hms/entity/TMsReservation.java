@@ -33,8 +33,11 @@ public class TMsReservation extends AuditModel {
     @Column(name = "RESV_REMARKS")
     private String resvRemarks;
 
-    @Column(name = "RESV_NO_OF_PERSONS")
-    private Integer resvNoOfPersons;
+    @Column(name = "RESV_NO_OF_ADULTS")
+    private Integer resvNoOfAdults;
+
+    @Column(name = "RESV_NO_OF_CHILDREN")
+    private Integer resvNoOfChildren;
 
     @Column(name = "RESV_STATUS")
     private Short resvStatus;

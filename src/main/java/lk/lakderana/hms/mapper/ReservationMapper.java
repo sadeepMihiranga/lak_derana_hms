@@ -21,7 +21,8 @@ public interface ReservationMapper {
             @Mapping(source = "resvRemarks", target = "remarks"),
             @Mapping(source = "branch.brnhId", target = "branchId"),
             @Mapping(source = "branch.brnhName", target = "branchName"),
-            @Mapping(source = "resvNoOfPersons", target = "noOfPersons"),
+            @Mapping(source = "resvNoOfAdults", target = "noOfAdults"),
+            @Mapping(source = "resvNoOfChildren", target = "noOfChildren"),
             @Mapping(source = "resvStatus", target = "status"),
             @Mapping(source = "lastModDate", target = "lastUpdatedDate"),
             @Mapping(source = "lastModUserCode", target = "lastUpdatedUserCode")

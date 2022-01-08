@@ -66,7 +66,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
     }
 
     @Override
-    public PaginatedEntity reservationPaginatedSearch(Short status, Integer noOfPersons, Integer page, Integer size) {
+    public PaginatedEntity reservationPaginatedSearch(Short status, Integer noOfAdults, Integer page, Integer size) {
 
         validatePaginateIndexes(page, size);
 
@@ -76,7 +76,7 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
         validatePaginateIndexes(page, size);
 
         Page<TMsReservation> tMsReservationPage = reservationRepository
-                .searchReservations(noOfPersons, status, captureBranchIds(), PageRequest.of(page - 1, size));
+                .searchReservations(noOfAdults, status, captureBranchIds(), PageRequest.of(page - 1, size));
 
         if (tMsReservationPage.getSize() == 0)
             return null;
@@ -177,7 +177,8 @@ public class ReservationServiceImpl extends EntityValidator implements Reservati
 
         tMsReservation.setResvCheckInDateTime(reservationDTO.getCheckInDateTime());
         tMsReservation.setResvCheckOutDateTime(reservationDTO.getCheckOutDateTime());
-        tMsReservation.setResvNoOfPersons(reservationDTO.getNoOfPersons());
+        tMsReservation.setResvNoOfAdults(reservationDTO.getNoOfAdults());
+        tMsReservation.setResvNoOfChildren(reservationDTO.getNoOfChildren());
         tMsReservation.setResvRemarks(reservationDTO.getRemarks());
 
         final ReservationDTO updatedReservation = ReservationMapper.INSTANCE.entityToDTO(persistEntity(tMsReservation));

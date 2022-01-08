@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.Max;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -28,5 +29,6 @@ public class InvoiceDTO {
     private Short status;
     private Long branchId;
     private String branchName;
+    private LocalDateTime createdDate;
     private List<InvoiceDetDTO> invoiceDetDTOList;
 }

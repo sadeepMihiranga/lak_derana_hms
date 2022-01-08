@@ -19,11 +19,11 @@ public class ReservationController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<SuccessResponse> getPaginatedUsers(@RequestParam(name = "noOfPersons", required = false) Integer noOfPersons,
+    public ResponseEntity<SuccessResponse> getPaginatedUsers(@RequestParam(name = "noOfAdults", required = false) Integer noOfAdults,
                                                              @RequestParam(name = "status", required = false) Short status,
                                                              @RequestParam(name = "page", required = true) Integer page,
                                                              @RequestParam(name = "size", required = true) Integer size) {
-        return SuccessResponseHandler.generateResponse(reservationService.reservationPaginatedSearch(status, noOfPersons, page, size));
+        return SuccessResponseHandler.generateResponse(reservationService.reservationPaginatedSearch(status, noOfAdults, page, size));
     }
 
     @PostMapping

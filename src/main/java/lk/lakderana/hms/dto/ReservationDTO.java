@@ -25,8 +25,9 @@ public class ReservationDTO implements Paginated {
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime checkOutDateTime;
     private String remarks;
-    @NotBlank(message = "No of Persons is required")
-    private Integer noOfPersons;
+    @NotBlank(message = "No of Adults is required")
+    private Integer noOfAdults;
+    private Integer noOfChildren;
     private Short status;
     private Long branchId;
     private String branchName;

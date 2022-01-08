@@ -57,7 +57,7 @@ public class EntityValidator {
 
         log.info("Request came from branch {} ", branchesArray[0]);
 
-        return  branches;
+        return branches;
     }
 
     protected final void validatePaginateIndexes(Integer page, Integer size) {

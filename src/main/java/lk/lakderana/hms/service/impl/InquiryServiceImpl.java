@@ -51,7 +51,7 @@ public class InquiryServiceImpl extends EntityValidator implements InquiryServic
 
         InquiryDTO createdInquiry = null;
 
-        inquiryDTO.setPartyCode(inquiryDTO.getPartyCode().isEmpty() ? null : inquiryDTO.getPartyCode());
+        inquiryDTO.setPartyCode(Strings.isNullOrEmpty(inquiryDTO.getPartyCode()) ? null : inquiryDTO.getPartyCode());
 
         inquiryDTO.setBranchId(captureBranchIds().get(0));
         validateEntity(inquiryDTO);

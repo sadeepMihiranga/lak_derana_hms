@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 
 public interface ReservationService {
 
-    PaginatedEntity reservationPaginatedSearch(Short status, Integer noOfPersons, Integer page, Integer size);
+    PaginatedEntity reservationPaginatedSearch(Short status, Integer noOfAdults, Integer page, Integer size);
 
     ReservationDTO createReservation(ReservationDTO reservationDTO);
 

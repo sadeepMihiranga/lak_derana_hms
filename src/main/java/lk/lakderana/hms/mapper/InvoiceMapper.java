@@ -24,7 +24,8 @@ public interface InvoiceMapper {
             @Mapping(source = "invcTaxAmount", target = "taxAmount"),
             @Mapping(source = "invcStatus", target = "status"),
             @Mapping(source = "branch.brnhId", target = "branchId"),
-            @Mapping(source = "branch.brnhName", target = "branchName")
+            @Mapping(source = "branch.brnhName", target = "branchName"),
+            @Mapping(source = "createdDate", target = "createdDate")
     })
     InvoiceDTO entityToDTO(TTrInvoice entity);
 

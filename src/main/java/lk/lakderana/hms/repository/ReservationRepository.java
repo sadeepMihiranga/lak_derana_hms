@@ -12,11 +12,11 @@ import java.util.List;
 public interface ReservationRepository extends JpaRepository<TMsReservation, Long> {
 
     @Query("SELECT t FROM TMsReservation t " +
-            "WHERE (:noOfPersons IS NULL OR (:noOfPersons IS NOT NULL AND t.resvNoOfPersons = :noOfPersons)) " +
+            "WHERE (:noOfAdults IS NULL OR (:noOfAdults IS NOT NULL AND t.resvNoOfAdults = :noOfAdults)) " +
             "AND (:status IS NULL OR (:status IS NOT NULL AND t.resvStatus = :status)) " +
             "AND t.branch.brnhId IN :branchIdList " +
             "ORDER BY t.lastModDate DESC")
-    Page<TMsReservation> searchReservations(@Param("noOfPersons") Integer noOfPersons,
+    Page<TMsReservation> searchReservations(@Param("noOfAdults") Integer noOfAdults,
                                             @Param("status") Short status,
                                             @Param("branchIdList") List<Long> branchIdList,
                                             Pageable pageable);

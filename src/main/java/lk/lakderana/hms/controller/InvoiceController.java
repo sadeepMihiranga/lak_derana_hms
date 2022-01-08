@@ -4,8 +4,15 @@ import lk.lakderana.hms.dto.InvoiceDTO;
 import lk.lakderana.hms.response.SuccessResponse;
 import lk.lakderana.hms.response.SuccessResponseHandler;
 import lk.lakderana.hms.service.InvoiceService;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperPrint;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.io.OutputStream;
 
 @CrossOrigin
 @RestController
@@ -22,5 +29,24 @@ public class InvoiceController {
     public ResponseEntity<SuccessResponse> createInvoice(@PathVariable("reservationId") Long reservationId,
             @RequestBody InvoiceDTO invoiceDTO) {
         return SuccessResponseHandler.generateResponse(invoiceService.createInvoice(reservationId, invoiceDTO));
+    }
+
+    @GetMapping(value = "/reservation/{reservationId}/print")
+    public void generateInvoice(HttpServletResponse response, @PathVariable("reservationId") Long reservationId) throws IOException, JRException {
+        JasperPrint jasperPrint = null;
+
+        response.setContentType("application/x-download");
+        response.setHeader("Content-Disposition", String.format("attachment; filename=%s", "\"invoice_" + reservationId + ".pdf\""));
+
+        OutputStream out = response.getOutputStream();
+
+        jasperPrint = invoiceService.generateInvoicePrint(reservationId);
+
+        JasperExportManager.exportReportToPdfStream(jasperPrint, out);
+    }
+
+    @GetMapping("/reservation/{reservationId}")
+    public ResponseEntity<SuccessResponse> getInvoiceDataByReservation(@PathVariable("reservationId") Long reservationId) {
+        return SuccessResponseHandler.generateResponse(invoiceService.getInvoiceDataByReservation(reservationId));
     }
 }
