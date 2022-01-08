@@ -47,4 +47,9 @@ public class ReservationController {
                                                              @RequestBody ReservationDTO reservationDTO) {
         return SuccessResponseHandler.generateResponse(reservationService.updateReservation(reservationId, reservationDTO));
     }
+
+    @PutMapping("/{reservationId}/checkout")
+    public ResponseEntity<SuccessResponse> checkoutReservation(@PathVariable("reservationId") Long reservationId) {
+        return SuccessResponseHandler.generateResponse(reservationService.releaseReservation(reservationId));
+    }
 }

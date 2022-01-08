@@ -21,20 +21,17 @@ public class Test {
         // No upper case
         System.out.println("helloword#123 is valid password:" +validPassword1);*/
 
-        /*BigDecimal totalReservationAmount = BigDecimal.valueOf(20000);
-        BigDecimal dueAmountForAReservation = BigDecimal.valueOf(5000);
+        BigDecimal payment = BigDecimal.valueOf(20000);
+        BigDecimal dueAmount = BigDecimal.valueOf(1);
 
-        if(dueAmountForAReservation.compareTo(BigDecimal.ZERO) != 0)
-            System.out.println("has pay");
+        if(dueAmount.compareTo(BigDecimal.ZERO) == 0)
+            System.out.println("adooo");
+
+        /*if(payment.compareTo(dueAmount) > 0)
+            System.out.println("exceed");
         else
-            System.out.println("Not has pay");*/
+            System.out.println("ok");*/
 
-        BigDecimal test = new BigDecimal(0);
-        System.out.println(test);
-        test = test.add(new BigDecimal(30));
-        System.out.println(test);
-        test = test.add(new BigDecimal(45));
-        System.out.println(test);
     }
 
     public static boolean isValidPassword(String password,String regex)

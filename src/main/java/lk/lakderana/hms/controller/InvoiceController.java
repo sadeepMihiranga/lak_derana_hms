@@ -49,4 +49,14 @@ public class InvoiceController {
     public ResponseEntity<SuccessResponse> getInvoiceDataByReservation(@PathVariable("reservationId") Long reservationId) {
         return SuccessResponseHandler.generateResponse(invoiceService.getInvoiceDataByReservation(reservationId));
     }
+
+    @GetMapping(path = "/search")
+        public ResponseEntity<SuccessResponse> invoicePaginatedSearch(@RequestParam(name = "reservationId", required = false) Long reservationId,
+                                                                  @RequestParam(name = "invoiceNumber", required = false) String invoiceNumber,
+                                                                  @RequestParam(name = "status", required = false) Short status,
+                                                                  @RequestParam(name = "page", required = true) Integer page,
+                                                                  @RequestParam(name = "size", required = true) Integer size) {
+        return SuccessResponseHandler.generateResponse(invoiceService
+                .invoicePaginatedSearch(reservationId, invoiceNumber, status, page, size));
+    }
 }

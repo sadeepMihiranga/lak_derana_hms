@@ -7,6 +7,7 @@ import lk.lakderana.hms.exception.DataNotFoundException;
 import lk.lakderana.hms.exception.NoRequiredInfoException;
 import lk.lakderana.hms.exception.OperationException;
 import lk.lakderana.hms.exception.TransactionConflictException;
+import lk.lakderana.hms.mapper.InquiryMapper;
 import lk.lakderana.hms.mapper.InvoiceMapper;
 import lk.lakderana.hms.repository.*;
 import lk.lakderana.hms.service.InvoiceService;
@@ -22,6 +23,8 @@ import net.sf.jasperreports.engine.design.JasperDesign;
 import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import org.assertj.core.util.Strings;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 
@@ -266,6 +269,34 @@ public class InvoiceServiceImpl extends EntityValidator implements InvoiceServic
             if (input != null)
                 input.close();
         }
+    }
+
+    @Override
+    public PaginatedEntity invoicePaginatedSearch(Long reservationId, String invoiceNumber, Short status, Integer page, Integer size) {
+
+        PaginatedEntity paginatedInvoiceList = null;
+        List<InvoiceDTO> invoiceDTOList = null;
+
+        validatePaginateIndexes(page, size);
+
+        final Page<TTrInvoice> tTrInvoicePage = invoiceRepository
+                .getActiveInvoice(reservationId, invoiceNumber, status, captureBranchIds(), PageRequest.of(page - 1, size));
+
+        if (tTrInvoicePage.getSize() == 0)
+            return null;
+
+        paginatedInvoiceList = new PaginatedEntity();
+        invoiceDTOList = new ArrayList<>();
+
+        for (TTrInvoice tTrInvoice : tTrInvoicePage) {
+            invoiceDTOList.add(InvoiceMapper.INSTANCE.entityToDTO(tTrInvoice));
+        }
+
+        paginatedInvoiceList.setTotalNoOfPages(tTrInvoicePage.getTotalPages());
+        paginatedInvoiceList.setTotalNoOfRecords(tTrInvoicePage.getTotalElements());
+        paginatedInvoiceList.setEntities(invoiceDTOList);
+
+        return paginatedInvoiceList;
     }
 
     private void removeBlankPage(List<JRPrintPage> pages) {

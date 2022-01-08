@@ -12,6 +12,8 @@ import lombok.Setter;
 import org.assertj.core.util.Strings;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.Date;
 
 @Getter
@@ -32,9 +34,18 @@ public class ReportDTO {
     private String transferredToBranchName;
     private String checkInDateTime;
     private String checkOutDateTime;
-    private String noOfPersons;
+    private String noOfAdults;
+    private String noOfChildren;
     private String inquiryStatus;
     private String reservationStatus;
+    private String reservationId;
+    private String payMethod;
+    private String amount;
+    private String branchName;
+    private String invoiceNumber;
+    private String reservedType;
+    private String quantity;
+    private String unitPrice;
 
     @Autowired
     private BranchRepository branchRepository;
@@ -67,11 +78,31 @@ public class ReportDTO {
         this.createdDate = DateConversion.convertDateToString(createdDate);
     }
 
-    public void setNoOfPersons(Integer noOfPersons) {
-        this.noOfPersons = noOfPersons.toString();
+    public void setNoOfAdults(Integer noOfAdults) {
+        this.noOfAdults = noOfAdults.toString();
+    }
+
+    public void setNoOfChildren(Integer noOfChildren) {
+        this.noOfChildren = noOfChildren == null ? "-" : noOfChildren.toString();
     }
 
     public void setReservationStatus(Short reservationStatus) {
         this.reservationStatus = ReservationStatus.getNameByCode(reservationStatus).name();
+    }
+
+    public void setReservationId(String reservationId) {
+        this.reservationId = "RSV" + reservationId;
+    }
+
+    public void setAmount(BigDecimal amount) {
+        this.amount = new DecimalFormat("#,###.00").format(amount);
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity.toString();
+    }
+
+    public void setUnitPrice(BigDecimal unitPrice) {
+        this.unitPrice = new DecimalFormat("#,###.00").format(unitPrice);
     }
 }

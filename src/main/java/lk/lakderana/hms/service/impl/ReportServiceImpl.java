@@ -114,6 +114,22 @@ public class ReportServiceImpl implements ReportService {
             reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(reservationReportContent, false));
         }
 
+        if(reportTypeDTO.getReportTypeCode().equals(INCOME_DETAILED.getValue())) {
+            List<ReportDTO> incomeDetailedReportContent = reportHandler.getIncomeDetailedReportContent(
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+
+            reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(incomeDetailedReportContent, false));
+        }
+
+        if(reportTypeDTO.getReportTypeCode().equals(INVOICE_WISE_INCOME_DETAILED.getValue())) {
+            List<ReportDTO> invoideWiseIncomeDetailedReportContent = reportHandler.getInvoiceWiseIncomeDetailedReportContent(
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+
+            reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(invoideWiseIncomeDetailedReportContent, false));
+        }
+
         reportWrapper.setStartDate(setReportHeadingDate(startDate));
         reportWrapper.setEndDate(setReportHeadingDate(endDate));
         reportWrapper.setReportName(reportTypeDTO.getDisplayName());

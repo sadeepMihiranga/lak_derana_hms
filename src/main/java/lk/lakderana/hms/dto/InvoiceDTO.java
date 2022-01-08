@@ -12,7 +12,7 @@ import java.util.List;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InvoiceDTO {
+public class InvoiceDTO implements Paginated {
 
     private Long invoiceId;
     private String invoiceNumber;
