@@ -92,6 +92,12 @@ public class InvoiceServiceImpl extends EntityValidator implements InvoiceServic
         validateEntity(invoiceDTO);
         final TMsReservation tMsReservation = validateReservationById(reservationId);
 
+        final TTrInvoice tTrInvoice = invoiceRepository
+                .findByReservation_ResvIdAndAndBranch_BrnhIdInAndInvcStatus(reservationId, captureBranchIds(), STATUS_ACTIVE.getShortValue());
+
+        if(tTrInvoice != null)
+            throw new OperationException("Invoice is already created for the Reservation");
+
         final BigDecimal dueAmount = paymentService.calculateDueAmountForAReservation(reservationId, true);
 
         if(dueAmount.compareTo(BigDecimal.ZERO) != 0)

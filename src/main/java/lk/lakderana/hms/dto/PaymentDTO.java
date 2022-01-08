@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Data
 @NoArgsConstructor
@@ -24,6 +25,7 @@ public class PaymentDTO implements Paginated {
     private Short status;
     private Long branchId;
     private String branchName;
+    private LocalDateTime createdDate;
 
     public PaymentDTO(String paymentType, BigDecimal amount) {
         this.paymentMethod = paymentType;

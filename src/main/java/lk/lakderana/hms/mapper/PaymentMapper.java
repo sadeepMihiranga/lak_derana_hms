@@ -22,7 +22,8 @@ public interface PaymentMapper {
             @Mapping(source = "paytAmount", target = "amount"),
             @Mapping(source = "paytStatus", target = "status"),
             @Mapping(source = "branch.brnhId", target = "branchId"),
-            @Mapping(source = "branch.brnhName", target = "branchName")
+            @Mapping(source = "branch.brnhName", target = "branchName"),
+            @Mapping(source = "createdDate", target = "createdDate")
     })
     PaymentDTO entityToDTO(TTrPayment entity);
 
