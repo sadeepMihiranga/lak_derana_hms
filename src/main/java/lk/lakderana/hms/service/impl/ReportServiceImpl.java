@@ -96,38 +96,49 @@ public class ReportServiceImpl implements ReportService {
             throw new DataNotFoundException("End Date is Required.");
         }
 
+        startDate = startDate + " 00:00:00";
+        endDate = endDate + " 23:59:59";
+
         ReportContentWrapperDTO reportWrapper = new ReportContentWrapperDTO();
 
         if(reportTypeDTO.getReportTypeCode().equals(INQUIRY_DETAILED.getValue())) {
             List<ReportDTO> inquiryReportContent = reportHandler.getInquiryReportContent(
-                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
-                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd HH:mm:ss"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd HH:mm:ss"));
 
             reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(inquiryReportContent, false));
         }
 
         if(reportTypeDTO.getReportTypeCode().equals(RESERVATION_DETAILED.getValue())) {
             List<ReportDTO> reservationReportContent = reportHandler.getReservationReportContent(
-                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
-                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd HH:mm:ss"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd HH:mm:ss"));
 
             reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(reservationReportContent, false));
         }
 
         if(reportTypeDTO.getReportTypeCode().equals(INCOME_DETAILED.getValue())) {
             List<ReportDTO> incomeDetailedReportContent = reportHandler.getIncomeDetailedReportContent(
-                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
-                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd HH:mm:ss"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd HH:mm:ss"));
 
             reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(incomeDetailedReportContent, false));
         }
 
         if(reportTypeDTO.getReportTypeCode().equals(INVOICE_WISE_INCOME_DETAILED.getValue())) {
-            List<ReportDTO> invoideWiseIncomeDetailedReportContent = reportHandler.getInvoiceWiseIncomeDetailedReportContent(
-                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd"),
-                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd"));
+            List<ReportDTO> invoiceWiseIncomeDetailedReportContent = reportHandler.getInvoiceWiseIncomeDetailedReportContent(
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd HH:mm:ss"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd HH:mm:ss"));
 
-            reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(invoideWiseIncomeDetailedReportContent, false));
+            reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(invoiceWiseIncomeDetailedReportContent, false));
+        }
+
+        if(reportTypeDTO.getReportTypeCode().equals(EMPLOYEE_ATTENDANCE_DETAILED.getValue())) {
+            List<ReportDTO> employeeAttendanceDetailedReportContent = reportHandler.getAttendanceDetailedReportContent(
+                    DateConversion.convertStringToDate(startDate, "yyyy-MM-dd HH:mm:ss"),
+                    DateConversion.convertStringToDate(endDate, "yyyy-MM-dd HH:mm:ss"));
+
+            reportWrapper.setReportDatasource(new JRBeanCollectionDataSource(employeeAttendanceDetailedReportContent, false));
         }
 
         reportWrapper.setStartDate(setReportHeadingDate(startDate));

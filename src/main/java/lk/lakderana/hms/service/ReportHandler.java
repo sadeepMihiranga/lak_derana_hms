@@ -14,4 +14,6 @@ public interface ReportHandler {
     List<ReportDTO> getIncomeDetailedReportContent(Date fromDate, Date toDate);
 
     List<ReportDTO> getInvoiceWiseIncomeDetailedReportContent(Date fromDate, Date toDate);
+
+    List<ReportDTO> getAttendanceDetailedReportContent(Date fromDate, Date toDate);
 }

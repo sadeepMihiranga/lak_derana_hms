@@ -3,7 +3,9 @@ package lk.lakderana.hms.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Locale;
@@ -13,6 +15,7 @@ public final class DateConversion {
 
     public static final String STANDARD_DATE_FORMAT_WITH_TIME = "yyyy-MM-dd HH:mm:ss";
     public static final String STANDARD_DATE_FORMAT = "yyyy-MM-dd";
+    public static final String STANDARD_TIME = "HH:mm:ss";
 
     private DateConversion() {
         throw new IllegalStateException("Date Conversion Utility class");
@@ -110,6 +113,20 @@ public final class DateConversion {
         if (dateToConvert == null)
             return null;
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(STANDARD_DATE_FORMAT_WITH_TIME);
+        return dateToConvert.format(formatter);
+    }
+
+    public static String convertLocalDateToString(LocalDate dateToConvert) {
+        if (dateToConvert == null)
+            return null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(STANDARD_DATE_FORMAT);
+        return dateToConvert.format(formatter);
+    }
+
+    public static String convertLocalTimeToString(LocalTime dateToConvert) {
+        if (dateToConvert == null)
+            return null;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(STANDARD_TIME);
         return dateToConvert.format(formatter);
     }
 }

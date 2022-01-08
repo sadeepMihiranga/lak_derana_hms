@@ -39,14 +39,8 @@ public class ReportHandlerImpl extends EntityValidator implements ReportHandler 
                         "WHERE \"CREATED_DATE\" BETWEEN :fromDate AND :toDate");
         query.setParameter("fromDate", fromDate);
         query.setParameter("toDate", toDate);
-        try {
-            query.unwrap(org.hibernate.query.NativeQuery.class)
-                    .setResultTransformer(Transformers.aliasToBean(ReportDTO.class));
-            return (List<ReportDTO>) query.getResultList();
-        } catch (NoResultException e) {
-            log.error("Report Service -> ReportHandlerImpl -> getInquiryReportContent : {} ", e.getMessage());
-        }
-        return Collections.emptyList();
+
+        return executeQuery(query, "InquiryReport");
     }
 
     @Override
@@ -72,14 +66,8 @@ public class ReportHandlerImpl extends EntityValidator implements ReportHandler 
                         "WHERE inq.\"CREATED_DATE\" BETWEEN :fromDate AND :toDate");
         query.setParameter("fromDate", fromDate);
         query.setParameter("toDate", toDate);
-        try {
-            query.unwrap(org.hibernate.query.NativeQuery.class)
-                    .setResultTransformer(Transformers.aliasToBean(ReportDTO.class));
-            return (List<ReportDTO>) query.getResultList();
-        } catch (NoResultException e) {
-            log.error("Report Service -> ReportHandlerImpl -> getReservationReportContent : {} ", e.getMessage());
-        }
-        return Collections.emptyList();
+
+        return executeQuery(query, "ReservationReport");
     }
 
     @Override
@@ -104,14 +92,8 @@ public class ReportHandlerImpl extends EntityValidator implements ReportHandler 
                         "ORDER BY pay.\"PAYT_BRANCH_ID\", pay.\"CREATED_DATE\";");
         query.setParameter("fromDate", fromDate);
         query.setParameter("toDate", toDate);
-        try {
-            query.unwrap(org.hibernate.query.NativeQuery.class)
-                    .setResultTransformer(Transformers.aliasToBean(ReportDTO.class));
-            return (List<ReportDTO>) query.getResultList();
-        } catch (NoResultException e) {
-            log.error("Report Service -> ReportHandlerImpl -> getReservationReportContent : {} ", e.getMessage());
-        }
-        return Collections.emptyList();
+
+        return executeQuery(query, "IncomeDetailedReport");
     }
 
     @Override
@@ -139,12 +121,39 @@ public class ReportHandlerImpl extends EntityValidator implements ReportHandler 
                         "AND invd.\"INDT_STATUS\" = 1");
         query.setParameter("fromDate", fromDate);
         query.setParameter("toDate", toDate);
+
+        return executeQuery(query, "InvoiceWiseIncomeDetailedReport");
+    }
+
+    @Override
+    public List<ReportDTO> getAttendanceDetailedReportContent(Date fromDate, Date toDate) {
+        validateReportRequestDates(fromDate, toDate);
+
+        Query query = entityManager.createNativeQuery(
+                "SELECT CONCAT('#', row_number() OVER (ORDER BY att.\"ATTN_ID\")) AS \"rowNumber\",\n" +
+                        "       att.\"ATTN_DATE\" AS \"attendanceDate\",\n" +
+                        "       att.\"ATTN_IN_TIME\" AS \"inTime\",\n" +
+                        "       att.\"ATTN_OUT_TIME\" AS \"outTime\",\n" +
+                        "       prt.\"PRTY_NAME\" AS \"employeeName\",\n" +
+                        "       bnh.\"BRNH_NAME\" as \"branchName\"\n" +
+                        "FROM \"LAKDERANA_BASE\".\"T_MS_ATTENDANCE\" att\n" +
+                        "INNER JOIN \"LAKDERANA_BASE\".\"T_MS_PARTY\" prt ON att.\"ATTN_EMPLOYEE_CODE\" = prt.\"PRTY_CODE\"\n" +
+                        "INNER JOIN \"LAKDERANA_BASE\".\"T_RF_BRANCH\" bnh ON att.\"ATTN_BRANCH_ID\" = bnh.\"BRNH_ID\"\n" +
+                        "WHERE att.\"CREATED_DATE\" BETWEEN :fromDate AND :toDate\n" +
+                        "AND att.\"ATTN_STATUS\" = 1");
+        query.setParameter("fromDate", fromDate);
+        query.setParameter("toDate", toDate);
+
+        return executeQuery(query, "AttendanceDetailedReport");
+    }
+
+    private List<ReportDTO> executeQuery(Query query, String report) {
         try {
             query.unwrap(org.hibernate.query.NativeQuery.class)
                     .setResultTransformer(Transformers.aliasToBean(ReportDTO.class));
             return (List<ReportDTO>) query.getResultList();
         } catch (NoResultException e) {
-            log.error("Report Service -> ReportHandlerImpl -> getReservationReportContent : {} ", e.getMessage());
+            log.error("Report Service -> ReportHandlerImpl -> {} : {} ", report, e.getMessage());
         }
         return Collections.emptyList();
     }

@@ -14,6 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.Date;
 
 @Getter
@@ -46,9 +48,25 @@ public class ReportDTO {
     private String reservedType;
     private String quantity;
     private String unitPrice;
+    private String attendanceDate;
+    private String inTime;
+    private String outTime;
+    private String employeeName;
 
     @Autowired
     private BranchRepository branchRepository;
+
+    public void setAttendanceDate(Date attendanceDate) {
+        this.attendanceDate = DateConversion.convertDateToStringWithTime(attendanceDate).split(" ")[0];
+    }
+
+    public void setInTime(Date inTime) {
+        this.inTime =  inTime == null ? "-" : DateConversion.convertDateToStringWithTime(inTime).split(" ")[1];
+    }
+
+    public void setOutTime(Date outTime) {
+        this.outTime = outTime == null ? "-" : DateConversion.convertDateToStringWithTime(outTime).split(" ")[1];
+    }
 
     public void setDateTime(Date inquiryDateTime) {
         this.dateTime = DateConversion.convertDateToString(inquiryDateTime);
