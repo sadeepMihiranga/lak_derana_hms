@@ -1,0 +1,2260 @@
+{
+	"info": {
+		"_postman_id": "4af84c1c-89a9-4108-9071-d8b061fce519",
+		"name": "LakDerana HMS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Deployed",
+			"item": [
+				{
+					"name": "Create Token",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"sadeep\",\n    \"password\": \"12345\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://188.166.190.162:7000/api/auth/token",
+							"protocol": "http",
+							"host": [
+								"188",
+								"166",
+								"190",
+								"162"
+							],
+							"port": "7000",
+							"path": [
+								"api",
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Party",
+			"item": [
+				{
+					"name": "Parties Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTM1NzU2LCJleHAiOjE2NDMxMjc2MDN9.nyMpAXyE094nEyb3pyQULZGtA1kJksnmeMXRoY7k9Pw",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/parties/search?name=&partyType&page=1&size=10",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"parties",
+								"search"
+							],
+							"query": [
+								{
+									"key": "name",
+									"value": ""
+								},
+								{
+									"key": "partyType",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Party by Code",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTM2NDExLCJleHAiOjE2NDMxMjgzNjd9.nF6ipJlxk-HV5V1TJEoPzDn9fOaVj-XNUYlJMt2NhlA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/parties/CC00000019",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"parties",
+								"CC00000019"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Party",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Rasini Mahesha\",\n    \"firstName\": \"Rasini\",\n    \"lastName\": \"Mahesha\",\n    \"dob\": \"1977-01-14\",\n    \"address1\": \"No: 15\",\n    \"address2\": \"Colombo 09\",\n    \"address3\": \"Nugegoda\",\n    \"gender\": \"M\",\n    \"nic\": \"970542503V\",\n    \"passport\": \"N53287462\",\n    \"type\": \"EMPLY\",\n    \"departmentCode\": \"DEPHR\",\n    \"branchId\": 1,\n    \"managedBy\": null,\n    \"contactList\": [\n        {\n            \"contactType\": \"CNMBL\",\n            \"contactNumber\": \"94723434321\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/parties/",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"parties",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Party",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partyCode\": \"CC00000019\",\n    \"name\": \"Adminstrator Admin\",\n    \"firstName\": \"Adminstrator\",\n    \"lastName\": \"Admin\",\n    \"dob\": null,\n    \"address1\": \"as\",\n    \"address2\": \"as\",\n    \"address3\": \"AS\",\n    \"gender\": \"M\",\n    \"genderName\": null,\n    \"nic\": \"990132503V\",\n    \"passport\": \"1655465466\",\n    \"type\": \"EMPLY\",\n    \"departmentCode\": \"DRPACC\",\n    \"branchId\": 1,\n    \"managedBy\": \"CC00000012\",\n    \"contactList\": [\n        {\n            \"contactId\": 38,\n            \"contactType\": \"CNEML\",\n            \"contactNumber\": \"msilva@gmail.com\"\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/parties/CC00000019",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"parties",
+								"CC00000019"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Party",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTM2NDExLCJleHAiOjE2NDMxMjgzNjd9.nF6ipJlxk-HV5V1TJEoPzDn9fOaVj-XNUYlJMt2NhlA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/parties/CC00000020",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"parties",
+								"CC00000020"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "User",
+			"item": [
+				{
+					"name": "Get All Users",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/users",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get A User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInVzZXJfbmFtZSI6IkNDMDAwMDAwMDEiLCJ1c2VyX2Rlc2NyaXB0aW9uIjoiU2FkZWVwIiwiYXVkIjoibGFrZGVyYW5hd2ViIiwiaXNzIjoiTGFrZGVyYW5hLVdlYiIsImlhdCI6MTYzOTgxOTAzMywiZXhwIjoxNjM5ODIwODMzfQ.x17kDvGvFtbbrWS9iF_LlWhhzgnvW0R00Qt-zVy2sYM",
+								"type": "text",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "{{base_api_url}}/users/67",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"users",
+								"67"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partyCode\": \"CC00000019\",\n    \"username\": \"admin\",\n    \"password\": \"1234\",\n    \"roles\": [\n        {\n            \"name\": \"ROLE_ADMIN\"\n        }\n    ],\n    \"branches\" : [\n        {\n            \"branchId\" : 1\n        },\n        {\n            \"branchId\" : 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/users",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "User Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/users/search?username=&partyCode=&page=1&size=10",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"users",
+								"search"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": ""
+								},
+								{
+									"key": "partyCode",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove User By User ID",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/users/63",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"users",
+								"63"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update User",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhZG1pbiIsInJvbGVzIjpbIlJPTEVfQURNSU4iXSwiZnVuY3Rpb25zIjpbIkNVU19SRUFEIiwiQ1VTX0NSRUFURSJdLCJwYXJ0eUNvZGUiOiJDQzAwMDAwMDE5IiwiZGlzcGxheU5hbWUiOiJBZG1pbnN0cmF0b3IiLCJ1c2VySWQiOjY3LCJicmFuY2hlcyI6WzEsMl0sImF1ZCI6Imxha2RlcmFuYXdlYiIsImlzcyI6Ikxha2RlcmFuYS1XZWIiLCJpYXQiOjE2NDA2OTQwNzcsImV4cCI6MTY0MzI4NjAzOH0.C5div7OnWzM_AXczz9nAc_jXC0phCM_vBtw9YqsVh9Q",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"chamara2\",\n    \"roles\": [\n        {\n            \"name\": \"ROLE_CHEF\"\n        },\n        {\n            \"name\": \"ROLE_CLEARING_STAFF\"\n        },\n        {\n            \"name\": \"ROLE_FOOD_MANAGER\"\n        }\n    ],\n    \"branches\" : [\n        {\n            \"branchId\" : 1\n        },\n        {\n            \"branchId\" : 2\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/users/63",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"users",
+								"63"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Password",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\":\"CC00000001\",\n    \"newPassword\":\"12345\",\n    \"token\":\"04a9ab27-1469-47af-8a8d-746ce9613dbd\",\n    \"tokenType\":\"CNEML\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/auth/password/update",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"password",
+								"update"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reset Password Mail",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"sadeep\",\n    \"contactType\": \"CNEML\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/auth/password/reset",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"password",
+								"reset"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Assign Roles to User",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    \"ROLE_HR_MANAGER\",\n    \"ROLE_HR_ASSISTANT\",\n    \"ROLE_ACCOUNTANT\"\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/users/63/roles/assign",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"users",
+								"63",
+								"roles",
+								"assign"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Verify Email Link",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/auth/email/verify?partyCode=CC00000001&token=04a9ab27-1469-47af-8a8d-746ce9613dbd",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"email",
+								"verify"
+							],
+							"query": [
+								{
+									"key": "partyCode",
+									"value": "CC00000001"
+								},
+								{
+									"key": "token",
+									"value": "04a9ab27-1469-47af-8a8d-746ce9613dbd"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Inquiry",
+			"item": [
+				{
+					"name": "Create Inquiry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"partyCode\": \"\",\n    \"remarks\": \"i want rooms\",\n    \"customerName\": \"Kuamara Sanath\",\n    \"customerContactNo\": \"0722222121\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/inquiry",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"inquiry"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Inquiry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaGFtaSIsInJvbGVzIjpbXSwiZnVuY3Rpb25zIjpbXSwicGFydHlDb2RlIjoiQ0MwMDAwMDAwMiIsImRpc3BsYXlOYW1lIjoiQ2hhbWFyaSIsInVzZXJJZCI6NSwiYnJhbmNoZXMiOlsxXSwiYXVkIjoibGFrZGVyYW5hd2ViIiwiaXNzIjoiTGFrZGVyYW5hLVdlYiIsImlhdCI6MTY0MDQ4ODcwOCwiZXhwIjoxNjQzMDgwNTgzfQ.MgfnR5S3E-8hY7gRlTwtRUiCfnuxv-sfTx1jbb-tzoU",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/inquiry/17",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"inquiry",
+								"17"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inquiry Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNDU4NjkyLCJleHAiOjE2NDMwNTA2NDF9.Bo6PVp9LPvl0kasUdQxSTbfiTq0bEMBGtrxYXkGdvoc",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/inquiry/search?customerName=&customerContactNo=&page=1&size=10&partyCode&status=1",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"inquiry",
+								"search"
+							],
+							"query": [
+								{
+									"key": "customerName",
+									"value": ""
+								},
+								{
+									"key": "customerContactNo",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "partyCode",
+									"value": ""
+								},
+								{
+									"key": "status",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Transfer Inquiry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaGFtaSIsInJvbGVzIjpbXSwiZnVuY3Rpb25zIjpbXSwicGFydHlDb2RlIjoiQ0MwMDAwMDAwMiIsImRpc3BsYXlOYW1lIjoiQ2hhbWFyaSIsInVzZXJJZCI6NSwiYnJhbmNoZXMiOlsxXSwiYXVkIjoibGFrZGVyYW5hd2ViIiwiaXNzIjoiTGFrZGVyYW5hLVdlYiIsImlhdCI6MTY0MDUyNjM3NSwiZXhwIjoxNjQzMTE4MzI1fQ.0WlfORtxRBdDAlFZ-wfmkToPrBbJkWlSq5hq-dJY64s",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inquiryId\": 36,\n    \"branchId\": 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/inquiry/transfer",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"inquiry",
+								"transfer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Inquiry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaGFtaSIsInJvbGVzIjpbXSwiZnVuY3Rpb25zIjpbXSwicGFydHlDb2RlIjoiQ0MwMDAwMDAwMiIsImRpc3BsYXlOYW1lIjoiQ2hhbWFyaSIsInVzZXJJZCI6NSwiYnJhbmNoZXMiOlsxXSwiYXVkIjoibGFrZGVyYW5hd2ViIiwiaXNzIjoiTGFrZGVyYW5hLVdlYiIsImlhdCI6MTY0MDUxMTIyOSwiZXhwIjoxNjQzMTAzMjAwfQ.1sIF0xgHJQD-gH5jmKYSkfUlJbwk-j_iYlZaJP-cM5M",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/inquiry/12/cancel",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"inquiry",
+								"12",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Inquiry",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJjaGFtaSIsInJvbGVzIjpbXSwiZnVuY3Rpb25zIjpbXSwicGFydHlDb2RlIjoiQ0MwMDAwMDAwMiIsImRpc3BsYXlOYW1lIjoiQ2hhbWFyaSIsInVzZXJJZCI6NSwiYnJhbmNoZXMiOlsxXSwiYXVkIjoibGFrZGVyYW5hd2ViIiwiaXNzIjoiTGFrZGVyYW5hLVdlYiIsImlhdCI6MTY0MDUxNDEyNiwiZXhwIjoxNjQzMTA1NjEyfQ.eFbvwRnPy9bEWZNo-ybEtfmlVo2xaMn0CaLP9b_rzxg",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"remarks\": \"He need to stay\",\n    \"customerName\": \"Nalinda\",\n    \"customerContactNo\": \"0787878787\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}api/inquiry/11",
+							"host": [
+								"{{base_api_url}}api"
+							],
+							"path": [
+								"inquiry",
+								"11"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Room",
+			"item": [
+				{
+					"name": "Room Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTczODE1LCJleHAiOjE2NDMxMzU3Njl9.o6dq0TDlCXSSV44X6mg0Qr61Y5v3xHotzrWohLJBoDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/rooms/search?roomType=&roomCategory=&page=1&size=10&status=1&roomNo=",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"rooms",
+								"search"
+							],
+							"query": [
+								{
+									"key": "roomType",
+									"value": ""
+								},
+								{
+									"key": "roomCategory",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "1"
+								},
+								{
+									"key": "roomNo",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Room",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjIwNTE2LCJleHAiOjE2NDMyMTI0MDN9.Y-BdEbLLQk4YzBgbyK1TDLcl-dFaM20OuId9c788Q80",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roomType\": \"RMTP1\",\n    \"roomCategory\": \"RMCAT1\",\n    \"roomPrice\": 5656.00,\n    \"roomBedType\": \"RMBDDO\",\n    \"roomNo\": \"52\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/rooms",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"rooms"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Room",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTczODE1LCJleHAiOjE2NDMxMzU3Njl9.o6dq0TDlCXSSV44X6mg0Qr61Y5v3xHotzrWohLJBoDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"roomType\": \"RMTP1\",\n    \"roomCategory\": \"RMCAT1\",\n    \"roomPrice\": 5656.00,\n    \"roomBedType\": \"RMBDTR\",\n    \"status\": 2,\n    \"roomNo\": \"15D\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/rooms/8",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"rooms",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Inacrivate Room",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTczODE1LCJleHAiOjE2NDMxMzU3Njl9.o6dq0TDlCXSSV44X6mg0Qr61Y5v3xHotzrWohLJBoDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/rooms/8",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"rooms",
+								"8"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Room",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTczODE1LCJleHAiOjE2NDMxMzU3Njl9.o6dq0TDlCXSSV44X6mg0Qr61Y5v3xHotzrWohLJBoDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/rooms/1/remove",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"rooms",
+								"1",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Room By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNTczODE1LCJleHAiOjE2NDMxMzU3Njl9.o6dq0TDlCXSSV44X6mg0Qr61Y5v3xHotzrWohLJBoDA",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/rooms/9",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"rooms",
+								"9"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Auth",
+			"item": [
+				{
+					"name": "Get Token by Refresh Token",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJpc3MiOiJodHRwOi8vbG9jYWxob3N0OjcwMDAvYXBpL3Rva2VuIiwiZXhwIjoxNjM5MjI5ODA3fQ.Vkno57bpefwUWFE6nxKkgjaQTmxn3I5tc8TxtPKzGR4",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": []
+						},
+						"url": {
+							"raw": "{{base_api_url}}/token/refresh",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"token",
+								"refresh"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Token",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"username\": \"admin\",\n    \"password\": \"1234\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/auth/token",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"auth",
+								"token"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Facility",
+			"item": [
+				{
+					"name": "Facility Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/facility/search?facilityType=&facilityName=&page=1&size=10&status=1",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"facility",
+								"search"
+							],
+							"query": [
+								{
+									"key": "facilityType",
+									"value": ""
+								},
+								{
+									"key": "facilityName",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Facility",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"facilityName\": \"Car Parking\",\n    \"description\": \"20 Cars cane be parked\",\n    \"facilityType\": \"FCPARK\",\n    \"price\": 0.00,\n    \"uom\": \"saa\",\n    \"maxCapacity\": 20\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/facility",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"facility"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Facility",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"facilityName\": \"Car Parking\",\n    \"description\": \"30 Cars can be parked\",\n    \"facilityType\": \"FCPARK\",\n    \"price\": 200.00,\n    \"uom\": \"UOMHR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/facility/5",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"facility",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Facility",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/facility/5",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"facility",
+								"5"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Facility Bu Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/facility/8",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"facility",
+								"8"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reservation",
+			"item": [
+				{
+					"name": "Reservation Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/reservation/search?noOfPersons=&status=&page=1&size=10",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"reservation",
+								"search"
+							],
+							"query": [
+								{
+									"key": "noOfPersons",
+									"value": ""
+								},
+								{
+									"key": "status",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"inquiryId\": null,\n    \"checkInDateTime\": \"2022-01-08 07:03:11\",\n    \"checkOutDateTime\": \"2022-01-09 07:04:01\",\n    \"remarks\": \"2022 reservation 3\",\n    \"customerName\": \"Nuwan Kalpa\",\n    \"customerContactNo\": \"0765656555\",\n    \"noOfAdults\": 2,\n    \"noOfChildren\": 3,\n    \"paymentType\": \"PTCASH\",\n    \"advancePayment\": 6000.00,\n    \"roomReservationList\": [\n        {\n            \"room\": {\n                \"roomId\": 12\n            }\n        }\n    ],\n    \"facilityReservationList\": [\n        {\n            \"facility\": {\n                \"facilityId\": 8,\n                \"quantity\": 2\n            }\n        }\n    ],\n    \"itemReservationList\": [\n        {\n            \"item\": {\n                \"itemId\":2,\n                \"quantity\":2\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/reservation",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"reservation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Reservation Cancel",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cancellationReasons\": \"Reservation canceled with all\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/reservation/36/cancel",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"reservation",
+								"36",
+								"cancel"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Reservation By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/reservation/38",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"reservation",
+								"38"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"checkInDateTime\": \"2021-12-30 07:03:11\",\n    \"checkOutDateTime\": \"2021-12-31 07:04:01\",\n    \"remarks\": \"New res\",\n    \"noOfAdults\": 2,\n    \"noOfChildren\": 2,\n    \"roomReservationList\": [\n        {\n            \"room\": {\n                \"roomId\": 7\n            }\n        }\n    ],\n    \"facilityReservationList\": [\n        {\n            \"facility\": {\n                \"facilityId\": 5,\n                \"quantity\": 2\n            }\n        },\n        {\n            \"facility\": {\n                \"facilityId\": 2,\n                \"quantity\": 8\n            }\n        }\n    ],\n    \"itemReservationList\": [\n        {\n            \"item\": {\n                \"itemId\": 1,\n                \"quantity\": 5\n            }\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/reservation/19",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"reservation",
+								"19"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Checkout Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/reservation/19/checkout",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"reservation",
+								"19",
+								"checkout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Report",
+			"item": [
+				{
+					"name": "CSV Detailed Report",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/report/detailed?startDate=2021-12-01&endDate=2022-01-09&reportType=EXCEL&filterBy&reportCode=RTMONIC",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"report",
+								"detailed"
+							],
+							"query": [
+								{
+									"key": "startDate",
+									"value": "2021-12-01"
+								},
+								{
+									"key": "endDate",
+									"value": "2022-01-09"
+								},
+								{
+									"key": "reportType",
+									"value": "EXCEL"
+								},
+								{
+									"key": "filterBy",
+									"value": ""
+								},
+								{
+									"key": "reportCode",
+									"value": "RTMONIC"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Report Types",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/report/types",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"report",
+								"types"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report History Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/report/history/search?reportTypeCode=RTINQDT&page=1&size=10",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"report",
+								"history",
+								"search"
+							],
+							"query": [
+								{
+									"key": "reportTypeCode",
+									"value": "RTINQDT"
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Report History Remove",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/report/history/4",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"report",
+								"history",
+								"4"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Regenerate Report from History",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/report/history/8/regenerate",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"report",
+								"history",
+								"8",
+								"regenerate"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Report Type By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/report/types/2",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"report",
+								"types",
+								"2"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Item",
+			"item": [
+				{
+					"name": "Create Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjIwNTE2LCJleHAiOjE2NDMyMTI0MDN9.Y-BdEbLLQk4YzBgbyK1TDLcl-dFaM20OuId9c788Q80",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Absolout Vodka\",\n    \"itemTypeCode\" : \"ITMHLQ\",\n    \"price\": 700,\n    \"uom\": \"UOMHLS\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/items",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"items"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Item By Id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjIwNTE2LCJleHAiOjE2NDMyMTI0MDN9.Y-BdEbLLQk4YzBgbyK1TDLcl-dFaM20OuId9c788Q80",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/items/2",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"items",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Item Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjIwNTE2LCJleHAiOjE2NDMyMTI0MDN9.Y-BdEbLLQk4YzBgbyK1TDLcl-dFaM20OuId9c788Q80",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/items/search?itemTypeCode=&page=1&size=10&status=1&itemName=",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"items",
+								"search"
+							],
+							"query": [
+								{
+									"key": "itemTypeCode",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "1"
+								},
+								{
+									"key": "itemName",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjIwNTE2LCJleHAiOjE2NDMyMTI0MDN9.Y-BdEbLLQk4YzBgbyK1TDLcl-dFaM20OuId9c788Q80",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"itemId\": 12,\n    \"name\": \"scasc\",\n    \"itemTypeCode\": \"ITMHLQ\",\n    \"price\": \"12312.00\",\n    \"uom\": \"UOMHR\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/items/12",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"items",
+								"12"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Remove Item",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjIwNTE2LCJleHAiOjE2NDMyMTI0MDN9.Y-BdEbLLQk4YzBgbyK1TDLcl-dFaM20OuId9c788Q80",
+									"type": "string"
+								}
+							]
+						},
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/items/1/remove",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"items",
+								"1",
+								"remove"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Payment",
+			"item": [
+				{
+					"name": "Payment Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/payment/search?paymentMethod=&reservationId=&page=1&size=10&status=1",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"payment",
+								"search"
+							],
+							"query": [
+								{
+									"key": "paymentMethod",
+									"value": ""
+								},
+								{
+									"key": "reservationId",
+									"value": ""
+								},
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "status",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"reservationId\": 27,\n    \"description\": \"3nd payment\",\n    \"paymentMethod\": \"PTCASH\",\n    \"amount\": 24500.00\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/payment/reservation/27",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"payment",
+								"reservation",
+								"27"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Cancel Payment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cancelReason\":\"Wrong payment\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/payment/cancel/6",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"payment",
+								"cancel",
+								"6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Invoice",
+			"item": [
+				{
+					"name": "Invoice Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/invoice/search?page=1&size=10&reservationId&invoiceNumber",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"invoice",
+								"search"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "reservationId",
+									"value": ""
+								},
+								{
+									"key": "invoiceNumber",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Invoice Print",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/invoice/reservation/39/print",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"invoice",
+								"reservation",
+								"39",
+								"print"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Invoice for a Reservation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"description\": \"Invoice for the reservation 27\",\n    \"discountPercentage\": 20,\n    \"discountAmount\": null,\n    \"taxPercentage\": 10,\n    \"taxAmount\": null\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/invoice/reservation/27",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"invoice",
+								"reservation",
+								"27"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Attendance",
+			"item": [
+				{
+					"name": "Attendance Mark",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"employeeCode\": \"CC00000002\",\n    \"attendanceDate\": \"2022-01-07\",\n    \"inTime\": \"09:10:11\",\n    \"outTime\": \"17:45:00\"\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{base_api_url}}/attendance/mark",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"attendance",
+								"mark"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Attendance Search",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_api_url}}/attendance/search?page=1&size=10&customerCode&date",
+							"host": [
+								"{{base_api_url}}"
+							],
+							"path": [
+								"attendance",
+								"search"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "size",
+									"value": "10"
+								},
+								{
+									"key": "customerCode",
+									"value": ""
+								},
+								{
+									"key": "date",
+									"value": ""
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Dropdown List By Code",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_api_url}}/select/list/ITMTP",
+					"host": [
+						"{{base_api_url}}"
+					],
+					"path": [
+						"select",
+						"list",
+						"ITMTP"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Dropdown List Codes",
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzYWRlZXAiLCJyb2xlcyI6WyJST0xFX0ZST05UX09GRklDRV9TVEFGRiJdLCJmdW5jdGlvbnMiOlsiQ1VTX0NSRUFURSIsIkNVU19SRUFEIiwiSU5RX0NSRUFURSIsIklOUV9SRUFEIiwiQ1VTX1VQREFURSIsIkNVU19ERUxFVEUiLCJFTVBfVVBEQVRFIiwiRU1QX0RFTEVURSIsIlNVUF9DUkVBVEUiLCJTVVBfUkVBRCIsIlJPTV9SRUFEIiwiTVlfUFJPRklMRV9SRUFEIl0sInBhcnR5Q29kZSI6IkNDMDAwMDAwMDEiLCJkaXNwbGF5TmFtZSI6IlNhZGVlcCIsInVzZXJJZCI6MywiYnJhbmNoZXMiOlsxLDJdLCJhdWQiOiJsYWtkZXJhbmF3ZWIiLCJpc3MiOiJMYWtkZXJhbmEtV2ViIiwiaWF0IjoxNjQwNjU4MTM5LCJleHAiOjE2NDMyMTUxMTR9.NTvYiwQSycCnYZiFrai5lhzITR5T-VxoDvCCK8BhHiI",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{base_api_url}}/select/list/check",
+					"host": [
+						"{{base_api_url}}"
+					],
+					"path": [
+						"select",
+						"list",
+						"check"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
